@@ -132,8 +132,17 @@ class ProgressRepository extends ChangeNotifier {
   /// Delete profile.
   Future<void> deleteProfile(String profileId) async {
     _profiles.removeWhere((p) => p.id == profileId);
+    await _storage.deleteProfileData(profileId);
     if (_activeProfile?.id == profileId) {
       _activeProfile = _profiles.isNotEmpty ? _profiles.first : null;
+      _letterProgress = {};
+      _totalStars = 0;
+      if (_activeProfile == null) {
+        await _storage.clearActiveProfileId();
+      } else {
+        await _storage.setActiveProfileId(_activeProfile!.id);
+        _loadProgress(_activeProfile!.id);
+      }
     }
     await _saveProfiles();
     notifyListeners();

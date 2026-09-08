@@ -13,6 +13,8 @@ import subprocess
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ASSETS_DIR = os.path.join(PROJECT_ROOT, "assets")
+VOICE_NAME = os.environ.get("ALPHABET_ADVENTURE_VOICE", "Junior")
+VOICE_RATE = os.environ.get("ALPHABET_ADVENTURE_VOICE_RATE", "150")
 
 # ----------------------------------------------------------------------
 # PNG Image Utilities (Pure Python, Zero External Dependencies)
@@ -135,6 +137,17 @@ def write_wav(filepath, samples, sample_rate=44100):
         f.write(b'data')
         f.write(struct.pack('<I', len(raw_data)))
         f.write(raw_data)
+
+def encode_mp3(source_path, target_path):
+    """Encode an intermediate audio file as a compatible mono MP3 asset."""
+    os.makedirs(os.path.dirname(target_path), exist_ok=True)
+    result = subprocess.run([
+        "ffmpeg", "-y", "-loglevel", "error", "-i", source_path,
+        "-codec:a", "libmp3lame", "-b:a", "128k", "-ar", "44100", "-ac", "1",
+        target_path,
+    ], capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"Unable to encode {target_path}: {result.stderr.strip()}")
 
 def synth_sine(freq, duration, sample_rate=44100, amp=0.5):
     num_samples = int(duration * sample_rate)
@@ -277,29 +290,21 @@ def synth_background_music():
     return samples
 
 def generate_voice_file(text, target_path):
-    """Use macOS say to generate high quality speech audio file."""
+    """Use a child-like macOS voice and encode the result as a real MP3."""
     os.makedirs(os.path.dirname(target_path), exist_ok=True)
-    temp_m4a = target_path + ".temp.m4a"
+    temp_aiff = target_path + ".temp.aiff"
     try:
-        # Try voice Samantha (warm friendly American English)
-        res = subprocess.run([
-            "say", "-v", "Samantha", text,
-            "--file-format=m4af", "--data-format=aac",
-            "-o", temp_m4a
-        ], capture_output=True)
-        if res.returncode != 0:
-            # Fallback to default voice
-            subprocess.run([
-                "say", text,
-                "--file-format=m4af", "--data-format=aac",
-                "-o", temp_m4a
-            ], check=True, capture_output=True)
-            
-        if os.path.exists(temp_m4a):
-            os.replace(temp_m4a, target_path)
-            return True
+        subprocess.run([
+            "say", "-v", VOICE_NAME, "-r", VOICE_RATE, text,
+            "-o", temp_aiff,
+        ], check=True, capture_output=True, text=True)
+        encode_mp3(temp_aiff, target_path)
+        return os.path.exists(target_path)
     except Exception as e:
         print(f"Error generating voice for '{text}': {e}")
+    finally:
+        if os.path.exists(temp_aiff):
+            os.remove(temp_aiff)
     return False
 
 # ----------------------------------------------------------------------
@@ -395,13 +400,19 @@ def generate_all_audio():
     }
     for sfx_name, samples in sfx_map.items():
         target = os.path.join(ASSETS_DIR, "audio", "sfx", sfx_name)
-        write_wav(target, samples)
+        temp_wav = target + ".temp.wav"
+        write_wav(temp_wav, samples)
+        encode_mp3(temp_wav, target)
+        os.remove(temp_wav)
         
     # 6. Background Music
     print("  - Background Music loop...")
     music_samples = synth_background_music()
     music_target = os.path.join(ASSETS_DIR, "audio", "music", "background.mp3")
-    write_wav(music_target, music_samples)
+    music_temp_wav = music_target + ".temp.wav"
+    write_wav(music_temp_wav, music_samples)
+    encode_mp3(music_temp_wav, music_target)
+    os.remove(music_temp_wav)
     print("✅ All Audio Assets successfully created!")
 
 

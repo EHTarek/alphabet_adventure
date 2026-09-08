@@ -58,6 +58,13 @@ void main() {
       expect(soundMatch.options.length, equals(3));
       expect(soundMatch.options[soundMatch.correctIndex], equals(letterA));
 
+      final wordMatch = engine.generateWordMatch(targetLetter: letterA);
+      expect(wordMatch.options.length, equals(4));
+      expect(
+        wordMatch.options[wordMatch.correctIndex],
+        equals(wordMatch.targetWord),
+      );
+
       final wordBuilder = engine.generateWordBuilder(targetLetter: letterA);
       expect(wordBuilder.targetLetters.isNotEmpty, isTrue);
       expect(wordBuilder.scrambledPool.length, greaterThan(wordBuilder.targetLetters.length));

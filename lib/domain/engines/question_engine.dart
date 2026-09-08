@@ -9,6 +9,7 @@ enum QuestionType {
   letterHunt,
   objectHunt,
   soundMatch,
+  wordMatch,
   wordBuilder,
   reviewChallenge,
 }
@@ -86,6 +87,24 @@ class SoundMatchQuestion extends ChallengeQuestion {
     required this.options,
     required this.correctIndex,
   }) : super(type: QuestionType.soundMatch);
+}
+
+/// Word Match challenge: match a spoken word to the correct vocabulary object.
+class WordMatchQuestion extends ChallengeQuestion {
+  final WordData targetWord;
+  final List<WordData> options;
+  final int correctIndex;
+
+  const WordMatchQuestion({
+    required super.id,
+    required super.prompt,
+    super.audioAsset,
+    required super.targetLetter,
+    required super.hintText,
+    required this.targetWord,
+    required this.options,
+    required this.correctIndex,
+  }) : super(type: QuestionType.wordMatch);
 }
 
 /// Word Builder challenge: assemble the letters of a word in the correct order.
@@ -225,6 +244,37 @@ class QuestionEngine {
       soundPrompt: targetLetter.phonicsSound,
       options: options,
       correctIndex: correctIndex,
+    );
+  }
+
+  /// Generates a Word Match question.
+  WordMatchQuestion generateWordMatch({
+    required LetterData targetLetter,
+    WordData? specificTargetWord,
+    int optionCount = 4,
+  }) {
+    final words = targetLetter.vocabularyWords.isNotEmpty
+        ? targetLetter.vocabularyWords
+        : AlphabetContent.words.where((w) => w.letter == targetLetter.char).toList();
+    final targetWord = specificTargetWord ??
+        (words.isNotEmpty ? words[_random.nextInt(words.length)] : AlphabetContent.words.first);
+
+    final otherWords = AlphabetContent.words
+        .where((w) => w.letter != targetLetter.char && w.wordId != targetWord.wordId)
+        .toList()
+      ..shuffle(_random);
+    final options = <WordData>[targetWord, ...otherWords.take(optionCount - 1)]
+      ..shuffle(_random);
+
+    return WordMatchQuestion(
+      id: 'wm_${targetLetter.char}_${targetWord.word}_${DateTime.now().millisecondsSinceEpoch}',
+      prompt: 'Which picture shows ${targetWord.displayName}?',
+      audioAsset: targetWord.audioPronunciation,
+      targetLetter: targetLetter,
+      hintText: 'Look for ${targetWord.displayName}.',
+      targetWord: targetWord,
+      options: options,
+      correctIndex: options.indexOf(targetWord),
     );
   }
 

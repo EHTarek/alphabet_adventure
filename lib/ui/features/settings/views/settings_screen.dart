@@ -7,13 +7,42 @@ import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
 import 'package:alphabet_adventure/data/repositories/settings_repository.dart';
 import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/features/parent/widgets/parental_gate_dialog.dart';
 
 /// Settings screen for audio sliders, accessibility preferences, and progress management (PRS Section 21 & 22).
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
   @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _isUnlocked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final passed = await ParentalGateDialog.verify(context);
+      if (!mounted) return;
+      if (passed) {
+        setState(() => _isUnlocked = true);
+      } else {
+        context.pop();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!_isUnlocked) {
+      return const Scaffold(
+        backgroundColor: AppColors.bgSky,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     final settingsRepo = context.watch<SettingsRepository>();
     final audioService = context.watch<AudioService>();
     final progressRepo = context.read<ProgressRepository>();
@@ -78,6 +107,42 @@ class SettingsScreen extends StatelessWidget {
               title: 'Accessibility & Display',
               icon: Icons.accessibility_new_rounded,
               children: [
+                SwitchListTile(
+                  title: Text(
+                    'Show Subtitles',
+                    style: GoogleFonts.fredoka(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textDark,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Show spoken learning prompts on screen',
+                    style: GoogleFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
+                  ),
+                  value: settingsRepo.showSubtitles,
+                  activeThumbColor: AppColors.primary,
+                  onChanged: (_) => settingsRepo.toggleSubtitles(),
+                ),
+                const Divider(),
+                SwitchListTile(
+                  title: Text(
+                    'Reduced Motion',
+                    style: GoogleFonts.fredoka(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textDark,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Use simpler animations and camera movement',
+                    style: GoogleFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
+                  ),
+                  value: settingsRepo.reducedAnimations,
+                  activeThumbColor: AppColors.primary,
+                  onChanged: (_) => settingsRepo.toggleReducedAnimations(),
+                ),
+                const Divider(),
                 SwitchListTile(
                   title: Text(
                     'High Contrast Mode',

@@ -55,6 +55,11 @@ class StorageService {
     return _prefs.setString(_activeProfileKey, id);
   }
 
+  /// Clear the active profile selection when no profile remains active.
+  Future<bool> clearActiveProfileId() {
+    return _prefs.remove(_activeProfileKey);
+  }
+
   // --- Progress ---
 
   /// Get letter progress data for a specific profile.
@@ -93,6 +98,12 @@ class StorageService {
   /// Set total stars for a profile.
   Future<bool> setTotalStars(String profileId, int stars) {
     return _prefs.setInt('$_totalStarsKeyPrefix$profileId', stars);
+  }
+
+  /// Remove all learning data belonging to a deleted profile.
+  Future<void> deleteProfileData(String profileId) async {
+    await _prefs.remove('$_progressKeyPrefix$profileId');
+    await _prefs.remove('$_totalStarsKeyPrefix$profileId');
   }
 
   // --- Settings ---

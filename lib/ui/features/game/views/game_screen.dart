@@ -15,6 +15,7 @@ import 'package:alphabet_adventure/ui/features/game/views/object_hunt_view.dart'
 import 'package:alphabet_adventure/ui/features/game/views/review_challenge_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/sound_match_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/word_builder_view.dart';
+import 'package:alphabet_adventure/ui/features/game/views/word_match_view.dart';
 
 /// Main game viewport shell hosting the 5 lesson phases with top HUD and feedback overlays.
 class GameScreen extends StatelessWidget {
@@ -157,7 +158,7 @@ class GameScreen extends StatelessWidget {
           // Phase Progress Step Dots (5 steps)
           Row(
             mainAxisSize: MainAxisSize.min,
-            children: List.generate(4, (index) {
+            children: List.generate(LessonPhase.values.length, (index) {
               final isPassed = index < currentPhaseIndex;
               final isCurrent = index == currentPhaseIndex;
 
@@ -203,6 +204,11 @@ class GameScreen extends StatelessWidget {
         if (controller.currentQuestion is WordBuilderQuestion) {
           return WordBuilderView(
             question: controller.currentQuestion as WordBuilderQuestion,
+            controller: controller,
+          );
+        } else if (controller.currentQuestion is WordMatchQuestion) {
+          return WordMatchView(
+            question: controller.currentQuestion as WordMatchQuestion,
             controller: controller,
           );
         } else if (controller.currentQuestion is SoundMatchQuestion) {

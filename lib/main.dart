@@ -25,6 +25,7 @@ void main() async {
 
   // Initialize services
   final audioService = AudioService();
+  await audioService.init();
   final analyticsService = AnalyticsService();
 
   // Initialize repositories

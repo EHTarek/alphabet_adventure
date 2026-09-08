@@ -1,275 +1,359 @@
-# Product Requirements Specification (PRS)
+# Product Requirements Specification
 
 ## Alphabet Adventure 3D
 
-**Product Type:** Educational 3D Mobile Game  
-**Target Audience:** Children aged 4–8  
-**Primary Platforms:** Android and iOS  
-**Secondary Platform:** Web  
-**Frontend:** Flutter / Dart  
-**3D Engine:** `flutter_scene`  
-**Document Status:** Initial Product Specification  
-**MVP Content:** English alphabet A–Z and beginner vocabulary
+**Document status:** Product baseline for MVP implementation
+**Version:** 1.0
+**Last updated:** 2026-09-08
+**Product type:** Offline-first educational exploration game
+**Primary platforms:** Android and iOS
+**Secondary platform:** Web, subject to 3D rendering and audio validation
+**Target learner:** Children ages 4-8
+**Primary language:** English
+**Framework:** Flutter and Dart
+**3D strategy:** A Flutter-compatible scene renderer, validated during Phase 1
 
 ---
 
-# 1. Product Overview
+## 1. Executive Summary
 
-Alphabet Adventure 3D is an interactive educational game in which children learn letters, letter sounds, and simple words by exploring colorful 3D environments.
+Alphabet Adventure 3D teaches early literacy through short, playful exploration sessions. A child meets a letter, hears its name and sound, explores a themed world, interacts with vocabulary objects, completes small challenges, and receives immediate positive reinforcement.
 
-Instead of presenting alphabet lessons as flashcards or conventional quizzes, the application turns learning into exploration.
+The product must feel like an adventure game with learning embedded in the interaction. It must never feel like a test the child can fail. Audio, animation, and touch are the primary communication channels; text supports those channels but does not replace them.
 
-For example, when learning the letter **A**, the child may enter a small 3D environment containing an Apple, Ant, Airplane, Ball, and Cat.
+The MVP delivers:
 
-The narrator says:
+- All 26 English letters in uppercase and lowercase.
+- At least three vocabulary words for every letter.
+- Four reusable challenge mechanics plus review.
+- Six reusable visual world themes.
+- One friendly mascot, Pip the Parrot.
+- Local child profiles, progress, settings, rewards, and lesson history.
+- A parent area with a privacy-preserving progress summary.
 
-“Can you find something that starts with A?”
-
-The child taps the Apple.
-
-The Apple animates, the letter **A** appears in 3D, and the narrator says:
-
-“A! Apple! Apple starts with A.”
-
-The child earns a star and continues exploring.
-
-The experience should combine:
-
-Learning → Exploration → Interaction → Reward → Progression.
+The first production-quality vertical slice is A, B, and C. No full-alphabet content production should be required before the vertical slice validates the interaction model, audio pipeline, rendering approach, performance, and child usability.
 
 ---
 
-# 2. Product Vision
+## 2. Product Vision and Principles
 
-Create an educational game where children feel that they are playing an adventure game while naturally developing alphabet recognition, phonics awareness, vocabulary, spelling, and word-object association.
+### 2.1 Vision
 
-The product should prioritize simplicity, positive reinforcement, short learning sessions, and highly visual interactions.
+Create a warm, low-pressure learning world where children build letter recognition, phonics awareness, vocabulary, and early spelling skills by seeing, hearing, and touching meaningful objects.
 
-The game should be usable by children who cannot yet read menus independently.
+### 2.2 Product principles
+
+1. **See it, hear it, interact with it.** Every learning target should be represented visually, spoken clearly, and connected to an action.
+2. **One primary task at a time.** The child should always understand what to do next without reading a menu.
+3. **Encouragement over correction.** Incorrect answers invite another attempt and never remove earned progress.
+4. **Short sessions, durable learning.** Lessons should fit a 3-8 minute session and revisit weak content over time.
+5. **Content drives behavior.** Letters, words, prompts, audio, assets, and challenge sequences belong in data definitions rather than screen-specific code.
+6. **Parents see useful progress without exposing child data.** Reporting should be concise, local-first, and designed for a trusted adult.
+7. **Performance is part of the learning experience.** A delayed tap, missing audio clip, or unstable scene breaks the lesson and must be treated as a product defect.
+
+### 2.3 Non-goals for MVP
+
+The MVP does not include reading comprehension, sentence construction, handwriting grading, speech recognition, multiplayer, public profiles, chat, targeted advertising, in-app purchases, cloud synchronization, teacher dashboards, or generative AI tutoring.
 
 ---
 
-# 3. Product Goals
+## 3. Users and Jobs To Be Done
 
-| Goal | Description |
+### 3.1 Child learner
+
+**Profile:** A child ages 4-8 who may not read independently and may use the app for a few minutes at a time.
+
+**Needs:**
+
+- Understand what to do through voice, imagery, and motion.
+- Touch large, forgiving targets.
+- Hear a letter, sound, and word repeatedly without friction.
+- Receive positive feedback after every meaningful attempt.
+- Resume without losing progress.
+
+**Job:** "Help me discover letters and words by playing, and show me what I learned."
+
+### 3.2 Parent, guardian, or teacher
+
+**Profile:** An adult supporting a child's early literacy practice.
+
+**Needs:**
+
+- See which letters and words are developing or mastered.
+- Understand accuracy, practice time, and recent activity.
+- Control audio, subtitles, animation, and data settings.
+- Access adult-only settings behind a parental gate.
+
+**Job:** "Help me understand whether practice is useful and adjust the experience when needed."
+
+### 3.3 Product and content team
+
+**Needs:**
+
+- Add or revise content without changing gameplay code.
+- Validate pronunciation and age suitability.
+- Reuse world themes and interaction patterns.
+- Measure learning friction without collecting unnecessary personal data.
+
+---
+
+## 4. MVP Scope and Success Definition
+
+### 4.1 In scope
+
+| Area | MVP commitment |
 |---|---|
-| Alphabet Recognition | Teach uppercase and lowercase A–Z |
-| Phonics | Teach the basic sound associated with each letter |
-| Vocabulary | Associate letters with familiar objects and words |
-| Word Recognition | Introduce simple written words |
-| Early Spelling | Allow children to construct simple words |
-| Engagement | Make learning feel like exploration rather than testing |
-| Retention | Reinforce previously learned letters through repetition |
-| Independence | Allow young children to navigate with minimal adult assistance |
+| Alphabet | A-Z, uppercase and lowercase recognition |
+| Phonics | One age-appropriate primary sound per letter, with approved audio |
+| Vocabulary | Minimum three words per letter; 78 minimum total |
+| Lesson modes | Letter Hunt, Object Hunt, Sound Match, Word Builder, Review |
+| Worlds | Six reusable themes with data-driven object placement |
+| Mascot | Pip the Parrot: instruction, encouragement, transitions |
+| Progress | Per-profile letter and word mastery, stars, history, unlock state |
+| Storage | Offline local persistence; resume after app restart |
+| Audio | Letter names, phonics, words, prompts, mascot, effects, music |
+| Parent area | Progress summary and settings, protected by a simple adult gate |
+| Platforms | Android and iOS first; Web only after renderer validation |
+
+### 4.2 MVP success criteria
+
+A child can open the app, select or create a profile, complete a letter lesson, hear all required learning audio, interact with objects, earn stars, exit, reopen the app, and see preserved progress without network access.
+
+### 4.3 Product success metrics
+
+| Metric | Initial target | Measurement |
+|---|---:|---|
+| First-session lesson completion | >= 75% | Local session events and usability testing |
+| Average lesson duration | 3-8 minutes | Session timer, excluding idle time where possible |
+| Audio replay discoverability | >= 80% of test parents/children can replay | Moderated usability test |
+| Correct response rate | Improving across repeat attempts | Letter and word mastery records |
+| Progress persistence | 100% in acceptance testing | Restart and interruption test matrix |
+| Crash-free sessions | >= 99.5% release target | Platform diagnostics, if enabled |
+| Supported-device frame rate | >= 30 FPS, target 60 FPS | Profiled vertical slice |
+
+Engagement alone is not a success metric. Repeated use without improvement in recognition or sound association requires product investigation.
 
 ---
 
-# 4. Non-Goals for MVP
+## 5. Experience Architecture
 
-The first release will not attempt to teach complete reading comprehension, sentences, advanced grammar, handwriting grading, multiplayer gameplay, open-ended chat, user-generated content, or advanced AI tutoring.
+### 5.1 Primary loop
 
-Those may be considered in future versions.
+```text
+Open app
+  -> Select child profile
+  -> Choose an available lesson
+  -> Meet the letter
+  -> Hear the challenge
+  -> Explore and tap an object or letter
+  -> Receive immediate feedback
+  -> Complete mixed practice
+  -> Earn stars and update mastery
+  -> Return to the world map or resume later
+```
 
----
+### 5.2 Standard lesson sequence
 
-# 5. Target Users
+The current implementation models this sequence as `introduction`, `objectHunt`, `miniGame`, `review`, and `celebration`.
 
-## Primary User
-
-A child approximately 4–8 years old who is beginning to learn:
-
-Alphabet letters  
-Letter sounds  
-Basic vocabulary  
-Simple spelling
-
-## Secondary User
-
-Parent, guardian, or teacher who wants to monitor the child's learning progress.
-
-The child-facing interface should therefore remain extremely simple while adult-oriented settings and progress information can contain more conventional UI.
-
----
-
-# 6. Core Game Concept
-
-The player travels through a colorful 3D learning world with a friendly animated mascot.
-
-The world contains interactive objects representing letters and vocabulary.
-
-A lesson revolves around one letter or a small group of letters.
-
-Example:
-
-**Letter:** B
-
-3D objects could include:
-
-Ball  
-Banana  
-Bear  
-Book  
-Apple  
-Cat
-
-The player hears:
-
-“Find something that begins with B.”
-
-Selecting the Bear produces:
-
-Bear animation  
-Success sound  
-Letter B animation  
-Spoken pronunciation  
-Written word “BEAR”  
-Reward star
-
-Selecting the Cat produces a gentle response such as:
-
-“That is a Cat. Cat starts with C. Try again!”
-
-Incorrect selections should never use aggressive sounds, red failure screens, or punishment.
-
----
-
-# 7. Core Gameplay Loop
-
-The primary gameplay loop is:
-
-**Choose Lesson → Enter 3D World → Hear Challenge → Explore → Select Object → Receive Feedback → Earn Reward → Complete Challenges → Unlock Next Lesson**
-
-A typical session should last approximately 3–8 minutes.
-
-Children should be able to leave at any point without losing completed progress.
-
----
-
-# 8. Learning Progression
-
-The learning journey should progress through four stages.
-
-| Stage | Learning Objective | Example |
+| Phase | Learner experience | Exit condition |
 |---|---|---|
-| 1 | Recognize letter | “Find A” |
-| 2 | Associate sound | “Which object starts with /A/?” |
-| 3 | Associate word | A → Apple |
-| 4 | Build word | A + P + P + L + E |
+| Introduction | Large letter, name, sound, and first word are presented | Child taps Continue or the guided prompt completes |
+| Object Hunt | Child finds one or more objects beginning with the target letter | Required object interactions complete |
+| Mini-game | Sound Match, Word Match, or Word Builder reinforces the target | Required challenge is solved or retried |
+| Review | A short mixed recall question revisits the letter and word | Review attempt is submitted |
+| Celebration | Stars, mascot response, and learned-content summary appear | Child chooses Continue or exits |
 
-Difficulty should increase gradually.
+The child may pause or leave at any time. Completed challenge results are saved at the next safe checkpoint; an unfinished challenge may be replayed.
 
-Early levels should present large differences between answers.
+### 5.3 Feedback rules
 
-Later levels may include similar sounds or visually similar letters.
+**Correct answer:** Animate the selected item, play success audio, speak the relevant letter or word, show a clear visual confirmation, and award the configured reward.
 
----
+**Incorrect answer:** Keep the child in the current challenge, use a gentle phrase such as "Let's try again," provide optional visual or audio help, and never subtract stars, lock progress, or show a failure screen.
 
-# 9. Game Modes
-
-## 9.1 Letter Hunt
-
-Primary exploration mode.
-
-The child enters a 3D scene containing several objects.
-
-Example challenge:
-
-“Find the letter B.”
-
-The player locates and taps a floating or hidden 3D letter.
-
-### Success
-
-Letter animates  
-Mascot celebrates  
-Letter sound plays  
-Star is awarded
+**Repeated difficulty:** Increase support before increasing pressure. A hint may spotlight the relevant object, replay the prompt, or narrow the available choices. Hints do not invalidate progress.
 
 ---
 
-## 9.2 Object Hunt
+## 6. Screen and Navigation Requirements
 
-The narrator asks:
+### 6.1 Splash and loading
 
-“Find something that starts with C.”
+- Show the product mark and Pip while bootstrapping local services.
+- Provide visible progress for asset or content initialization when it takes longer than a moment.
+- Never block indefinitely on optional network or analytics work.
+- Route to the active profile, profile selection, or world map according to local state.
 
-The player explores objects such as:
+### 6.2 Child profile screen
 
-Cat  
-Car  
-Cup  
-Dog  
-Apple
+- Create or select a child profile using a nickname and avatar.
+- Use large avatar tiles and audio or icon cues for selection.
+- Do not require an email address, real name, date of birth, or other unnecessary personal information.
+- Keep profile management and deletion in the parent area.
 
-Correct objects trigger their associated word lesson.
+### 6.3 World map
 
-This mode reinforces phonics and object association.
+- Present available letters as a clear path through reusable worlds.
+- Show unlocked, in-progress, completed, and mastered states without relying on color alone.
+- Allow the child to resume the recommended next lesson with one obvious primary action.
+- Let the child replay completed lessons.
+- Lock future lessons gently and explain availability through audio or mascot guidance.
 
----
+### 6.4 Game screen
 
-## 9.3 Sound Match
+- Keep the 3D or scene viewport visually dominant.
+- Display one short spoken or visual challenge at a time.
+- Provide persistent audio replay and pause controls with recognizable icons and accessible labels.
+- Display stars and progress without turning the screen into a dashboard.
+- Use large touch targets and forgiving hit areas around learning objects.
+- Keep the camera guided or limited; free camera movement is out of scope for MVP.
 
-An audio prompt plays:
+### 6.5 Lesson complete
 
-“Buh.”
+- Show stars earned, letter(s) practiced, and words encountered.
+- Celebrate without timed pressure or forced navigation.
+- Provide Continue, Replay, and Return to Map actions appropriate to the child flow.
+- Save completion and mastery before navigating away.
 
-Several 3D letters appear.
+### 6.6 Parent area and settings
 
-The child selects:
+- Require a simple adult gate before entering adult-only content.
+- Show per-letter status, recent practice, accuracy trend, and time practiced.
+- Provide settings for narration, music, effects, subtitles, reduced motion, and reset/delete profile.
+- Explain privacy and data behavior in parent-readable language.
+- Avoid exposing child-facing ads, external links, purchases, or social features.
 
-B
+### 6.7 Navigation contract
 
-Correct selection triggers an animation and spoken reinforcement.
-
----
-
-## 9.4 Word Builder
-
-Letters appear as physical 3D blocks.
-
-For example:
-
-C  
-A  
-T
-
-The target picture is a Cat.
-
-The player places the blocks in order:
-
-**C → A → T**
-
-When completed, the blocks animate together and reveal the 3D Cat.
-
-Narration:
-
-“C-A-T. Cat!”
-
-For accessibility, players must also be able to tap letters in order rather than relying exclusively on drag-and-drop.
+The current application routes are `/`, `/profile`, `/world_map`, `/game`, `/lesson_complete`, `/parent`, and `/settings`. Any new route must define its entry state, back behavior, persistence boundary, and child-versus-parent access requirement.
 
 ---
 
-## 9.5 Review Challenge
+## 7. Learning Design and Game Modes
 
-Previously learned letters and words appear in short mixed exercises.
+### 7.1 Letter Hunt
 
-The system should prioritize content the child has struggled with.
+The child hears "Find the letter B" and selects the matching uppercase or lowercase letter in the scene. Distractors should be visually distinct at first and become more challenging only after demonstrated progress.
 
-Example:
+### 7.2 Object Hunt
 
-If B has been answered incorrectly several times, B-related questions should appear more frequently during review sessions.
+The child hears "Find something that starts with B" and selects a valid object such as a Bear, Ball, or Banana. The selected object responds with animation and spoken reinforcement.
+
+### 7.3 Sound Match
+
+The app plays the target phoneme, such as /b/, and presents a small set of letter choices. The prompt must not depend on written phonetic notation for the child.
+
+### 7.4 Word Match
+
+The child matches a spoken or shown vocabulary word to its object or initial letter. The word should be spoken before any text is expected.
+
+### 7.5 Word Builder
+
+The child builds a short word from letter tiles, either by tapping tiles in order or by dragging them. Tapping is mandatory for accessibility; drag-and-drop is an enhancement. MVP words should generally be three to five letters and have clear pronunciation.
+
+### 7.6 Review Challenge
+
+Review uses previously introduced letters and words, weighted toward content with lower accuracy or longer time since practice. A review must remain short, understandable, and encouraging.
+
+### 7.7 Adaptive support
+
+The MVP uses explainable rules rather than machine learning:
+
+```text
+reviewPriority = incorrectAnswers
+               + daysSinceLastPractice
+               - (masteryLevel * masteryWeight)
+```
+
+The exact weight is configurable and must be covered by deterministic tests. Adaptive selection must not permanently hide content or create an unbounded repetition loop.
 
 ---
 
-# 10. 3D World Design
+## 8. Content Specification
 
-The game should use `flutter_scene` to render interactive 3D environments and objects.
+### 8.1 Letter content
 
-The MVP should avoid building 26 completely unique environments because of the resulting art and download-size requirements.
+Each letter record must include:
 
-Instead, the product should contain several reusable themed worlds.
+- Stable letter ID and uppercase display form.
+- Lowercase display form.
+- Letter-name audio asset.
+- Primary phonics sound and audio asset.
+- Three or more approved vocabulary references.
+- Introduction prompt and mascot prompts.
+- Recommended difficulty and world theme.
 
-| World | Example Letters/Objects |
+### 8.2 Vocabulary content
+
+Each word record must include:
+
+```text
+word_id
+display_name
+normalized_word
+starting_letter
+model_or_image_asset
+thumbnail_asset
+pronunciation_audio
+available_animations
+category
+difficulty
+content_status
+```
+
+The current data layer uses `LetterData`, `WordData`, and data-driven `LessonData`. These remain the source of truth for lesson generation; UI widgets must not duplicate vocabulary facts.
+
+### 8.3 Initial vocabulary
+
+The content team must approve the final list for age suitability, cultural clarity, pronunciation, recognizability, and asset feasibility. The following is a starting set, not a locked editorial list:
+
+| Letter | Suggested words |
+|---|---|
+| A | Apple, Ant, Airplane |
+| B | Ball, Bear, Banana |
+| C | Cat, Car, Cup |
+| D | Dog, Duck, Drum |
+| E | Egg, Elephant, Engine |
+| F | Fish, Frog, Flower |
+| G | Goat, Gift, Grape |
+| H | Hat, Hen, Horse |
+| I | Ice, Igloo, Insect |
+| J | Juice, Jet, Jacket |
+| K | Kite, Key, Kangaroo |
+| L | Lion, Leaf, Lamp |
+| M | Moon, Monkey, Milk |
+| N | Nest, Nose, Nurse |
+| O | Octopus, Orange, Owl |
+| P | Penguin, Pizza, Pig |
+| Q | Queen, Quilt, Quail |
+| R | Rabbit, Rocket, Rainbow |
+| S | Sun, Star, Shoe |
+| T | Tiger, Tree, Train |
+| U | Umbrella, Unicorn, Up |
+| V | Van, Violin, Volcano |
+| W | Whale, Wheel, Watermelon |
+| X | Xylophone, X-ray, Fox |
+| Y | Yo-yo, Yacht, Yellow |
+| Z | Zebra, Zoo, Zipper |
+
+X requires special content review because common beginner words do not always begin with the /x/ sound. The lesson must clearly distinguish initial-letter matching from end-sound examples such as Fox.
+
+### 8.4 Prompt and audio standards
+
+- Prompts use simple, concrete language and one action verb.
+- Professional recordings are preferred for letter names, phonics, and vocabulary.
+- Audio filenames and IDs are stable and validated before release.
+- Every required narration has a visual fallback or subtitle when subtitles are enabled.
+- Background music ducks while narration or important feedback is playing.
+
+---
+
+## 9. World, Mascot, and Asset Requirements
+
+### 9.1 Reusable world themes
+
+| Theme | Example content |
 |---|---|
 | Forest | Bear, Bird, Fox, Tree |
 | Farm | Cow, Duck, Goat, Hen |
@@ -278,854 +362,406 @@ Instead, the product should contain several reusable themed worlds.
 | Ocean | Fish, Octopus, Whale |
 | Space | Moon, Rocket, Star |
 
-Objects can be dynamically loaded according to the current lesson.
+Worlds are visual contexts, not separate gameplay systems. Object placement, challenge metadata, camera framing, and animation references are data-driven.
+
+### 9.2 Pip the Parrot
+
+Pip is the single primary guide for MVP. Pip must:
+
+- Give concise instructions.
+- Celebrate correct attempts without overstimulation.
+- Offer a hint or replay when the child is stuck.
+- Introduce transitions and lesson completion.
+- Work with audio off through expressive visual animation and subtitles.
+
+### 9.3 Asset pipeline
+
+- Preferred 3D interchange format is glTF/GLB where supported by the selected renderer.
+- Every interactive asset maps to an educational content ID; model filenames are not the game logic.
+- Models must be tested for mobile texture memory, polygon count, material count, draw calls, animation cost, and loading time.
+- Asset loading is asynchronous and must show a useful loading state.
+- Shared assets should be cached or reused; unnecessary duplicate downloads are out of scope.
+- If a renderer cannot meet the vertical-slice requirements, the product must support a 2.5D or image-based fallback without changing learning rules.
+
+### 9.4 3D integration gate
+
+`flutter_scene` is the preferred candidate from the product concept, but it is not currently declared in the project dependencies. Phase 1 must verify package maintenance, Flutter/Dart compatibility, Android/iOS support, touch hit testing, animation support, asset loading, and Web feasibility before it becomes a committed dependency. The learning domain must remain renderer-independent.
 
 ---
 
-# 11. 3D Interaction Requirements
+## 10. Functional Requirements
 
-### FR-3D-01
-
-The system shall load glTF/GLB-based 3D learning assets.
-
-### FR-3D-02
-
-The player shall be able to select interactive objects by tapping them.
-
-### FR-3D-03
-
-Interactive objects shall visually react when selected.
-
-Examples include:
-
-Bounce  
-Rotate  
-Glow/highlight  
-Character animation
-
-### FR-3D-04
-
-Characters and selected objects shall support skeletal or predefined animations where required.
-
-### FR-3D-05
-
-The camera shall use controlled movement suitable for young children.
-
-MVP should favor guided or limited camera navigation instead of complex free-camera controls.
-
-### FR-3D-06
-
-Interactive objects shall contain game metadata linking the model to educational content.
-
-Example logical structure:
-
-`apple_3d → letter:A → word:APPLE → audio:apple → animation:bounce`
-
-### FR-3D-07
-
-Scene assets should be asynchronously loaded and cached where practical.
-
-### FR-3D-08
-
-Educational game logic must remain separate from Flutter Scene rendering code.
-
-This allows the 3D implementation to evolve without rewriting the learning system.
+| ID | Requirement | Priority | Acceptance signal |
+|---|---|---:|---|
+| FR-001 | Create and select a local child profile | Must | Profile survives restart |
+| FR-002 | Present all A-Z lessons | Must | 26 deterministic lesson definitions load |
+| FR-003 | Support uppercase and lowercase letter representations | Must | Matching and display tests pass |
+| FR-004 | Present letter-name and phonics audio | Must | Audio assets resolve and play/replay |
+| FR-005 | Present at least three words per letter | Must | Content validation reports >=78 words |
+| FR-006 | Render an interactive lesson scene | Must | Vertical slice loads on target devices |
+| FR-007 | Select letters and objects with touch | Must | Hit testing works with forgiving target bounds |
+| FR-008 | Provide positive correct-answer feedback | Must | Animation, audio or visual confirmation, reward |
+| FR-009 | Provide supportive incorrect-answer feedback | Must | Retry remains available and progress is not removed |
+| FR-010 | Support Letter Hunt, Object Hunt, Sound Match, Word Builder, and Review | Must | Each mode has a completed test flow |
+| FR-011 | Support tap-based word building | Must | A child can complete every MVP word without dragging |
+| FR-012 | Save progress locally | Must | Progress survives force quit and restart |
+| FR-013 | Track per-letter and per-word performance | Must | Accuracy and attempt counts update correctly |
+| FR-014 | Award and persist stars and rewards | Must | Duplicate completion cannot corrupt totals |
+| FR-015 | Replay important instructions | Must | Replay control works during each relevant phase |
+| FR-016 | Pause and resume a lesson | Must | Audio and timers restore safely |
+| FR-017 | Offer parent progress and settings | Should | Adult gate and summary work offline |
+| FR-018 | Adapt review selection to weak content | Should | Priority algorithm is deterministic and tested |
+| FR-019 | Provide subtitles and reduced-motion settings | Should | Settings affect all supported surfaces |
+| FR-020 | Synchronize across devices | Future | Explicitly excluded from MVP |
 
 ---
 
-# 12. Mascot
+## 11. Technical Architecture
 
-The game should include one primary animated mascot.
+### 11.1 Layer boundaries
 
-Example concept:
+```text
+Flutter application
+  Presentation: screens, HUD, controls, accessibility
+  Application: view models, routing, session coordination
+  Domain: lesson controller, question engine, mastery, rewards
+  Data: content definitions, repositories, local persistence
+  Services: audio, analytics, asset loading, platform adapters
+  Renderer adapter: scene, camera, hit testing, model animation
+```
 
-**Pip the Parrot**
+The domain layer must not import renderer-specific types. A scene object exposes an educational identifier such as `apple`; the lesson controller decides whether it is correct for the current question.
 
-The mascot provides instructions, encouragement, reactions, and lesson transitions.
+### 11.2 Current project alignment
 
-Example phrases:
+The existing project uses:
 
-“Awesome!”
+- Provider for dependency injection and observable state.
+- GoRouter for application navigation.
+- `ContentRepository` for lesson content.
+- `ProgressRepository` and `shared_preferences` for local progress.
+- `SettingsRepository` for user preferences.
+- `AudioService` and `audioplayers` for playback.
+- `AnalyticsService` for privacy-reviewed product events.
+- `LessonController`, `QuestionEngine`, `MasteryEngine`, and `RewardEngine` for lesson behavior.
 
-“You found B!”
+New code should extend these ownership boundaries rather than creating competing global state or screen-local lesson rules.
 
-“B says buh!”
+### 11.3 Session state
 
-“Can you find another one?”
+At minimum, a lesson session tracks:
 
-“Great job! You earned a star!”
+```text
+profile_id
+lesson_id
+target_letter
+current_phase
+current_challenge_id
+attempt_count
+correct_count
+hint_count
+started_at
+last_saved_at
+earned_stars
+completion_state
+```
 
-The mascot should reduce the need for young users to read instructional text.
+The state machine must reject duplicate submissions while feedback is processing and must be safe if the app is backgrounded during audio or animation.
 
----
+### 11.4 Persistence
 
-# 13. Letter Lesson Flow
+Local storage includes:
 
-A standard letter lesson should follow this structure:
+- Child profiles and selected profile.
+- Letter progress and mastery level.
+- Word progress and attempt statistics.
+- Stars, unlocks, and earned rewards.
+- Lesson history and last-resume information.
+- Audio, subtitle, music, effects, and reduced-motion settings.
 
-| Step | Experience |
-|---|---|
-| Introduction | Large animated letter appears |
-| Pronunciation | Narrator says letter name |
-| Phonics | Narrator demonstrates letter sound |
-| Word Example | 3D object appears |
-| Exploration | Player finds matching objects |
-| Mini-game | Letter/sound matching |
-| Word Activity | Simple word association |
-| Celebration | Stars/reward animation |
-| Review | Quick final question |
+Writes should be atomic at the repository boundary. Corrupt or missing records must fall back to safe defaults without preventing the app from opening.
 
-Example:
+### 11.5 Renderer adapter
 
-**A**
+The renderer adapter owns scene creation, camera framing, asset loading, object registration, hit testing, and visual animation. It does not own question generation, correctness, mastery, rewards, or persistence.
 
-“A.”
+Required adapter capabilities:
 
-“A makes the /a/ sound.”
-
-“Apple starts with A.”
-
-The Apple appears and performs an animation.
-
----
-
-# 14. Alphabet Content
-
-MVP shall support all 26 English letters.
-
-Each letter should have a minimum of approximately three age-appropriate vocabulary examples.
-
-This produces at least:
-
-**26 letters × 3 words = 78 vocabulary items**
-
-Example content:
-
-| Letter | Sample Words |
-|---|---|
-| A | Apple, Ant, Airplane |
-| B | Ball, Bear, Banana |
-| C | Cat, Car, Cup |
-| D | Dog, Duck, Drum |
-| E | Egg, Elephant, Engine |
-| F | Fish, Frog, Flower |
-
-The final vocabulary set should be reviewed for pronunciation clarity, age suitability, cultural suitability, and availability of recognizable 3D representations.
-
----
-
-# 15. Uppercase and Lowercase
-
-Both uppercase and lowercase letters shall be taught.
-
-Examples:
-
-A / a  
-B / b  
-C / c
-
-Early lessons may emphasize uppercase letters.
-
-Lowercase matching can appear after basic letter recognition has been established.
-
-Example activity:
-
-“Match the letters.”
-
-A → a
-
-B → b
+- Load and unload a lesson scene asynchronously.
+- Register interactive IDs and hit regions.
+- Highlight or animate a selected object.
+- Apply guided camera changes.
+- Report renderer and asset errors to the application layer.
+- Expose a non-3D fallback for tests and unsupported platforms where practical.
 
 ---
 
-# 16. Rewards System
+## 12. Mastery, Rewards, and Unlocks
 
-Children should receive immediate positive feedback.
+### 12.1 Mastery levels
 
-Primary reward:
-
-**Stars**
-
-Secondary rewards may include:
-
-Sticker collection  
-Mascot accessories  
-3D toys  
-Character animations  
-World decorations
-
-The reward system should motivate continued learning without creating aggressive retention mechanics.
-
-There should be no loot boxes, gambling-style mechanics, or loss of earned educational progress.
-
----
-
-# 17. Progression
-
-Each letter receives a mastery score.
-
-Suggested internal states:
-
-| Mastery | Meaning |
-|---|---|
+| Level | Meaning |
+|---:|---|
 | 0 | Not started |
 | 1 | Introduced |
 | 2 | Developing |
 | 3 | Learned |
 | 4 | Mastered |
 
-Mastery should be calculated from multiple signals rather than a single correct answer.
+Mastery is calculated from repeated performance, not a single answer. Signals include correct letter recognition, sound matching, object association, word building, hint usage, and review performance.
 
-Possible signals include accuracy, repeated success, sound recognition, object recognition, word matching, and review performance.
+### 12.2 MVP mastery rule
 
----
-
-# 18. Adaptive Learning
-
-The system should maintain performance statistics for each letter and word.
-
-Example:
-
-If the child consistently recognizes A but struggles with G, future review sessions should contain more G exercises.
-
-A simple MVP algorithm can use:
-
-`priority = incorrect_answers + time_since_review - mastery_bonus`
-
-A sophisticated machine-learning recommendation engine is not required for MVP.
-
----
-
-# 19. Main Screens
-
-## Splash Screen
-
-Logo  
-Mascot animation  
-Loading indicator
-
-## Child Profile Screen
-
-Avatar selection  
-Profile name or nickname  
-Continue button
-
-## Learning World
-
-3D world / level map  
-Available lessons  
-Completed lessons  
-Locked lessons
-
-## Game Screen
-
-3D viewport  
-Current challenge  
-Audio replay button  
-Pause button  
-Star counter
-
-## Lesson Complete
-
-Stars earned  
-Letters learned  
-Words learned  
-Celebration animation  
-Continue button
-
-## Parent Area
-
-Progress overview  
-Letters learned  
-Words learned  
-Accuracy  
-Learning time  
-Audio/settings controls
-
-Parent-oriented areas should use an appropriate parental gate before accessing external links, purchases, account settings, or similar adult actions.
-
----
-
-# 20. Child UX Requirements
-
-Interfaces must use large touch targets.
-
-Instructions should be spoken whenever possible.
-
-Important actions should combine icons, animation, and audio rather than depending entirely on written labels.
-
-The child should normally see no more than one primary task at a time.
-
-Navigation should avoid complex nested menus.
-
-Incorrect answers must use encouraging feedback.
-
-Important audio instructions must include an easy-to-find replay button.
-
----
-
-# 21. Audio Requirements
-
-Audio is a central part of the learning experience.
-
-The application requires:
-
-Letter-name pronunciation  
-Phonics sounds  
-Word pronunciation  
-Mascot dialogue  
-Success effects  
-Incorrect-answer feedback  
-Background music  
-Environmental audio
-
-Educational pronunciation should preferably use professionally recorded audio rather than device text-to-speech so pronunciation remains consistent across platforms.
-
-Background music should automatically reduce in volume while educational narration is playing.
-
----
-
-# 22. Accessibility
-
-The game should support users with different interaction and learning needs.
-
-Requirements include:
-
-Large touch areas  
-High visual contrast  
-Audio replay  
-Visual feedback accompanying audio  
-Optional subtitles  
-Ability to disable background music  
-Separate voice/effects/music volume settings  
-Reduced-animation option where practical  
-Tap-based alternative to required drag interactions
-
-Color must never be the only mechanism used to communicate correct and incorrect answers.
-
----
-
-# 23. Functional Requirements
-
-| ID | Requirement | Priority |
-|---|---|---|
-| FR-001 | User can create/select a child profile | Must |
-| FR-002 | User can access alphabet lessons A–Z | Must |
-| FR-003 | Game renders interactive 3D scenes | Must |
-| FR-004 | User can tap/select 3D learning objects | Must |
-| FR-005 | Game plays letter pronunciation | Must |
-| FR-006 | Game plays phonics audio | Must |
-| FR-007 | Game plays vocabulary pronunciation | Must |
-| FR-008 | Correct answers provide visual/audio feedback | Must |
-| FR-009 | Incorrect answers provide supportive feedback | Must |
-| FR-010 | Game saves lesson progress locally | Must |
-| FR-011 | Game records mastery per letter | Must |
-| FR-012 | User can replay instructions | Must |
-| FR-013 | Game supports uppercase/lowercase matching | Must |
-| FR-014 | Word-building activities are supported | Must |
-| FR-015 | Player receives stars/rewards | Must |
-| FR-016 | Parent can view learning progress | Should |
-| FR-017 | Game adapts reviews to weak letters | Should |
-| FR-018 | Progress can synchronize across devices | Could |
-| FR-019 | Multiple languages can be installed | Future |
-| FR-020 | Teacher dashboard | Future |
-
----
-
-# 24. Technical Architecture
-
-Suggested high-level architecture:
+The exact thresholds are configurable, but the default must be explainable and deterministic. A suggested approach is:
 
 ```text
-Flutter Application
-        │
-        ├── Presentation Layer
-        │      ├── Menus
-        │      ├── Lesson UI
-        │      ├── Parent Dashboard
-        │      └── Game HUD
-        │
-        ├── Game / Learning Layer
-        │      ├── LessonController
-        │      ├── GameController
-        │      ├── QuestionEngine
-        │      ├── RewardEngine
-        │      └── MasteryEngine
-        │
-        ├── 3D Scene Layer
-        │      ├── SceneManager
-        │      ├── CameraController
-        │      ├── ObjectInteractionController
-        │      ├── AnimationController
-        │      └── AssetManager
-        │
-        ├── Services
-        │      ├── AudioService
-        │      ├── ProgressService
-        │      ├── AnalyticsService
-        │      └── SettingsService
-        │
-        └── Data
-               ├── Letter definitions
-               ├── Word definitions
-               ├── Lesson definitions
-               └── User progress
+evidenceScore = weightedCorrectAnswers
+              - weightedIncorrectAnswers
+              - weightedHints
+              + repetitionBonus
+
+masteryLevel = clamp(scoreToLevel(evidenceScore), 0, 4)
 ```
 
----
+The system must prevent one unusually strong session from permanently marking a letter mastered.
 
-# 25. Flutter Scene Architecture
+### 12.3 Rewards
 
-`flutter_scene` will provide the application's real-time 3D layer.
+- Stars are the primary reward and are earned for completed challenges or lessons.
+- Stars are never removed for incorrect answers or abandoned lessons.
+- Secondary rewards may include stickers, mascot accessories, toys, or world decorations.
+- Reward presentation should be celebratory but skippable and not dependent on scarcity, randomization, or purchases.
+- Duplicate reward grants must be idempotent.
 
-The Flutter widget system remains responsible for normal application UI.
+### 12.4 Unlocks
 
-Conceptually:
-
-```text
-Flutter UI
-    ↓
-GameController
-    ↓
-SceneManager
-    ↓
-flutter_scene
-    ↓
-3D Scene / Camera / Models / Animation
-```
-
-Game rules must not be implemented inside individual 3D models.
-
-For example, a 3D Apple should expose its identifier:
-
-`apple`
-
-The LessonController determines that:
-
-```text
-apple
-letter = A
-word = APPLE
-sound = apple_audio
-correctForCurrentQuestion = true
-```
-
-This separation is important for testing and content expansion.
+Lessons unlock through clear progress rules. The first lesson must be immediately available. A child may replay earlier lessons at any time. Unlock requirements must be stored as data and must not make the child repeat a mastered lesson unnecessarily.
 
 ---
 
-# 26. 3D Asset Pipeline
+## 13. Accessibility and Child-Centered UX
 
-Preferred model format:
-
-**glTF / GLB**
-
-Every educational asset should contain or map to:
-
-```text
-asset_id
-display_name
-letter
-word
-model_asset
-thumbnail
-pronunciation_audio
-letter_audio
-animations
-difficulty
-category
-```
-
-Example:
-
-```text
-asset_id: apple
-display_name: Apple
-letter: A
-word: APPLE
-model_asset: objects/apple.glb
-pronunciation_audio: audio/words/apple.mp3
-category: food
-```
-
-Models should be optimized for mobile GPUs.
-
-Texture resolution, polygon counts, material count, draw calls, and animation complexity must be monitored during asset production rather than optimized only at the end of development.
+- Minimum touch targets should follow platform accessibility guidance and be expanded around small visual objects.
+- Every important audio instruction has a replay control.
+- Visual feedback accompanies audio feedback; color is never the sole signal.
+- Subtitles are optional but available for important prompts and narration.
+- Reduced-motion mode limits camera movement, object bouncing, and celebration intensity without hiding state.
+- Word Builder always supports tap selection.
+- Text uses high contrast, large sizes, clear letterforms, and short phrases.
+- The app remains usable with music muted and with narration muted where visual alternatives exist.
+- Avoid timers, countdowns, lives, punitive sounds, flashing failure states, and forced reading.
+- The child-facing experience must not expose external links, purchases, social features, or profile deletion.
 
 ---
 
-# 27. Content-Driven Lesson System
+## 14. Audio and Media Requirements
 
-Lessons should be configured using data rather than hardcoded screens.
+### 14.1 Audio categories
 
-Example conceptual lesson definition:
+| Category | Examples |
+|---|---|
+| Educational voice | Letter names, phonics, word pronunciations, prompts |
+| Mascot voice | Welcome, hints, encouragement, transitions |
+| Effects | Tap, correct, retry, reward, unlock |
+| Music | World loops, menu loop, completion sting |
+| Environment | Optional, quiet world ambience |
 
-```text
-Lesson A
-  targetLetter: A
+### 14.2 Playback behavior
 
-  introduction:
-    word: Apple
+- Narration pauses or ducks background music.
+- Replay stops or safely replaces the previous narration instance.
+- Audio failures do not block the child from completing a visual challenge.
+- Settings control music, effects, and voice independently.
+- Audio assets are preflighted for existence, duration, format, and volume consistency.
 
-  challenges:
-    - findLetter
-    - findObject
-    - soundMatch
-    - wordMatch
+### 14.3 Visual assets
 
-  vocabulary:
-    - Apple
-    - Ant
-    - Airplane
-```
-
-This architecture allows new letters, words, languages, and lesson types to be added without rebuilding the central game architecture.
+The app uses reusable world, mascot, UI, avatar, and object assets. A content validation tool should report missing references before release. The vertical slice must be playable with production-like assets, not placeholder boxes alone.
 
 ---
 
-# 28. Local Data
+## 15. Privacy, Safety, and Data Governance
 
-MVP should function offline after required assets have been installed.
-
-Local storage should contain:
-
-Child profile  
-Letter progress  
-Word progress  
-Stars  
-Unlocked rewards  
-Settings  
-Lesson history
-
-The core learning experience should not require a network connection.
-
-Cloud synchronization may be introduced later.
+- Collect the minimum information needed to run local profiles and progress.
+- Do not require a child account, email, precise location, contacts, camera, microphone, or public identity for MVP.
+- Do not include targeted advertising, public chat, user-generated links, or social discovery.
+- Keep child profiles and learning history local for MVP.
+- Put analytics behind a privacy-reviewed service boundary and make event payloads non-identifying.
+- Require an adult gate for parent settings, reset/delete operations, external links, and any future commercial action.
+- Maintain a data inventory, retention policy, deletion behavior, and platform privacy disclosures before release.
+- Obtain legal review for the target distribution markets before store submission.
 
 ---
 
-# 29. Analytics
+## 16. Analytics and Observability
 
-Only privacy-appropriate product analytics should be collected, particularly because the product is designed for children.
-
-Useful product events include:
+Analytics are for product quality and learning improvement, not advertising profiling. Candidate events are:
 
 ```text
+app_opened
+profile_selected
 lesson_started
-lesson_completed
-letter_answer_correct
-letter_answer_incorrect
-word_answer_correct
-word_answer_incorrect
+lesson_phase_started
+challenge_presented
+challenge_answered
+challenge_completed
 hint_used
 audio_replayed
+lesson_paused
 lesson_abandoned
+lesson_completed
 reward_unlocked
+settings_changed
+asset_load_failed
 ```
 
-Educational analytics should focus on improving the learning experience rather than advertising profiling.
+Event payloads may include anonymous session identifiers, lesson ID, letter ID, challenge type, result, duration bucket, and app version. They must not include child names, free-form text, exact location, or unnecessary device identifiers.
+
+The app should log actionable local diagnostics for missing content, audio failures, scene-load failures, and persistence errors without exposing technical details to the child.
 
 ---
 
-# 30. Performance Requirements
+## 17. Performance and Reliability
 
-| Requirement | Target |
+| Area | Requirement |
 |---|---|
-| Frame rate | Target 60 FPS on supported mid-range devices |
-| Minimum playable frame rate | 30 FPS |
-| UI response | Immediate perceived response after tap |
-| Scene transition | Preferably under 3 seconds after required assets are available |
-| Gameplay | No visible blocking during normal interaction |
-| Offline lessons | Supported |
-| Crash-free sessions | ≥99.5% target |
+| Frame rate | Target 60 FPS; minimum acceptable 30 FPS on supported mid-range devices |
+| Input response | Immediate visual acknowledgement after a valid tap |
+| Scene loading | Preferably under 3 seconds after required assets are available |
+| Audio | No blocking UI while audio loads or changes track |
+| Memory | No steady growth across repeated lesson entry and exit |
+| Offline use | Core lessons, audio, progress, and settings work without network |
+| Recovery | App can reopen after interruption without corrupting progress |
+| Crash-free sessions | Release target >=99.5% |
+| Battery and thermals | No sustained excessive load during an ordinary lesson |
 
-Exact device-performance thresholds should be finalized after the first playable prototype.
-
----
-
-# 31. 3D Performance Strategy
-
-Scenes should contain only objects required for the current activity.
-
-Objects outside the current learning area should be unloaded, pooled, simplified, or culled where appropriate.
-
-Repeated models should reuse shared assets.
-
-Expensive lighting and shadows should be limited on lower-end devices.
-
-A graphics-quality setting may automatically choose between:
-
-Low  
-Medium  
-High
-
-The child should not normally need to configure this manually.
+Performance testing must cover low, medium, and high graphics profiles if quality scaling is introduced. Quality selection should be automatic or adult-controlled, not a required child decision.
 
 ---
 
-# 32. Privacy and Child Safety
+## 18. Quality Strategy and Acceptance Tests
 
-Because the application targets young children, privacy must be built into the architecture.
+### 18.1 Automated tests
 
-The MVP should avoid collecting unnecessary personal information.
+- Content validation: all letters, words, audio references, and lesson IDs are valid.
+- Question engine: correct, incorrect, distractor, and empty-content cases.
+- Lesson controller: phase transitions, duplicate submission protection, retry behavior, and completion.
+- Mastery engine: deterministic updates across repeated attempts.
+- Reward engine: idempotent grants and persistence.
+- Repository layer: save, load, reset, and corrupt-data fallback.
+- Audio service: replay, interruption, ducking state, and missing-file fallback.
+- Accessibility settings: subtitles and reduced-motion behavior.
 
-The child-facing experience should contain no public chat, messaging, free-form social interaction, user-generated links, or targeted advertising.
+### 18.2 Widget and integration tests
 
-Any analytics, accounts, cloud synchronization, payments, external links, or parent information must be implemented in accordance with applicable child-privacy requirements for the markets where the game is distributed.
+- App boot and route transitions.
+- Profile creation and selection.
+- Lesson start, challenge completion, pause, resume, and completion.
+- Progress survives restart.
+- Parent gate protects adult routes.
+- Settings change the relevant services and widgets.
 
----
+### 18.3 Device and usability tests
 
-# 33. MVP Definition
+- Android and iOS phones across supported screen sizes.
+- Portrait and landscape behavior if both are supported; otherwise enforce the chosen orientation consistently.
+- Slow storage and cold asset load.
+- Backgrounding during narration, animation, and persistence.
+- Muted audio, reduced motion, subtitles, and large text settings.
+- A moderated child usability session with the A-C vertical slice.
 
-The MVP is successful when a child can:
+### 18.4 Letter lesson acceptance criteria
 
-Learn all 26 English letters.
+A letter lesson is production-ready when:
 
-Hear each letter name and basic phonics sound.
-
-Interact with 3D objects representing vocabulary.
-
-Play at least three reusable learning game mechanics.
-
-Complete simple word-building exercises.
-
-Earn stars for completing lessons.
-
-Leave and reopen the app without losing progress.
-
-Review previously learned material.
-
-A practical MVP content target is:
-
-**26 letters**  
-**78+ vocabulary words**  
-**3 core mini-game mechanics**  
-**6 reusable environment themes**  
-**1 animated mascot**  
-**1 reward system**  
-**1 parent progress area**
-
----
-
-# 34. MVP Game Modes
-
-| Mode | MVP |
-|---|---|
-| Letter Hunt | Yes |
-| Object Hunt | Yes |
-| Sound Match | Yes |
-| Word Builder | Yes, basic version |
-| Review Challenge | Yes |
-| Free Exploration | Optional |
-| Multiplayer | No |
-| AR mode | No |
-| AI Tutor | No |
+- Uppercase and lowercase representations display correctly.
+- Letter name and phonics audio play and can be replayed.
+- At least three approved vocabulary associations are available.
+- Required assets load or fail gracefully with a usable fallback.
+- Interactive targets respond to child-sized taps.
+- Correct answers provide visual and audio feedback.
+- Incorrect answers allow another attempt without loss of progress.
+- At least one word-building activity can be completed by tapping.
+- Progress, stars, attempts, and mastery update correctly.
+- The lesson can be paused, resumed, completed, and reopened.
+- The lesson meets supported-device performance targets.
 
 ---
 
-# 35. Success Metrics
+## 19. Delivery Plan
 
-Product success should be evaluated using both engagement and educational outcomes.
+| Phase | Deliverable | Exit gate |
+|---:|---|---|
+| 1 | Technical prototype | Renderer, touch hit testing, audio, asset loading, and fallback validated |
+| 2 | A-C vertical slice | One complete lesson loop works with production-like content |
+| 3 | Reusable lesson framework | Data-driven challenges, persistence, mastery, and rewards tested |
+| 4 | Core child UX | Profile, map, game, completion, pause, settings, and parent gate complete |
+| 5 | Content production | A-Z and 78+ words validated by content and audio review |
+| 6 | Progress and adaptive review | Mastery, unlocks, history, and weak-letter review stable |
+| 7 | Performance and accessibility | Device matrix, reduced motion, subtitles, and loading behavior pass |
+| 8 | Beta validation | Child usability, parent feedback, crash and analytics review |
+| 9 | Store readiness | Privacy review, content sign-off, release assets, and platform checks complete |
 
-| Metric | Initial Goal |
-|---|---|
-| Tutorial completion | >80% |
-| Lesson completion | >75% |
-| Average lesson duration | 3–8 minutes |
-| Repeat lessons | Increasing with weak-letter review |
-| Letter recognition accuracy | Improvement over repeated sessions |
-| Crash-free sessions | ≥99.5% |
-| Parent progress usage | Track after launch |
+### 19.1 Vertical slice contents
 
-Retention should not be optimized independently of learning outcomes.
+The A-C slice includes:
 
-A child repeatedly opening the application but not demonstrating improved mastery should not be considered sufficient educational success.
+- Apple, Ant, Airplane.
+- Ball, Bear, Banana.
+- Cat, Car, Cup.
+- One reusable world with data-driven object placement.
+- Letter Hunt, Object Hunt, Sound Match, Word Builder, and Review.
+- Pip prompts, learning audio, feedback audio, stars, and local persistence.
 
----
+The slice must answer these questions before scaling content:
 
-# 36. Acceptance Criteria for a Letter Lesson
-
-A letter lesson is considered production-ready when:
-
-The letter is displayed correctly.
-
-Uppercase and lowercase versions are supported.
-
-Letter pronunciation plays correctly.
-
-Phonics audio plays correctly.
-
-At least three vocabulary associations exist.
-
-Required 3D models load correctly.
-
-Objects are tappable.
-
-Correct answers trigger positive feedback.
-
-Incorrect answers allow another attempt.
-
-Progress is saved.
-
-Stars are awarded.
-
-Lesson completion updates mastery.
-
-Audio can be replayed.
-
-The lesson maintains acceptable performance on supported test devices.
+1. Can a child complete the loop without reading?
+2. Are the scene renderer and hit targets reliable on target devices?
+3. Are audio and animation timing clear rather than distracting?
+4. Can content creators add a new letter without editing gameplay code?
+5. Does the child understand retry feedback as encouragement?
 
 ---
 
-# 37. Development Phases
+## 20. Risks and Mitigations
 
-| Phase | Deliverable |
-|---|---|
-| Phase 1 | Flutter + Flutter Scene technical prototype |
-| Phase 2 | One complete letter lesson |
-| Phase 3 | Core game framework and reusable lesson system |
-| Phase 4 | Three primary mini-games |
-| Phase 5 | A–Z educational content |
-| Phase 6 | Rewards and progression |
-| Phase 7 | Parent progress interface |
-| Phase 8 | Performance optimization |
-| Phase 9 | Child usability testing |
-| Phase 10 | Store-ready MVP |
-
----
-
-# 38. Prototype Milestone
-
-Before creating all 78+ vocabulary assets, the team should build a vertical slice containing only:
-
-**Letters A, B, and C**
-
-Example assets:
-
-Apple  
-Ant  
-Airplane  
-Ball  
-Bear  
-Banana  
-Cat  
-Car  
-Cup
-
-The vertical slice should demonstrate the complete production pipeline:
-
-```text
-Lesson Selection
-        ↓
-3D Scene Loading
-        ↓
-Mascot Instruction
-        ↓
-Object Interaction
-        ↓
-Correct/Incorrect Logic
-        ↓
-Animation + Audio
-        ↓
-Reward
-        ↓
-Progress Saved
-```
-
-The team should validate performance, child usability, asset production cost, and `flutter_scene` stability before producing the entire alphabet.
+| Risk | Impact | Mitigation |
+|---|---|---|
+| 3D renderer incompatibility or instability | High | Validate early; keep renderer adapter and fallback path |
+| Asset production exceeds MVP capacity | High | Reuse six themes; gate A-C before A-Z production |
+| Audio licensing or recording inconsistency | High | Establish naming, review, and loudness standards early |
+| Child cannot understand the next action | High | Test with children; prioritize voice, animation, and one-task screens |
+| Large scenes reduce performance | High | Load only current objects; profile memory, draw calls, and frame rate |
+| Adaptive review feels repetitive | Medium | Cap repeats, explain priority, and preserve variety |
+| Progress corruption or accidental reset | High | Atomic repository writes, backups where appropriate, reset confirmation |
+| Privacy requirements change by market | High | Legal review before analytics, accounts, sync, or store release |
+| Phonics examples are ambiguous | Medium | Editorial and speech review, especially for Q, X, and regional variants |
 
 ---
 
-# 39. Future Roadmap
+## 21. Open Decisions
 
-Potential post-MVP expansions include:
+These decisions must be resolved before the related milestone is marked complete:
 
-Spanish and additional languages  
-Numbers 1–100  
-Colors  
-Shapes  
-Animals  
-Sight words  
-Sentence construction  
-Story-based learning adventures  
-Teacher classroom mode  
-Cloud progress synchronization  
-Parent mobile dashboard  
-Downloadable learning worlds  
-Daily review challenges  
-AI-generated adaptive lesson sequences  
-Speech-based pronunciation practice  
-Augmented-reality alphabet exploration
+1. Which Flutter-compatible 3D renderer passes the Phase 1 gate, and is Web in scope for the first release?
+2. Which six world themes receive final production assets first?
+3. What is the approved recording voice, accent, and pronunciation guide?
+4. Will the MVP ship portrait-only, landscape-only, or support both orientations?
+5. What exact mastery thresholds and reward values best match the first usability study?
+6. Which analytics, if any, are permitted in the initial release markets?
+7. What minimum Android and iOS versions and device performance tiers are supported?
+8. Does X use a special initial-letter lesson, an end-sound example, or a content exception?
 
 ---
 
-# 40. Recommended Product Principle
+## 22. Final MVP Experience
 
-Every activity should satisfy three requirements:
+A child opens the app and Pip says, "Hi! Today we are learning B!"
 
-**See it → Hear it → Interact with it**
+The child enters a bright forest scene. A large **B** appears. The app says, "B says buh!" A Bear, Ball, Banana, Apple, and Cat are placed in the world.
 
-For example:
+The app asks, "Can you find something that starts with B?" The child taps the Bear. The Bear animates, the app says, "Bear! B-B-Bear starts with B!", and a star moves to the reward counter. The child continues through the Ball and Banana, matches the /b/ sound, builds a short word by tapping letter tiles, and completes a brief review.
 
-```text
-        APPLE
-          │
-     ┌────┴────┐
-     ↓         ↓
-  See 🍎     Hear
-     │       "Apple"
-     └────┬────┘
-          ↓
-       Touch
-          ↓
-    Apple animates
-          ↓
-      "A is for Apple"
-```
+Pip celebrates: "Fantastic! You learned B!" The lesson result is saved locally. The child can continue to the next adventure, replay the lesson, or leave and return later without losing progress.
 
-This combination of visual, auditory, and interactive learning should form the core identity of Alphabet Adventure 3D.
-
----
-
-# 41. Final MVP Experience
-
-A child opens the application.
-
-The mascot welcomes them:
-
-“Hi! Today we're learning B!”
-
-The child enters a colorful 3D forest.
-
-A large animated **B** appears.
-
-“B says buh!”
-
-A Bear, Ball, Apple, Banana, and Cat appear around the environment.
-
-“Can you find something that starts with B?”
-
-The child taps the Bear.
-
-The Bear jumps happily.
-
-“Bear! B-B-Bear starts with B!”
-
-A star flies toward the player's reward counter.
-
-The child finds the Ball and Banana.
-
-Next, floating letters appear:
-
-A — B — C
-
-“Which letter says buh?”
-
-The child selects B.
-
-Three stars appear.
-
-“Fantastic! You learned B!”
-
-The game records the child's progress and unlocks the next adventure.
-
-That experience represents the intended product: **an educational lesson hidden inside an enjoyable 3D game.**
+That is the product promise: **an educational lesson hidden inside an enjoyable, accessible 3D adventure.**

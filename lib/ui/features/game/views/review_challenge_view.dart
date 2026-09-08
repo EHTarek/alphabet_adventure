@@ -8,6 +8,7 @@ import 'package:alphabet_adventure/ui/features/game/views/letter_hunt_view.dart'
 import 'package:alphabet_adventure/ui/features/game/views/object_hunt_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/sound_match_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/word_builder_view.dart';
+import 'package:alphabet_adventure/ui/features/game/views/word_match_view.dart';
 
 /// Review challenge view hosting dynamic mixed rapid-fire questions (PRS Section 11 & 12).
 class ReviewChallengeView extends StatelessWidget {
@@ -62,6 +63,7 @@ class ReviewChallengeView extends StatelessWidget {
             LetterHuntQuestion q => LetterHuntView(question: q, controller: controller),
             ObjectHuntQuestion q => ObjectHuntView(question: q, controller: controller),
             SoundMatchQuestion q => SoundMatchView(question: q, controller: controller),
+            WordMatchQuestion q => WordMatchView(question: q, controller: controller),
             WordBuilderQuestion q => WordBuilderView(question: q, controller: controller),
             _ => const Center(child: CircularProgressIndicator()),
           },

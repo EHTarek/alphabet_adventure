@@ -69,6 +69,8 @@ class LessonController extends ChangeNotifier {
   bool _hintRevealed = false;
   bool get hintRevealed => _hintRevealed;
 
+  int _miniGameRound = 0;
+
   // --- Session Metrics ---
   int _totalQuestions = 0;
   int get totalQuestions => _totalQuestions;
@@ -115,6 +117,7 @@ class LessonController extends ChangeNotifier {
     _masteryResult = null;
     _earnedAchievements = const [];
     _hintRevealed = false;
+    _miniGameRound = 0;
     _feedbackStatus = AnswerFeedbackStatus.none;
     _feedbackMessage = null;
     _sessionStartTime = DateTime.now();
@@ -142,8 +145,13 @@ class LessonController extends ChangeNotifier {
         _loadNextQuestion();
         break;
       case LessonPhase.miniGame:
-        _currentPhase = LessonPhase.review;
-        _loadNextQuestion();
+        if (_miniGameRound < 2) {
+          _miniGameRound++;
+          _loadNextQuestion();
+        } else {
+          _currentPhase = LessonPhase.review;
+          _loadNextQuestion();
+        }
         break;
       case LessonPhase.review:
         _currentPhase = LessonPhase.celebration;
@@ -173,11 +181,13 @@ class LessonController extends ChangeNotifier {
         _currentQuestion = _questionEngine.generateObjectHunt(targetLetter: letter);
         break;
       case LessonPhase.miniGame:
-        // Choose between Sound Match or Word Builder
-        if (_totalQuestions % 2 == 0) {
-          _currentQuestion = _questionEngine.generateWordBuilder(targetLetter: letter);
-        } else {
+        // Run Sound Match, Word Match, then Word Builder in sequence.
+        if (_miniGameRound == 0) {
           _currentQuestion = _questionEngine.generateSoundMatch(targetLetter: letter);
+        } else if (_miniGameRound == 1) {
+          _currentQuestion = _questionEngine.generateWordMatch(targetLetter: letter);
+        } else {
+          _currentQuestion = _questionEngine.generateWordBuilder(targetLetter: letter);
         }
         break;
       case LessonPhase.review:
@@ -210,6 +220,8 @@ class LessonController extends ChangeNotifier {
       isCorrect = (answer == q.correctIndex) || (answer == q.targetWord);
     } else if (q is SoundMatchQuestion) {
       isCorrect = (answer == q.correctIndex) || (answer == q.targetLetter);
+    } else if (q is WordMatchQuestion) {
+      isCorrect = (answer == q.correctIndex) || (answer == q.targetWord);
     } else if (q is WordBuilderQuestion) {
       if (answer is List<String>) {
         isCorrect = answer.join('').toUpperCase() == q.targetWord.word.toUpperCase();
