@@ -18,6 +18,22 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
+  // Hide the status bar while keeping Android navigation buttons visible over
+  // the app's transparent bottom navigation area.
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual,
+    overlays: [SystemUiOverlay.bottom],
+  );
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarContrastEnforced: false,
+    ),
+  );
+
   // Initialize storage service
   final storageService = await StorageService.create();
 

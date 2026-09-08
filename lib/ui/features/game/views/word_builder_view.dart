@@ -49,8 +49,9 @@ class _WordBuilderViewState extends State<WordBuilderView> {
 
   void _onLetterSelected(String letter, int poolIndex) {
     if (widget.controller.isProcessing) return;
-    if (_assembledLetters.length >= widget.question.targetLetters.length)
+    if (_assembledLetters.length >= widget.question.targetLetters.length) {
       return;
+    }
 
     setState(() {
       _availablePool.removeAt(poolIndex);
