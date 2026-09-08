@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/models/letter_data.dart';
 import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/animated_letter.dart';
 import 'package:alphabet_adventure/ui/core/widgets/audio_replay_button.dart';
 import 'package:alphabet_adventure/ui/core/widgets/interactive_object.dart';
@@ -34,7 +34,7 @@ class LetterIntroView extends StatelessWidget {
           // Mascot speech bubble
           MascotWidget(
             mood: MascotMood.speaking,
-            speechBubbleText: 'This is the letter "${letter.uppercase}"! It says /${letter.phonicsSound}/!',
+            speechBubbleText: 'This is the letter "${letter.uppercase}"! It says ${letter.phonicsSound}!',
             size: 90,
           ),
           const SizedBox(height: 16),
@@ -83,7 +83,7 @@ class LetterIntroView extends StatelessWidget {
                 const SizedBox(width: 12),
                 Text(
                   'Sound: ${letter.phonicsSound}',
-                  style: GoogleFonts.fredoka(
+                  style: AppFonts.fredoka(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textDark,
@@ -98,7 +98,7 @@ class LetterIntroView extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               'Words starting with "${letter.uppercase}":',
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textDark,
@@ -149,7 +149,7 @@ class LetterIntroView extends StatelessWidget {
                 children: [
                   Text(
                     'Start Exploring!',
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

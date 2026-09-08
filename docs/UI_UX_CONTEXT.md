@@ -46,7 +46,7 @@ The child-facing interface should not look like a smaller version of the parent 
 
 The current Flutter implementation already establishes a visual foundation:
 
-- Fredoka typography through `google_fonts`.
+- Fredoka typography, bundled locally in `assets/fonts/` and exposed through `AppFonts`.
 - A bright coral primary color.
 - Turquoise, yellow, green, blue, orange, and purple accents.
 - Sky and cream background surfaces.

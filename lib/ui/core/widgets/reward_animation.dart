@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/animations/celebration_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 
 /// Full-screen or modal celebration reward animation displaying 1 to 3 animated stars.
 class RewardAnimation extends StatefulWidget {
@@ -84,7 +84,7 @@ class _RewardAnimationState extends State<RewardAnimation>
               Text(
                 widget.title,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textDark,
@@ -94,7 +94,7 @@ class _RewardAnimationState extends State<RewardAnimation>
               Text(
                 widget.subtitle,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 18,
                   color: AppColors.textMuted,
                 ),
@@ -154,7 +154,7 @@ class _RewardAnimationState extends State<RewardAnimation>
                   child: Center(
                     child: Text(
                       'Keep Going!',
-                      style: GoogleFonts.fredoka(
+                      style: AppFonts.fredoka(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,

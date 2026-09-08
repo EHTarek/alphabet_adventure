@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/models/child_profile.dart';
 import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/features/profile/view_models/profile_view_model.dart';
 
 /// Screen allowing children to select their explorer profile or create a new one.
@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text(
           'Who is Playing?',
-          style: GoogleFonts.fredoka(
+          style: AppFonts.fredoka(
             fontSize: 28,
             fontWeight: FontWeight.bold,
             color: AppColors.textDark,
@@ -52,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 'Choose your explorer profile to start your journey!',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 18,
                   color: AppColors.textMuted,
                 ),
@@ -144,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               profile.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textDark,
@@ -162,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(width: 4),
                 Text(
                   '${profile.totalStars} stars',
-                  style: GoogleFonts.fredoka(
+                  style: AppFonts.fredoka(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textMuted,
@@ -219,7 +219,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 12),
             Text(
               'New Explorer',
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.secondaryDark,
@@ -249,7 +249,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: Text(
                 'Create Your Explorer',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textDark,
@@ -271,13 +271,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         filled: true,
                         fillColor: AppColors.bgSky,
                       ),
-                      style: GoogleFonts.fredoka(fontSize: 18),
+                      style: AppFonts.fredoka(fontSize: 18),
                       onChanged: (val) => name = val,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'Choose Avatar',
-                      style: GoogleFonts.fredoka(
+                      style: AppFonts.fredoka(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textDark,
@@ -325,7 +325,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () => Navigator.pop(dialogContext),
                   child: Text(
                     'Cancel',
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 16,
                       color: AppColors.textMuted,
                     ),
@@ -348,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   child: Text(
                     'Let’s Go!',
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),

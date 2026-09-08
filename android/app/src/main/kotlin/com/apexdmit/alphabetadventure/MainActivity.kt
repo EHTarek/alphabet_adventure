@@ -1,4 +1,4 @@
-package com.example.alphabet_adventure
+package com.apexdmit.alphabetadventure
 
 import io.flutter.embedding.android.FlutterActivity
 

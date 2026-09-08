@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:alphabet_adventure/domain/engines/lesson_controller.dart';
 import 'package:alphabet_adventure/domain/engines/question_engine.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/animated_letter.dart';
 import 'package:alphabet_adventure/ui/core/widgets/audio_replay_button.dart';
 
@@ -55,7 +55,7 @@ class LetterHuntView extends StatelessWidget {
                 Expanded(
                   child: Text(
                     question.prompt,
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textDark,
@@ -88,7 +88,7 @@ class LetterHuntView extends StatelessWidget {
               ),
               child: Text(
                 question.hintText,
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textDark,

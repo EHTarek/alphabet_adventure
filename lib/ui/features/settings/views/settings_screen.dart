@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
 import 'package:alphabet_adventure/data/repositories/settings_repository.dart';
 import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/features/parent/widgets/parental_gate_dialog.dart';
 
 /// Settings screen for audio sliders, accessibility preferences, and progress management (PRS Section 21 & 22).
@@ -52,7 +52,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text(
           'Settings',
-          style: GoogleFonts.fredoka(
+          style: AppFonts.fredoka(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: AppColors.textDark,
@@ -89,7 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SwitchListTile(
                   title: Text(
                     'Mute All Sounds',
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textDark,
@@ -110,7 +110,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SwitchListTile(
                   title: Text(
                     'Show Subtitles',
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textDark,
@@ -118,7 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   subtitle: Text(
                     'Show spoken learning prompts on screen',
-                    style: GoogleFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
+                    style: AppFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
                   ),
                   value: settingsRepo.showSubtitles,
                   activeThumbColor: AppColors.primary,
@@ -128,7 +128,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SwitchListTile(
                   title: Text(
                     'Reduced Motion',
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textDark,
@@ -136,7 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   subtitle: Text(
                     'Use simpler animations and camera movement',
-                    style: GoogleFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
+                    style: AppFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
                   ),
                   value: settingsRepo.reducedAnimations,
                   activeThumbColor: AppColors.primary,
@@ -146,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SwitchListTile(
                   title: Text(
                     'High Contrast Mode',
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textDark,
@@ -154,7 +154,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   subtitle: Text(
                     'Increases visual clarity and outlines',
-                    style: GoogleFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
+                    style: AppFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
                   ),
                   value: settingsRepo.highContrastEnabled,
                   activeThumbColor: AppColors.primary,
@@ -164,7 +164,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SwitchListTile(
                   title: Text(
                     'Parental Gate for Settings',
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textDark,
@@ -172,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   subtitle: Text(
                     'Require math puzzle before changing options',
-                    style: GoogleFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
+                    style: AppFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
                   ),
                   value: settingsRepo.parentalGateEnabled,
                   activeThumbColor: AppColors.primary,
@@ -188,7 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leading: const Icon(Icons.analytics_rounded, color: AppColors.secondaryDark),
               title: Text(
                 'Open Parent Dashboard',
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textDark,
@@ -205,7 +205,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leading: const Icon(Icons.refresh_rounded, color: AppColors.primary),
               title: Text(
                 'Reset Current Profile Progress',
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primary,
@@ -248,7 +248,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(width: 8),
               Text(
                 title,
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textDark,
@@ -276,7 +276,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             Text(
               label,
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textDark,
@@ -284,7 +284,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             Text(
               '${(value * 100).round()}%',
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 14,
                 color: AppColors.textMuted,
               ),
@@ -308,16 +308,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: Text(
           'Reset Learning Progress?',
-          style: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+          style: AppFonts.fredoka(fontWeight: FontWeight.bold),
         ),
         content: Text(
           'This will clear stars and mastery records for the current profile.',
-          style: GoogleFonts.fredoka(fontSize: 16),
+          style: AppFonts.fredoka(fontSize: 16),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Cancel', style: GoogleFonts.fredoka(fontSize: 16)),
+            child: Text('Cancel', style: AppFonts.fredoka(fontSize: 16)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
@@ -327,12 +327,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Progress reset!', style: GoogleFonts.fredoka()),
+                    content: Text('Progress reset!', style: AppFonts.fredoka()),
                   ),
                 );
               }
             },
-            child: Text('Reset', style: GoogleFonts.fredoka(fontSize: 16)),
+            child: Text('Reset', style: AppFonts.fredoka(fontSize: 16)),
           ),
         ],
       ),

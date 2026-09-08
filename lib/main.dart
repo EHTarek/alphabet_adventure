@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,6 +12,15 @@ import 'package:alphabet_adventure/data/services/storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Fredoka is bundled in assets/fonts/ and declared in pubspec.yaml, so the app
+  // never requests it over the network. This keeps the app genuinely
+  // offline-only, which the store listing claims and the Play Data safety
+  // declaration depends on.
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(const ['Fredoka'], license);
+  });
 
   // Keep the child experience in portrait orientation.
   await SystemChrome.setPreferredOrientations([

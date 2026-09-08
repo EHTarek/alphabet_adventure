@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:alphabet_adventure/domain/engines/lesson_controller.dart';
 import 'package:alphabet_adventure/domain/engines/question_engine.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/features/game/views/letter_hunt_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/object_hunt_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/sound_match_view.dart';
@@ -48,7 +48,7 @@ class ReviewChallengeView extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   '${controller.currentCombo} IN A ROW!',
-                  style: GoogleFonts.fredoka(
+                  style: AppFonts.fredoka(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

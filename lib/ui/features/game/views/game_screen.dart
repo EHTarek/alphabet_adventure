@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
@@ -9,6 +8,7 @@ import 'package:alphabet_adventure/domain/engines/question_engine.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/animations/celebration_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/star_counter.dart';
 import 'package:alphabet_adventure/ui/features/game/views/letter_intro_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/object_hunt_view.dart';
@@ -35,7 +35,7 @@ class GameScreen extends StatelessWidget {
             children: [
               Text(
                 'No lesson selected',
-                style: GoogleFonts.fredoka(fontSize: 20),
+                style: AppFonts.fredoka(fontSize: 20),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -147,7 +147,7 @@ class GameScreen extends StatelessWidget {
               ),
               child: Text(
                 '${letter.uppercase}${letter.lowercase}',
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -264,7 +264,7 @@ class GameScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     message ?? 'Awesome!',
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: AppColors.success,
@@ -293,7 +293,7 @@ class GameScreen extends StatelessWidget {
             ),
             child: Text(
               message ?? 'Try again!',
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: AppColors.tryAgain,
@@ -313,24 +313,24 @@ class GameScreen extends StatelessWidget {
         title: Text(
           'Go Back to Map?',
           textAlign: TextAlign.center,
-          style: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+          style: AppFonts.fredoka(fontWeight: FontWeight.bold),
         ),
         content: Text(
           'Are you sure you want to pause your letter adventure?',
           textAlign: TextAlign.center,
-          style: GoogleFonts.fredoka(fontSize: 16),
+          style: AppFonts.fredoka(fontSize: 16),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Keep Playing', style: GoogleFonts.fredoka(fontSize: 16)),
+            child: Text('Keep Playing', style: AppFonts.fredoka(fontSize: 16)),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(dialogContext);
               context.go('/world_map');
             },
-            child: Text('Back to Map', style: GoogleFonts.fredoka(fontSize: 16)),
+            child: Text('Back to Map', style: AppFonts.fredoka(fontSize: 16)),
           ),
         ],
       ),

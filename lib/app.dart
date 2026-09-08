@@ -123,7 +123,7 @@ class _AlphabetAdventureAppState extends State<AlphabetAdventureApp> {
         ),
       ],
       child: MaterialApp.router(
-        title: 'Letterlands 3D',
+        title: 'Alphabet Adventure 3D',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         routerConfig: _router,

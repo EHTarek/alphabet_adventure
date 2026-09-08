@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/repositories/content_repository.dart';
 import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
 import 'package:alphabet_adventure/domain/models/mastery_level.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/features/parent/widgets/parental_gate_dialog.dart';
 
 /// Parent dashboard displaying letter mastery heatmap, learning stats, and privacy assurance (PRS Section 14).
@@ -59,7 +59,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
       appBar: AppBar(
         title: Text(
           'Parent Dashboard',
-          style: GoogleFonts.fredoka(
+          style: AppFonts.fredoka(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: AppColors.textDark,
@@ -106,7 +106,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
                           children: [
                             Text(
                               profile?.name ?? 'Child Profile',
-                              style: GoogleFonts.fredoka(
+                              style: AppFonts.fredoka(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textDark,
@@ -114,7 +114,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
                             ),
                             Text(
                               'Age ${profile?.age ?? 5} • ${profile?.currentStreak ?? 0} Day Streak',
-                              style: GoogleFonts.fredoka(
+                              style: AppFonts.fredoka(
                                 fontSize: 15,
                                 color: AppColors.textMuted,
                               ),
@@ -153,7 +153,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
             // Letter Mastery Heatmap Header
             Text(
               'Alphabet Mastery Heatmap (A–Z)',
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textDark,
@@ -199,7 +199,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
                     child: Center(
                       child: Text(
                         letter.char,
-                        style: GoogleFonts.fredoka(
+                        style: AppFonts.fredoka(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -227,7 +227,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
               const SizedBox(height: 24),
               Text(
                 'Letters Recommended for Review',
-                style: GoogleFonts.fredoka(
+                style: AppFonts.fredoka(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textDark,
@@ -251,8 +251,10 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Letters ${reviewLetters.map((l) => l.char).join(", ")} will benefit from a quick practice session today!',
-                        style: GoogleFonts.fredoka(
+                        '${reviewLetters.length == 1 ? 'Letter' : 'Letters'} '
+                        '${reviewLetters.map((l) => l.char).join(", ")} will '
+                        'benefit from a quick practice session today!',
+                        style: AppFonts.fredoka(
                           fontSize: 16,
                           color: AppColors.textDark,
                         ),
@@ -281,7 +283,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
                       children: [
                         Text(
                           '100% Privacy & Child Safe',
-                          style: GoogleFonts.fredoka(
+                          style: AppFonts.fredoka(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: AppColors.textDark,
@@ -290,7 +292,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
                         const SizedBox(height: 4),
                         Text(
                           'No personal data or advertisements. Fully compliant with COPPA and GDPR-K guidelines.',
-                          style: GoogleFonts.fredoka(
+                          style: AppFonts.fredoka(
                             fontSize: 13,
                             color: AppColors.textMuted,
                           ),
@@ -317,7 +319,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
       children: [
         Text(
           value,
-          style: GoogleFonts.fredoka(
+          style: AppFonts.fredoka(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: color,
@@ -326,7 +328,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: GoogleFonts.fredoka(
+          style: AppFonts.fredoka(
             fontSize: 14,
             color: AppColors.textMuted,
           ),
@@ -350,7 +352,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
         const SizedBox(width: 6),
         Text(
           label,
-          style: GoogleFonts.fredoka(
+          style: AppFonts.fredoka(
             fontSize: 13,
             color: AppColors.textMuted,
           ),

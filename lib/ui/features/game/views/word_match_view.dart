@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:alphabet_adventure/domain/engines/lesson_controller.dart';
 import 'package:alphabet_adventure/domain/engines/question_engine.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/audio_replay_button.dart';
 import 'package:alphabet_adventure/ui/core/widgets/interactive_object.dart';
 
@@ -42,7 +42,7 @@ class WordMatchView extends StatelessWidget {
                 Expanded(
                   child: Text(
                     question.prompt,
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textDark,
@@ -67,7 +67,7 @@ class WordMatchView extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               question.hintText,
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textDark,

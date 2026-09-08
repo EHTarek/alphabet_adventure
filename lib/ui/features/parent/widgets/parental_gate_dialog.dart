@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 
 /// Parental Gate dialog (PRS Section 14 & 32) requiring solving a math challenge before granting adult access.
 class ParentalGateDialog extends StatefulWidget {
@@ -62,7 +62,7 @@ class _ParentalGateDialogState extends State<ParentalGateDialog> {
           const SizedBox(width: 8),
           Text(
             'Grown-Ups Only',
-            style: GoogleFonts.fredoka(
+            style: AppFonts.fredoka(
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: AppColors.textDark,
@@ -75,7 +75,7 @@ class _ParentalGateDialogState extends State<ParentalGateDialog> {
         children: [
           Text(
             'Please solve the math question to continue:',
-            style: GoogleFonts.fredoka(
+            style: AppFonts.fredoka(
               fontSize: 16,
               color: AppColors.textMuted,
             ),
@@ -89,7 +89,7 @@ class _ParentalGateDialogState extends State<ParentalGateDialog> {
             ),
             child: Text(
               '$_num1 + $_num2 = ?',
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textDark,
@@ -110,7 +110,7 @@ class _ParentalGateDialogState extends State<ParentalGateDialog> {
               fillColor: Colors.white,
               errorText: _error,
             ),
-            style: GoogleFonts.fredoka(fontSize: 22, fontWeight: FontWeight.bold),
+            style: AppFonts.fredoka(fontSize: 22, fontWeight: FontWeight.bold),
             onChanged: (val) => _input = val,
             onSubmitted: (_) => _onVerify(),
           ),
@@ -121,7 +121,7 @@ class _ParentalGateDialogState extends State<ParentalGateDialog> {
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
             'Cancel',
-            style: GoogleFonts.fredoka(
+            style: AppFonts.fredoka(
               fontSize: 16,
               color: AppColors.textMuted,
             ),
@@ -131,7 +131,7 @@ class _ParentalGateDialogState extends State<ParentalGateDialog> {
           onPressed: _onVerify,
           child: Text(
             'Enter',
-            style: GoogleFonts.fredoka(fontSize: 16, fontWeight: FontWeight.bold),
+            style: AppFonts.fredoka(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
       ],

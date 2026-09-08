@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
 import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/mascot_widget.dart';
 
 /// Animated splash screen introducing Pip the Parrot and guiding into profile or world map.
@@ -91,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen>
                   children: [
                     Text(
                       'ALPHABET',
-                      style: GoogleFonts.fredoka(
+                      style: AppFonts.fredoka(
                         fontSize: 48,
                         fontWeight: FontWeight.w900,
                         color: AppColors.primary,
@@ -115,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen>
                       children: [
                         Text(
                           'ADVENTURE',
-                          style: GoogleFonts.fredoka(
+                          style: AppFonts.fredoka(
                             fontSize: 34,
                             fontWeight: FontWeight.w800,
                             color: AppColors.secondaryDark,
@@ -139,7 +139,7 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                           child: Text(
                             '3D',
-                            style: GoogleFonts.fredoka(
+                            style: AppFonts.fredoka(
                               fontSize: 22,
                               fontWeight: FontWeight.w900,
                               color: AppColors.textDark,
@@ -194,7 +194,7 @@ class _SplashScreenState extends State<SplashScreen>
                           const SizedBox(width: 10),
                           Text(
                             'LET’S PLAY!',
-                            style: GoogleFonts.fredoka(
+                            style: AppFonts.fredoka(
                               fontSize: 26,
                               fontWeight: FontWeight.w900,
                               color: Colors.white,

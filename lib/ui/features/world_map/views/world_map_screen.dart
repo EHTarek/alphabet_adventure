@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/models/letter_data.dart';
@@ -10,6 +9,7 @@ import 'package:alphabet_adventure/domain/engines/lesson_controller.dart';
 import 'package:alphabet_adventure/domain/models/mastery_level.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/mascot_widget.dart';
 import 'package:alphabet_adventure/ui/core/widgets/star_counter.dart';
 import 'package:alphabet_adventure/ui/features/world_map/view_models/world_map_view_model.dart';
@@ -138,7 +138,7 @@ class WorldMapScreen extends StatelessWidget {
                   profile?.name ?? 'Explorer',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.fredoka(
+                  style: AppFonts.fredoka(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textDark,
@@ -147,7 +147,7 @@ class WorldMapScreen extends StatelessWidget {
                 Text(
                   viewModel.currentWorld.name,
                   maxLines: 1,
-                  style: GoogleFonts.fredoka(
+                  style: AppFonts.fredoka(
                     fontSize: 14,
                     color: AppColors.textMuted,
                   ),
@@ -155,7 +155,7 @@ class WorldMapScreen extends StatelessWidget {
                 Text(
                   'Level ${viewModel.currentWorld.difficulty}: '
                   '${viewModel.currentWorld.difficultyLabel}',
-                  style: GoogleFonts.fredoka(
+                  style: AppFonts.fredoka(
                     fontSize: 12,
                     color: AppColors.textMuted,
                   ),
@@ -208,7 +208,7 @@ class WorldMapScreen extends StatelessWidget {
                     SnackBar(
                       content: Text(
                         'Unlock this world with ${world.requiredStarsToUnlock} stars!',
-                        style: GoogleFonts.fredoka(),
+                        style: AppFonts.fredoka(),
                       ),
                       backgroundColor: AppColors.tryAgain,
                       duration: const Duration(seconds: 2),
@@ -257,7 +257,7 @@ class WorldMapScreen extends StatelessWidget {
                     ],
                     Text(
                       world.name,
-                      style: GoogleFonts.fredoka(
+                      style: AppFonts.fredoka(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: isSelected
@@ -395,7 +395,7 @@ class WorldMapScreen extends StatelessWidget {
                     child: Center(
                       child: Text(
                         '${letter.uppercase}${letter.lowercase}',
-                        style: GoogleFonts.fredoka(
+                        style: AppFonts.fredoka(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -409,7 +409,7 @@ class WorldMapScreen extends StatelessWidget {
                     hintWord,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textDark,
@@ -429,7 +429,7 @@ class WorldMapScreen extends StatelessWidget {
                           const SizedBox(width: 3),
                           Text(
                             'Preview',
-                            style: GoogleFonts.fredoka(
+                            style: AppFonts.fredoka(
                               fontSize: 12,
                               color: AppColors.textMuted,
                             ),
@@ -481,7 +481,7 @@ class WorldMapScreen extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               'Adventure Preview',
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textDark,
@@ -493,7 +493,7 @@ class WorldMapScreen extends StatelessWidget {
           'Letter ${letter.uppercase}${letter.lowercase} is waiting in ${world.name}. '
           'You will meet ${previewWord.toUpperCase()} after earning '
           '${world.requiredStarsToUnlock} stars.',
-          style: GoogleFonts.fredoka(
+          style: AppFonts.fredoka(
             fontSize: 17,
             color: AppColors.textDark,
             height: 1.35,
@@ -504,7 +504,7 @@ class WorldMapScreen extends StatelessWidget {
             onPressed: () => Navigator.of(dialogContext).pop(),
             child: Text(
               'Keep Exploring',
-              style: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+              style: AppFonts.fredoka(fontWeight: FontWeight.bold),
             ),
           ),
         ],

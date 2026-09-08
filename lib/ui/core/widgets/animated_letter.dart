@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 
 /// 3D tactile, bubbly animated letter widget with realistic bevel shadows and glowing outline.
 class AnimatedLetter extends StatelessWidget {
@@ -81,7 +81,7 @@ class AnimatedLetter extends StatelessWidget {
             // Letter text glyph
             Text(
               letter,
-              style: GoogleFonts.fredoka(
+              style: AppFonts.fredoka(
                 fontSize: size * 0.55,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,

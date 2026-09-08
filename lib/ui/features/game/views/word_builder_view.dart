@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:alphabet_adventure/domain/engines/lesson_controller.dart';
 import 'package:alphabet_adventure/domain/engines/question_engine.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/animated_letter.dart';
 import 'package:alphabet_adventure/ui/core/widgets/audio_replay_button.dart';
 import 'package:alphabet_adventure/ui/core/widgets/interactive_object.dart';
@@ -100,7 +100,7 @@ class _WordBuilderViewState extends State<WordBuilderView> {
                 Expanded(
                   child: Text(
                     widget.question.prompt,
-                    style: GoogleFonts.fredoka(
+                    style: AppFonts.fredoka(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textDark,
@@ -163,7 +163,7 @@ class _WordBuilderViewState extends State<WordBuilderView> {
                   child: Center(
                     child: Text(
                       letter,
-                      style: GoogleFonts.fredoka(
+                      style: AppFonts.fredoka(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: isFilled ? Colors.white : AppColors.textMuted,

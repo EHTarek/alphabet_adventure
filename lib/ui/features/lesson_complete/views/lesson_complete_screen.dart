@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/repositories/content_repository.dart';
@@ -9,6 +8,7 @@ import 'package:alphabet_adventure/domain/engines/lesson_controller.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/animations/celebration_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/mascot_widget.dart';
 
 /// Lesson complete celebration screen awarding stars, mastery badges, and stickers (PRS Section 11 & 19).
@@ -64,7 +64,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                 Text(
                   'LESSON COMPLETE!',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.fredoka(
+                  style: AppFonts.fredoka(
                     fontSize: 32,
                     fontWeight: FontWeight.w900,
                     color: AppColors.primary,
@@ -75,7 +75,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                 Text(
                   'You did an awesome job learning letter ${letter?.uppercase ?? ""}!',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.fredoka(
+                  style: AppFonts.fredoka(
                     fontSize: 18,
                     color: AppColors.textDark,
                   ),
@@ -154,7 +154,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                               masteryResult.leveledUp
                                   ? 'MASTERY LEVEL UP!'
                                   : 'Letter Mastery Progress',
-                              style: GoogleFonts.fredoka(
+                              style: AppFonts.fredoka(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textDark,
@@ -165,7 +165,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                         const SizedBox(height: 6),
                         Text(
                           'Mastery: ${masteryResult.newLevel.displayName}',
-                          style: GoogleFonts.fredoka(
+                          style: AppFonts.fredoka(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -198,7 +198,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                             const SizedBox(width: 6),
                             Text(
                               'Sticker Unlocked!',
-                              style: GoogleFonts.fredoka(
+                              style: AppFonts.fredoka(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textDark,
@@ -209,7 +209,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                         const SizedBox(height: 8),
                         Text(
                           achievements.first.title,
-                          style: GoogleFonts.fredoka(
+                          style: AppFonts.fredoka(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: AppColors.accentOrange,
@@ -218,7 +218,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                         Text(
                           achievements.first.description,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.fredoka(
+                          style: AppFonts.fredoka(
                             fontSize: 14,
                             color: AppColors.textMuted,
                           ),
@@ -252,7 +252,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                           child: Center(
                             child: Text(
                               'World Map',
-                              style: GoogleFonts.fredoka(
+                              style: AppFonts.fredoka(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primary,
@@ -285,7 +285,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                           child: Center(
                             child: Text(
                               'Next Letter',
-                              style: GoogleFonts.fredoka(
+                              style: AppFonts.fredoka(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,

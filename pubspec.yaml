@@ -1,5 +1,5 @@
 name: alphabet_adventure
-description: "Letterlands 3D — An interactive educational game for children aged 4–8."
+description: "Alphabet Adventure 3D — An interactive educational game for children aged 4–8."
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -24,9 +24,6 @@ dependencies:
   # Audio
   audioplayers: ^6.4.0
 
-  # Typography
-  google_fonts: ^6.2.1
-
   # Animations
   flutter_animate: ^4.5.2
 
@@ -45,6 +42,10 @@ flutter:
   uses-material-design: true
 
   assets:
+    # Fredoka's licence, surfaced through LicenseRegistry. The .ttf files below
+    # are declared under `fonts:` and must not also be listed here, or their
+    # bytes would be bundled twice.
+    - assets/fonts/OFL.txt
     - assets/audio/letters/
     - assets/audio/words/
     - assets/audio/phonics/
@@ -56,6 +57,18 @@ flutter:
     - assets/images/mascot/
     - assets/images/avatars/
     - assets/images/ui/
+
+  fonts:
+    - family: Fredoka
+      fonts:
+        - asset: assets/fonts/Fredoka-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Fredoka-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Fredoka-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Fredoka-Bold.ttf
+          weight: 700
 
 flutter_launcher_icons:
   android: true

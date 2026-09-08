@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 
 /// App theme configuring child-friendly typography, oversized touch targets,
 /// and rounded vibrant components (PRS Section 16 & 23).
 class AppTheme {
   static ThemeData get lightTheme {
-    final baseTextTheme = GoogleFonts.fredokaTextTheme();
+    final baseTextTheme = AppFonts.fredokaTextTheme();
 
     return ThemeData(
       useMaterial3: true,
@@ -79,7 +79,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
-          textStyle: GoogleFonts.fredoka(
+          textStyle: AppFonts.fredoka(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.5,
@@ -95,7 +95,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          textStyle: GoogleFonts.fredoka(
+          textStyle: AppFonts.fredoka(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
