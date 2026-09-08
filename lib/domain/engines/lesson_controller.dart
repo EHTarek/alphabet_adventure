@@ -14,18 +14,14 @@ import 'package:alphabet_adventure/domain/engines/reward_engine.dart';
 /// The 5 instructional phases in a standard Alphabet Adventure lesson (PRS Section 11).
 enum LessonPhase {
   introduction, // Step 1: Meet the letter, hear pronunciation, visual intro
-  objectHunt,   // Step 2: Find objects starting with the target sound
-  miniGame,     // Step 3: Sound match or Word Builder
-  review,       // Step 4: Rapid recall challenge
-  celebration,  // Step 5: Reward stars, mastery badge, stickers
+  objectHunt, // Step 2: Find objects starting with the target sound
+  miniGame, // Step 3: Sound match or Word Builder
+  review, // Step 4: Rapid recall challenge
+  celebration, // Step 5: Reward stars, mastery badge, stickers
 }
 
 /// Status of feedback for child interaction.
-enum AnswerFeedbackStatus {
-  none,
-  correct,
-  tryAgain,
-}
+enum AnswerFeedbackStatus { none, correct, tryAgain }
 
 /// Orchestrates the entire lifecycle of a learning session per PRS Section 11 & 24.
 class LessonController extends ChangeNotifier {
@@ -168,6 +164,7 @@ class LessonController extends ChangeNotifier {
   void _loadNextQuestion() {
     if (_currentLesson == null) return;
     final letter = _currentLesson!.letter;
+    final difficulty = _currentLesson!.difficulty;
 
     _hintRevealed = false;
     _feedbackStatus = AnswerFeedbackStatus.none;
@@ -178,20 +175,34 @@ class LessonController extends ChangeNotifier {
         _currentQuestion = null;
         break;
       case LessonPhase.objectHunt:
-        _currentQuestion = _questionEngine.generateObjectHunt(targetLetter: letter);
+        _currentQuestion = _questionEngine.generateObjectHunt(
+          targetLetter: letter,
+          optionCount: difficulty >= 4 ? 4 : 3,
+        );
         break;
       case LessonPhase.miniGame:
         // Run Sound Match, Word Match, then Word Builder in sequence.
         if (_miniGameRound == 0) {
-          _currentQuestion = _questionEngine.generateSoundMatch(targetLetter: letter);
+          _currentQuestion = _questionEngine.generateSoundMatch(
+            targetLetter: letter,
+            optionCount: difficulty >= 3 ? 4 : 3,
+          );
         } else if (_miniGameRound == 1) {
-          _currentQuestion = _questionEngine.generateWordMatch(targetLetter: letter);
+          _currentQuestion = _questionEngine.generateWordMatch(
+            targetLetter: letter,
+            optionCount: difficulty >= 4 ? 4 : 3,
+          );
         } else {
-          _currentQuestion = _questionEngine.generateWordBuilder(targetLetter: letter);
+          _currentQuestion = _questionEngine.generateWordBuilder(
+            targetLetter: letter,
+            extraDistractors: difficulty >= 5 ? 4 : 2,
+          );
         }
         break;
       case LessonPhase.review:
-        _currentQuestion = _questionEngine.generateLetterHunt(targetLetter: letter);
+        _currentQuestion = _questionEngine.generateLetterHunt(
+          targetLetter: letter,
+        );
         break;
       case LessonPhase.celebration:
         _currentQuestion = null;
@@ -224,7 +235,8 @@ class LessonController extends ChangeNotifier {
       isCorrect = (answer == q.correctIndex) || (answer == q.targetWord);
     } else if (q is WordBuilderQuestion) {
       if (answer is List<String>) {
-        isCorrect = answer.join('').toUpperCase() == q.targetWord.word.toUpperCase();
+        isCorrect =
+            answer.join('').toUpperCase() == q.targetWord.word.toUpperCase();
       }
     } else if (q is ReviewChallengeQuestion) {
       isCorrect = (answer == q.correctIndex);
@@ -341,12 +353,14 @@ class LessonController extends ChangeNotifier {
 
     // Check achievement unlocks
     if (currentProfile != null) {
-      final updatedProfile = _progressRepository.activeProfile ?? currentProfile;
+      final updatedProfile =
+          _progressRepository.activeProfile ?? currentProfile;
       _earnedAchievements = _rewardEngine.checkAchievements(
         profile: updatedProfile,
         context: {
           'masteredLetterCount': _progressRepository.masteredLetterCount,
-          'isPerfectSession': _correctAnswers == _totalQuestions && _hintsUsed == 0,
+          'isPerfectSession':
+              _correctAnswers == _totalQuestions && _hintsUsed == 0,
         },
       );
 

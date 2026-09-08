@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:alphabet_adventure/data/content/alphabet_content.dart';
 import 'package:alphabet_adventure/data/content/world_themes.dart';
 import 'package:alphabet_adventure/data/repositories/content_repository.dart';
+import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
+import 'package:alphabet_adventure/data/services/storage_service.dart';
 import 'package:alphabet_adventure/domain/engines/mastery_engine.dart';
 import 'package:alphabet_adventure/domain/engines/question_engine.dart';
 import 'package:alphabet_adventure/domain/engines/reward_engine.dart';
@@ -31,6 +34,10 @@ void main() {
       expect(WorldThemes.all.length, equals(6));
       final allThemeLetters = WorldThemes.all.expand((w) => w.letters).toSet();
       expect(allThemeLetters.length, equals(26));
+      expect(WorldThemes.all.first.letters.length, equals(26));
+      expect(WorldThemes.all.last.letters.length, equals(26));
+      expect(WorldThemes.all.first.difficulty, equals(1));
+      expect(WorldThemes.all.last.difficulty, equals(6));
     });
 
     test('Content repository provides consistent access', () {
@@ -38,6 +45,41 @@ void main() {
       expect(repo.getAllLetters().length, equals(26));
       expect(repo.getLetterData('A')?.letter, equals('A'));
       expect(repo.getWordsForLetter('A').length, greaterThanOrEqualTo(3));
+    });
+
+    test('World map content supports the complete A-Z trail', () {
+      const repo = ContentRepository();
+      expect(repo.getAllLetters().length, equals(26));
+      expect(repo.getLettersForWorld('forest').length, equals(26));
+    });
+
+    test('World unlocks follow star thresholds', () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+      final progress = ProgressRepository(
+        storageService: StorageService(preferences),
+      );
+      await progress.init();
+      final profile = await progress.createProfile(
+        name: 'Explorer',
+        avatarIndex: 0,
+      );
+      await progress.setActiveProfile(profile.id);
+
+      expect(progress.isWorldUnlocked('forest'), isTrue);
+      expect(progress.isWorldUnlocked('farm'), isFalse);
+
+      await progress.recordLessonCompletion(
+        letterChar: 'A',
+        starsEarned: 5,
+        newMastery: MasteryLevel.introduced,
+        sessionAttempts: 1,
+        sessionCorrect: 1,
+        sessionHints: 0,
+      );
+
+      expect(progress.totalStars, equals(5));
+      expect(progress.isWorldUnlocked('farm'), isTrue);
     });
   });
 
@@ -48,11 +90,17 @@ void main() {
 
       final letterHunt = engine.generateLetterHunt(targetLetter: letterA);
       expect(letterHunt.options.length, equals(4));
-      expect(letterHunt.options[letterHunt.correctIndex], equals(letterHunt.targetSymbol));
+      expect(
+        letterHunt.options[letterHunt.correctIndex],
+        equals(letterHunt.targetSymbol),
+      );
 
       final objectHunt = engine.generateObjectHunt(targetLetter: letterA);
       expect(objectHunt.options.length, equals(4));
-      expect(objectHunt.options[objectHunt.correctIndex], equals(objectHunt.targetWord));
+      expect(
+        objectHunt.options[objectHunt.correctIndex],
+        equals(objectHunt.targetWord),
+      );
 
       final soundMatch = engine.generateSoundMatch(targetLetter: letterA);
       expect(soundMatch.options.length, equals(3));
@@ -67,7 +115,10 @@ void main() {
 
       final wordBuilder = engine.generateWordBuilder(targetLetter: letterA);
       expect(wordBuilder.targetLetters.isNotEmpty, isTrue);
-      expect(wordBuilder.scrambledPool.length, greaterThan(wordBuilder.targetLetters.length));
+      expect(
+        wordBuilder.scrambledPool.length,
+        greaterThan(wordBuilder.targetLetters.length),
+      );
     });
 
     test('MasteryEngine evaluates progression and levels up accurately', () {
@@ -107,29 +158,46 @@ void main() {
       );
     });
 
-    test('RewardEngine awards stars and achievements without punitive 0 stars', () {
-      const engine = RewardEngine();
+    test(
+      'RewardEngine awards stars and achievements without punitive 0 stars',
+      () {
+        const engine = RewardEngine();
 
-      expect(
-        engine.calculateStars(totalQuestions: 5, correctAnswers: 5, hintsUsed: 0),
-        equals(3),
-      );
+        expect(
+          engine.calculateStars(
+            totalQuestions: 5,
+            correctAnswers: 5,
+            hintsUsed: 0,
+          ),
+          equals(3),
+        );
 
-      expect(
-        engine.calculateStars(totalQuestions: 5, correctAnswers: 4, hintsUsed: 1),
-        equals(2),
-      );
+        expect(
+          engine.calculateStars(
+            totalQuestions: 5,
+            correctAnswers: 4,
+            hintsUsed: 1,
+          ),
+          equals(2),
+        );
 
-      // Completed with mistakes still earns 1 encouragement star
-      expect(
-        engine.calculateStars(totalQuestions: 5, correctAnswers: 1, hintsUsed: 4),
-        equals(1),
-      );
-    });
+        // Completed with mistakes still earns 1 encouragement star
+        expect(
+          engine.calculateStars(
+            totalQuestions: 5,
+            correctAnswers: 1,
+            hintsUsed: 4,
+          ),
+          equals(1),
+        );
+      },
+    );
   });
 
   group('UI Core Widgets Rendering', () {
-    testWidgets('AnimatedLetter displays glyph and responds to tap', (tester) async {
+    testWidgets('AnimatedLetter displays glyph and responds to tap', (
+      tester,
+    ) async {
       bool tapped = false;
 
       await tester.pumpWidget(
@@ -155,11 +223,7 @@ void main() {
     testWidgets('StarCounter displays total star count', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: StarCounter(count: 42),
-            ),
-          ),
+          home: Scaffold(body: Center(child: StarCounter(count: 42))),
         ),
       );
 
@@ -167,14 +231,14 @@ void main() {
       expect(find.byIcon(Icons.star_rounded), findsOneWidget);
     });
 
-    testWidgets('MascotWidget renders Pip the Parrot with speech bubble', (tester) async {
+    testWidgets('MascotWidget renders Pip the Parrot with speech bubble', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
             body: Center(
-              child: MascotWidget(
-                speechBubbleText: 'Welcome Explorer!',
-              ),
+              child: MascotWidget(speechBubbleText: 'Welcome Explorer!'),
             ),
           ),
         ),

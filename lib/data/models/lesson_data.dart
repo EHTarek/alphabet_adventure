@@ -57,6 +57,7 @@ class LessonData {
     required this.challenges,
     required this.vocabulary,
     this.worldTheme = 'playground',
+    this.difficulty = 1,
     this.requiredStars = 0,
   });
 
@@ -85,9 +86,25 @@ class LessonData {
   /// The world theme for the 3D/visual environment.
   final String worldTheme;
 
+  /// Level difficulty from 1 (guided) to 6 (mastery practice).
+  final int difficulty;
+
   /// Stars required to unlock this lesson (0 = always unlocked).
   final int requiredStars;
 
   /// Total number of challenges.
   int get totalChallenges => challenges.length;
+
+  LessonData copyWith({String? worldTheme, int? difficulty}) {
+    return LessonData(
+      lessonId: lessonId,
+      targetLetter: targetLetter,
+      introductionWord: introductionWord,
+      challenges: challenges,
+      vocabulary: vocabulary,
+      worldTheme: worldTheme ?? this.worldTheme,
+      difficulty: difficulty ?? this.difficulty,
+      requiredStars: requiredStars,
+    );
+  }
 }

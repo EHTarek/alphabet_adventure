@@ -49,7 +49,8 @@ class _WordBuilderViewState extends State<WordBuilderView> {
 
   void _onLetterSelected(String letter, int poolIndex) {
     if (widget.controller.isProcessing) return;
-    if (_assembledLetters.length >= widget.question.targetLetters.length) return;
+    if (_assembledLetters.length >= widget.question.targetLetters.length)
+      return;
 
     setState(() {
       _availablePool.removeAt(poolIndex);
@@ -127,45 +128,44 @@ class _WordBuilderViewState extends State<WordBuilderView> {
             showLabel: false,
           ),
           const SizedBox(height: 16),
-          // Target Letter Slots
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          // Target Letter Slots. Wrap long words across multiple rows on phones.
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
             children: List.generate(targetLength, (index) {
               final isFilled = index < _assembledLetters.length;
               final letter = isFilled ? _assembledLetters[index] : '';
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: BounceAnimation(
-                  onTap: isFilled ? () => _onSlotRemoved(index) : null,
-                  child: Container(
-                    width: 58,
-                    height: 68,
-                    decoration: BoxDecoration(
-                      color: isFilled ? AppColors.accentGreen : Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isFilled
-                            ? AppColors.accentGreenDark
-                            : AppColors.secondaryDark,
-                        width: 3,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
+              return BounceAnimation(
+                onTap: isFilled ? () => _onSlotRemoved(index) : null,
+                child: Container(
+                  width: 54,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: isFilled ? AppColors.accentGreen : Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isFilled
+                          ? AppColors.accentGreenDark
+                          : AppColors.secondaryDark,
+                      width: 3,
                     ),
-                    child: Center(
-                      child: Text(
-                        letter,
-                        style: GoogleFonts.fredoka(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: isFilled ? Colors.white : AppColors.textMuted,
-                        ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      letter,
+                      style: GoogleFonts.fredoka(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: isFilled ? Colors.white : AppColors.textMuted,
                       ),
                     ),
                   ),

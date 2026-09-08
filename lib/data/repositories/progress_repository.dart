@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:alphabet_adventure/data/models/child_profile.dart';
+import 'package:alphabet_adventure/data/content/world_themes.dart';
 import 'package:alphabet_adventure/data/models/letter_data.dart';
 import 'package:alphabet_adventure/data/models/letter_progress.dart';
 import 'package:alphabet_adventure/data/repositories/content_repository.dart';
@@ -11,7 +12,7 @@ import 'package:alphabet_adventure/domain/models/mastery_level.dart';
 /// Repository for managing child profiles and learning progress (PRS Section 17 & 24).
 class ProgressRepository extends ChangeNotifier {
   ProgressRepository({required StorageService storageService})
-      : _storage = storageService;
+    : _storage = storageService;
 
   final StorageService _storage;
   static const _uuid = Uuid();
@@ -55,8 +56,10 @@ class ProgressRepository extends ChangeNotifier {
       (sum, p) => sum + p.correctAnswers + p.incorrectAnswers,
     );
     if (total == 0) return 0.0;
-    final correct =
-        _letterProgress.values.fold(0, (sum, p) => sum + p.correctAnswers);
+    final correct = _letterProgress.values.fold(
+      0,
+      (sum, p) => sum + p.correctAnswers,
+    );
     return correct / total;
   }
 
@@ -65,9 +68,10 @@ class ProgressRepository extends ChangeNotifier {
     _loadProfiles();
     final activeId = _storage.getActiveProfileId();
     if (activeId != null) {
-      _activeProfile = _profiles
-          .cast<ChildProfile?>()
-          .firstWhere((p) => p?.id == activeId, orElse: () => null);
+      _activeProfile = _profiles.cast<ChildProfile?>().firstWhere(
+        (p) => p?.id == activeId,
+        orElse: () => null,
+      );
       if (_activeProfile != null) {
         _loadProgress(activeId);
       }
@@ -158,10 +162,12 @@ class ProgressRepository extends ChangeNotifier {
 
   /// Check if a world is unlocked for the active profile.
   bool isWorldUnlocked(String worldId) {
-    if (_activeProfile == null) return true;
-    return _activeProfile!.unlockedWorldIds.contains(worldId) ||
-        worldId == 'forest' ||
-        worldId == 'world_jungle';
+    final world = WorldThemes.getTheme(worldId);
+    if (_activeProfile == null) return world.requiredStars == 0;
+
+    return world.requiredStars <= _totalStars ||
+        _activeProfile!.unlockedWorldIds.contains(worldId) ||
+        (world.requiredStars == 0 && worldId == 'forest');
   }
 
   /// Record full lesson completion with stars and mastery evaluation.
@@ -180,7 +186,8 @@ class ProgressRepository extends ChangeNotifier {
       mastery: newMastery,
       starsEarned: current.starsEarned + starsEarned,
       correctAnswers: current.correctAnswers + sessionCorrect,
-      incorrectAnswers: current.incorrectAnswers + (sessionAttempts - sessionCorrect),
+      incorrectAnswers:
+          current.incorrectAnswers + (sessionAttempts - sessionCorrect),
       hintsUsed: current.hintsUsed + sessionHints,
       sessionCount: current.sessionCount + 1,
       lastPracticed: DateTime.now(),
@@ -200,8 +207,13 @@ class ProgressRepository extends ChangeNotifier {
   Future<void> unlockSticker(String stickerId) async {
     if (_activeProfile == null) return;
     if (!_activeProfile!.unlockedStickerIds.contains(stickerId)) {
-      final updatedStickers = [..._activeProfile!.unlockedStickerIds, stickerId];
-      _activeProfile = _activeProfile!.copyWith(unlockedStickerIds: updatedStickers);
+      final updatedStickers = [
+        ..._activeProfile!.unlockedStickerIds,
+        stickerId,
+      ];
+      _activeProfile = _activeProfile!.copyWith(
+        unlockedStickerIds: updatedStickers,
+      );
       await saveProfile(_activeProfile!);
       notifyListeners();
     }

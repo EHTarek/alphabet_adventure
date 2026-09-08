@@ -595,8 +595,52 @@ def generate_all_images():
 
     print("✅ All Visual Assets successfully created!")
 
+def generate_app_icon_assets():
+    """Create the full-bleed and transparent adaptive Pip app icon assets."""
+    print("  - App icon and adaptive foreground...")
+    size = 1024
+    coral = (255, 107, 107, 255)
+    teal = (78, 205, 196, 255)
+    yellow = (255, 209, 102, 255)
+    orange = (255, 180, 0, 255)
+    dark = (45, 52, 54, 255)
+
+    def draw_pip(canvas):
+        draw_circle(canvas, 512, 555, 300, teal)
+        draw_circle(canvas, 512, 365, 220, teal)
+        draw_circle(canvas, 435, 345, 50, (255, 255, 255, 255))
+        draw_circle(canvas, 435, 345, 25, dark)
+        draw_circle(canvas, 589, 345, 50, (255, 255, 255, 255))
+        draw_circle(canvas, 589, 345, 25, dark)
+        draw_circle(canvas, 512, 420, 70, orange)
+        draw_circle(canvas, 512, 650, 150, yellow)
+        draw_circle(canvas, 405, 530, 90, (255, 107, 107, 255))
+        draw_circle(canvas, 619, 530, 90, (255, 107, 107, 255))
+        draw_circle(canvas, 458, 270, 28, (255, 255, 255, 210))
+
+    full_icon = create_blank_canvas(size, size, coral)
+    draw_circle(full_icon, 512, 512, 432, (255, 247, 214, 255))
+    draw_circle(full_icon, 512, 512, 390, coral)
+    draw_pip(full_icon)
+    write_png(
+        os.path.join(ASSETS_DIR, "images", "ui", "app_icon.png"),
+        size,
+        size,
+        full_icon,
+    )
+
+    foreground = create_blank_canvas(size, size)
+    draw_pip(foreground)
+    write_png(
+        os.path.join(ASSETS_DIR, "images", "ui", "app_icon_foreground.png"),
+        size,
+        size,
+        foreground,
+    )
+
 
 if __name__ == "__main__":
     generate_all_audio()
     generate_all_images()
+    generate_app_icon_assets()
     print("🎉 Complete Asset Generation Finished Successfully!")

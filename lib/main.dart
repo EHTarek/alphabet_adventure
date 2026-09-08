@@ -12,12 +12,10 @@ import 'package:alphabet_adventure/data/services/storage_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Prefer portrait & landscape orientations
+  // Keep the child experience in portrait orientation.
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
   ]);
 
   // Initialize storage service

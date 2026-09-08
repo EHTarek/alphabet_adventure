@@ -20,11 +20,12 @@ class LessonDefinitions {
       final primaryWord = words.isNotEmpty ? words.first : null;
 
       // Get distractor letters (2 other letters for multiple-choice)
-      final allLetters = AlphabetContent.letters
-          .map((l) => l.letter)
-          .where((l) => l != letterData.letter)
-          .toList()
-        ..shuffle();
+      final allLetters =
+          AlphabetContent.letters
+              .map((l) => l.letter)
+              .where((l) => l != letterData.letter)
+              .toList()
+            ..shuffle();
       final distractorLetters = allLetters.take(2).toList();
 
       // Get distractor words from other letters
@@ -43,17 +44,14 @@ class LessonDefinitions {
         worldTheme: theme.id,
         requiredStars: letterIndex * 2, // progressive unlocking
         vocabulary: wordIds,
+        difficulty: theme.difficulty,
         challenges: [
           // Challenge 1: Find the letter
           ChallengeData(
             type: ChallengeType.findLetter,
             targetLetter: letterData.letter,
-            options: [
-              letterData.letter,
-              ...distractorLetters,
-            ],
-            instruction:
-                'Find the letter ${letterData.letter}!',
+            options: [letterData.letter, ...distractorLetters],
+            instruction: 'Find the letter ${letterData.letter}!',
           ),
 
           // Challenge 2: Find an object starting with the letter
@@ -62,10 +60,7 @@ class LessonDefinitions {
               type: ChallengeType.findObject,
               targetLetter: letterData.letter,
               targetWord: wordIds.first,
-              options: [
-                ...wordIds.take(2),
-                ...distractorWords.take(2),
-              ],
+              options: [...wordIds.take(2), ...distractorWords.take(2)],
               instruction:
                   'Find something that starts with ${letterData.letter}!',
             ),
@@ -74,10 +69,7 @@ class LessonDefinitions {
           ChallengeData(
             type: ChallengeType.soundMatch,
             targetLetter: letterData.letter,
-            options: [
-              letterData.letter,
-              ...distractorLetters,
-            ],
+            options: [letterData.letter, ...distractorLetters],
             instruction:
                 'Which letter makes the ${letterData.phonicsSound} sound?',
           ),
@@ -88,10 +80,7 @@ class LessonDefinitions {
               type: ChallengeType.wordMatch,
               targetLetter: letterData.letter,
               targetWord: wordIds[1],
-              options: [
-                wordIds[1],
-                ...distractorWords,
-              ],
+              options: [wordIds[1], ...distractorWords],
               instruction:
                   'Find another thing that starts with ${letterData.letter}!',
             ),
@@ -103,8 +92,7 @@ class LessonDefinitions {
               targetLetter: letterData.letter,
               targetWord: primaryWord.wordId,
               options: primaryWord.word.split(''),
-              instruction:
-                  'Can you spell ${primaryWord.displayName}?',
+              instruction: 'Can you spell ${primaryWord.displayName}?',
             ),
 
           // Challenge 6: Review (find the third object)
@@ -113,10 +101,7 @@ class LessonDefinitions {
               type: ChallengeType.review,
               targetLetter: letterData.letter,
               targetWord: wordIds[2],
-              options: [
-                wordIds[2],
-                ...distractorWords,
-              ],
+              options: [wordIds[2], ...distractorWords],
               instruction:
                   'One more! Find the ${AlphabetContent.getWord(wordIds[2])?.displayName ?? wordIds[2]}!',
             ),

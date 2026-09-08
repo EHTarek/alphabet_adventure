@@ -62,7 +62,7 @@ class AudioService extends ChangeNotifier {
   }
 
   Future<void> playMascotEncouragement() async {
-    await playMascotDialogue('encouragement');
+    await playMascotDialogue('cheer');
   }
 
   /// Play success sound effect.
@@ -105,8 +105,10 @@ class AudioService extends ChangeNotifier {
   Future<void> startBackgroundMusic([String themeId = 'forest']) async {
     if (_isMuted) return;
     try {
+      // One shared loop is currently bundled; world-specific tracks can be
+      // added later without making the current theme ID a missing asset path.
       await _musicPlayer.play(
-        AssetSource('audio/music/$themeId.mp3'),
+        AssetSource('audio/music/background.mp3'),
         volume: _musicVolume,
       );
     } catch (e) {

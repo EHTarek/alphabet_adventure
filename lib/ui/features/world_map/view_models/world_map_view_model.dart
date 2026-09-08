@@ -16,7 +16,9 @@ class WorldMapViewModel extends ChangeNotifier {
   WorldMapViewModel({
     required this._contentRepository,
     required this._progressRepository,
-  });
+  }) {
+    _progressRepository.addListener(notifyListeners);
+  }
 
   int _selectedWorldIndex = 0;
   int get selectedWorldIndex => _selectedWorldIndex;
@@ -42,6 +44,11 @@ class WorldMapViewModel extends ChangeNotifier {
     return _progressRepository.isWorldUnlocked(world.id);
   }
 
+  /// Checks whether the world containing a letter is available.
+  bool isLetterUnlocked(LetterData letter) {
+    return isWorldUnlocked(currentWorld);
+  }
+
   /// Selects a world to display.
   void selectWorld(int index) {
     if (index >= 0 && index < worlds.length) {
@@ -52,11 +59,22 @@ class WorldMapViewModel extends ChangeNotifier {
 
   /// Gets the lesson definition for a selected letter.
   LessonData getLessonForLetter(LetterData letter) {
-    return _contentRepository.getLessonForLetter(letter.char);
+    return _contentRepository
+        .getLessonForLetter(letter.char)
+        .copyWith(
+          worldTheme: currentWorld.id,
+          difficulty: currentWorld.difficulty,
+        );
   }
 
   /// Returns recommended letters for adaptive daily review.
   List<LetterData> getAdaptiveReviewLetters() {
     return _progressRepository.getLettersNeedingReview(_contentRepository);
+  }
+
+  @override
+  void dispose() {
+    _progressRepository.removeListener(notifyListeners);
+    super.dispose();
   }
 }
