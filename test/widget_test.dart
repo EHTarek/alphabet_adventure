@@ -22,8 +22,13 @@ import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/core/di/locator.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
+import 'package:alphabet_adventure/ui/core/widgets/interactive_object.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/app_theme.dart';
+import 'package:alphabet_adventure/ui/features/library/views/library_screen.dart';
+import 'package:alphabet_adventure/ui/features/library/widgets/game_tab_bar.dart';
+import 'package:alphabet_adventure/ui/features/library/widgets/interactive_game_background.dart';
+import 'package:alphabet_adventure/ui/features/library/widgets/library_game_app_bar.dart';
 import 'package:alphabet_adventure/ui/features/profile/view_models/profile_view_model.dart';
 import 'package:alphabet_adventure/ui/features/splash/views/splash_screen.dart';
 
@@ -448,6 +453,59 @@ void main() {
       expect(testAudio.tapCount, equals(1));
     });
 
+    testWidgets('AnimatedLetter skips tap sound on tap', (WidgetTester tester) async {
+      final testAudio = TestAudioService();
+      if (locator.isRegistered<AudioService>()) {
+        locator.unregister<AudioService>();
+      }
+      locator.registerSingleton<AudioService>(testAudio);
+
+      bool tapped = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AnimatedLetter(
+              letter: 'A',
+              onTap: () => tapped = true,
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(AnimatedLetter));
+      await tester.pumpAndSettle();
+
+      expect(tapped, isTrue);
+      expect(testAudio.tapCount, equals(0));
+    });
+
+    testWidgets('InteractiveObject skips tap sound on tap', (WidgetTester tester) async {
+      final testAudio = TestAudioService();
+      if (locator.isRegistered<AudioService>()) {
+        locator.unregister<AudioService>();
+      }
+      locator.registerSingleton<AudioService>(testAudio);
+
+      bool tapped = false;
+      final word = AlphabetContent.words.first;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: InteractiveObject(
+              word: word,
+              onTap: () => tapped = true,
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(InteractiveObject));
+      await tester.pumpAndSettle();
+
+      expect(tapped, isTrue);
+      expect(testAudio.tapCount, equals(0));
+    });
+
     test('AudioService skips tap sound when another voice or sound is playing', () async {
       final audio = AudioService();
       expect(audio.isPlayingVoiceOrSound, isFalse);
@@ -483,6 +541,57 @@ void main() {
       audio.setMuted(true);
       await audio.playTap();
       expect(audio.isTapPlaying, isFalse);
+    });
+  });
+
+  group('Library Screen Game & Interactivity', () {
+    testWidgets('Renders game app bar, game tabs, interactive background and mascot', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+      final storage = StorageService(preferences);
+      final progress = ProgressRepository(storageService: storage);
+      await progress.init();
+      final audio = AudioService();
+      final content = ContentRepository();
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<ProgressRepository>.value(value: progress),
+            ChangeNotifierProvider<AudioService>.value(value: audio),
+            Provider<ContentRepository>.value(value: content),
+          ],
+          child: const MaterialApp(
+            home: LibraryScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.byType(InteractiveGameBackground), findsOneWidget);
+      expect(find.byType(LibraryGameAppBar), findsOneWidget);
+      expect(find.byType(GameTabBar), findsOneWidget);
+      expect(find.byType(MascotWidget), findsOneWidget);
+
+      // Verify game tabs
+      expect(find.text('A-Z'), findsOneWidget);
+      expect(find.text('a-z'), findsOneWidget);
+      expect(find.text('Words'), findsOneWidget);
+      expect(find.text('Big'), findsOneWidget);
+      expect(find.text('Phonics'), findsOneWidget);
+      expect(find.text('Explore'), findsOneWidget);
+
+      // Switch to Words tab
+      await tester.tap(find.text('Words'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.byType(InteractiveObject), findsWidgets);
+
+      // Tap Mascot
+      await tester.tap(find.byType(MascotWidget), warnIfMissed: false);
+      await tester.pump();
     });
   });
 }

@@ -9,6 +9,7 @@ class BounceAnimation extends StatefulWidget {
   final VoidCallback? onTap;
   final double scaleFactor;
   final Duration duration;
+  final bool playTapSound;
 
   const BounceAnimation({
     super.key,
@@ -16,6 +17,7 @@ class BounceAnimation extends StatefulWidget {
     this.onTap,
     this.scaleFactor = 0.92,
     this.duration = const Duration(milliseconds: 120),
+    this.playTapSound = true,
   });
 
   @override
@@ -55,7 +57,7 @@ class _BounceAnimationState extends State<BounceAnimation>
 
   void _handleTapUp(TapUpDetails details) {
     _controller.reverse();
-    if (locator.isRegistered<AudioService>()) {
+    if (widget.playTapSound && locator.isRegistered<AudioService>()) {
       locator<AudioService>().playTap();
     }
     widget.onTap?.call();

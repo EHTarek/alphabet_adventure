@@ -43,6 +43,7 @@ class InteractiveObject extends StatelessWidget {
     }
 
     return BounceAnimation(
+      playTapSound: false,
       onTap: onTap,
       child: Container(
         width: size,

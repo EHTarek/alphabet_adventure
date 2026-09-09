@@ -24,9 +24,7 @@ class ProfileViewModel extends ChangeNotifier {
   final ProgressRepository _progressRepository;
   static const _uuid = Uuid();
 
-  ProfileViewModel({
-    required ProgressRepository progressRepository,
-  }) : _progressRepository = progressRepository;
+  ProfileViewModel({required this._progressRepository});
 
   List<ChildProfile> get profiles => _progressRepository.profiles;
   ChildProfile? get activeProfile => _progressRepository.activeProfile;

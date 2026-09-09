@@ -53,9 +53,6 @@ flutter:
     - assets/audio/mascot/
     - assets/audio/sfx/
     - assets/audio/music/
-    - assets/images/objects/
-    - assets/images/worlds/
-    - assets/images/mascot/
     - assets/images/avatars/
     - assets/images/ui/
 

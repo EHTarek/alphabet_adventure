@@ -171,24 +171,6 @@ class WorldMapScreen extends StatelessWidget {
             ),
             onPressed: () => context.go('/'),
           ),
-          // Library button
-          IconButton(
-            icon: Icon(
-              Icons.library_books_rounded,
-              size: 28,
-              color: Theme.of(context).textTheme.bodyLarge?.color,
-            ),
-            onPressed: () => context.push('/library'),
-          ),
-          // Settings button
-          IconButton(
-            icon: Icon(
-              Icons.settings_rounded,
-              size: 30,
-              color: Theme.of(context).textTheme.bodyLarge?.color,
-            ),
-            onPressed: () => context.push('/settings'),
-          ),
         ],
       ),
     );

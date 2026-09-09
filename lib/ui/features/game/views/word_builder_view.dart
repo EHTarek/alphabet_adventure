@@ -139,6 +139,7 @@ class _WordBuilderViewState extends State<WordBuilderView> {
               final letter = isFilled ? _assembledLetters[index] : '';
 
               return BounceAnimation(
+                playTapSound: false,
                 onTap: isFilled ? () => _onSlotRemoved(index) : null,
                 child: Container(
                   width: 54,

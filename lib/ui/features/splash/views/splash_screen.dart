@@ -100,9 +100,7 @@ class _SplashScreenState extends State<SplashScreen>
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
@@ -130,7 +128,9 @@ class _SplashScreenState extends State<SplashScreen>
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.08),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.08,
+                                        ),
                                         blurRadius: 6,
                                       ),
                                     ],
@@ -178,7 +178,9 @@ class _SplashScreenState extends State<SplashScreen>
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.08),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.08,
+                                        ),
                                         blurRadius: 6,
                                       ),
                                     ],
@@ -208,8 +210,9 @@ class _SplashScreenState extends State<SplashScreen>
                                   letterSpacing: 2.0,
                                   shadows: [
                                     Shadow(
-                                      color: AppColors.primaryDark
-                                          .withValues(alpha: 0.6),
+                                      color: AppColors.primaryDark.withValues(
+                                        alpha: 0.6,
+                                      ),
                                       offset: const Offset(0, 3),
                                       blurRadius: 0,
                                     ),
@@ -260,10 +263,9 @@ class _SplashScreenState extends State<SplashScreen>
                                       style: AppFonts.fredoka(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w900,
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.color,
+                                        color: Theme.of(
+                                          context,
+                                        ).textTheme.bodyLarge?.color,
                                       ),
                                     ),
                                   ),
@@ -278,7 +280,8 @@ class _SplashScreenState extends State<SplashScreen>
                         // Mascot with welcoming speech bubble
                         MascotWidget(
                           mood: MascotMood.cheering,
-                          speechBubbleText: 'What would you like to play today?',
+                          speechBubbleText:
+                              'What would you like to play today?',
                           size: 95,
                           onTap: () {
                             context

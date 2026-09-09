@@ -28,6 +28,7 @@ class AnimatedLetter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BounceAnimation(
+      playTapSound: false,
       onTap: onTap,
       child: Container(
         width: size,
