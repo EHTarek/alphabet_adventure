@@ -13,8 +13,8 @@ import subprocess
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ASSETS_DIR = os.path.join(PROJECT_ROOT, "assets")
-VOICE_NAME = os.environ.get("ALPHABET_ADVENTURE_VOICE", "Junior")
-VOICE_RATE = os.environ.get("ALPHABET_ADVENTURE_VOICE_RATE", "150")
+VOICE_NAME = os.environ.get("ALPHABET_ADVENTURE_VOICE", "Samantha")
+VOICE_RATE = os.environ.get("ALPHABET_ADVENTURE_VOICE_RATE", "145")
 
 # ----------------------------------------------------------------------
 # PNG Image Utilities (Pure Python, Zero External Dependencies)
@@ -138,13 +138,16 @@ def write_wav(filepath, samples, sample_rate=44100):
         f.write(struct.pack('<I', len(raw_data)))
         f.write(raw_data)
 
-def encode_mp3(source_path, target_path):
-    """Encode an intermediate audio file as a compatible mono MP3 asset."""
+def encode_m4a(source_path, target_path):
+    """Encode an intermediate audio file as a mono M4A (AAC) asset.
+
+    Uses macOS built-in afconvert — no external dependencies required.
+    """
     os.makedirs(os.path.dirname(target_path), exist_ok=True)
     result = subprocess.run([
-        "ffmpeg", "-y", "-loglevel", "error", "-i", source_path,
-        "-codec:a", "libmp3lame", "-b:a", "128k", "-ar", "44100", "-ac", "1",
-        target_path,
+        "afconvert", "-f", "mp4f", "-d", "aac@44100",
+        "-b", "128000", "-c", "1",
+        source_path, target_path,
     ], capture_output=True, text=True)
     if result.returncode != 0:
         raise RuntimeError(f"Unable to encode {target_path}: {result.stderr.strip()}")
@@ -290,7 +293,12 @@ def synth_background_music():
     return samples
 
 def generate_voice_file(text, target_path):
-    """Use a child-like macOS voice and encode the result as a real MP3."""
+    """Use a natural-sounding macOS voice and encode the result as M4A (AAC).
+
+    Uses macOS built-in `say` + `afconvert` — no external dependencies needed.
+    The Samantha voice provides a warm, human-like female narration ideal for
+    children's educational content.
+    """
     os.makedirs(os.path.dirname(target_path), exist_ok=True)
     temp_aiff = target_path + ".temp.aiff"
     try:
@@ -298,7 +306,12 @@ def generate_voice_file(text, target_path):
             "say", "-v", VOICE_NAME, "-r", VOICE_RATE, text,
             "-o", temp_aiff,
         ], check=True, capture_output=True, text=True)
-        encode_mp3(temp_aiff, target_path)
+        # Encode as M4A (AAC) using macOS native afconvert
+        subprocess.run([
+            "afconvert", "-f", "mp4f", "-d", "aac@44100",
+            "-b", "128000", "-c", "1",
+            temp_aiff, target_path,
+        ], check=True, capture_output=True, text=True)
         return os.path.exists(target_path)
     except Exception as e:
         print(f"Error generating voice for '{text}': {e}")
@@ -318,7 +331,7 @@ def generate_all_audio():
     print("  - Letters A–Z narration...")
     for char_code in range(ord('a'), ord('z') + 1):
         letter = chr(char_code).upper()
-        target = os.path.join(ASSETS_DIR, "audio", "letters", f"{letter.lower()}.mp3")
+        target = os.path.join(ASSETS_DIR, "audio", "letters", f"{letter.lower()}.m4a")
         generate_voice_file(f"Letter {letter}", target)
         
     # 2. Phonics A–Z
@@ -352,7 +365,7 @@ def generate_all_audio():
         'z': "Zzz. Zzz says Zebra",
     }
     for letter, ptext in phonics_texts.items():
-        target = os.path.join(ASSETS_DIR, "audio", "phonics", f"{letter}.mp3")
+        target = os.path.join(ASSETS_DIR, "audio", "phonics", f"{letter}.m4a")
         generate_voice_file(ptext, target)
         
     # 3. 78 Vocabulary Words
@@ -369,7 +382,7 @@ def generate_all_audio():
         "yak", "yarn", "yogurt", "zebra", "zipper", "zoo"
     ]
     for w in words:
-        target = os.path.join(ASSETS_DIR, "audio", "words", f"{w}.mp3")
+        target = os.path.join(ASSETS_DIR, "audio", "words", f"{w}.m4a")
         generate_voice_file(w.capitalize(), target)
         
     # 4. Mascot Dialogues
@@ -385,33 +398,33 @@ def generate_all_audio():
         mascot_phrases[f"intro_{letter.lower()}"] = f"Let's explore the letter {letter}!"
         
     for dia_id, text in mascot_phrases.items():
-        target = os.path.join(ASSETS_DIR, "audio", "mascot", f"{dia_id}.mp3")
+        target = os.path.join(ASSETS_DIR, "audio", "mascot", f"{dia_id}.m4a")
         generate_voice_file(text, target)
         
     # 5. Sound Effects (Synthesized WAV/M4A)
     print("  - Sound Effects (SFX)...")
     sfx_map = {
-        "tap.mp3": synth_tap_sfx(),
-        "success.mp3": synth_success_sfx(),
-        "try_again.mp3": synth_try_again_sfx(),
-        "hint.mp3": synth_hint_sfx(),
-        "star_earned.mp3": synth_star_sfx(),
-        "celebration.mp3": synth_celebration_sfx(),
+        "tap.m4a": synth_tap_sfx(),
+        "success.m4a": synth_success_sfx(),
+        "try_again.m4a": synth_try_again_sfx(),
+        "hint.m4a": synth_hint_sfx(),
+        "star_earned.m4a": synth_star_sfx(),
+        "celebration.m4a": synth_celebration_sfx(),
     }
     for sfx_name, samples in sfx_map.items():
         target = os.path.join(ASSETS_DIR, "audio", "sfx", sfx_name)
         temp_wav = target + ".temp.wav"
         write_wav(temp_wav, samples)
-        encode_mp3(temp_wav, target)
+        encode_m4a(temp_wav, target)
         os.remove(temp_wav)
         
     # 6. Background Music
     print("  - Background Music loop...")
     music_samples = synth_background_music()
-    music_target = os.path.join(ASSETS_DIR, "audio", "music", "background.mp3")
+    music_target = os.path.join(ASSETS_DIR, "audio", "music", "background.m4a")
     music_temp_wav = music_target + ".temp.wav"
     write_wav(music_temp_wav, music_samples)
-    encode_mp3(music_temp_wav, music_target)
+    encode_m4a(music_temp_wav, music_target)
     os.remove(music_temp_wav)
     print("✅ All Audio Assets successfully created!")
 
@@ -636,6 +649,41 @@ def generate_app_icon_assets():
         size,
         size,
         foreground,
+    )
+
+    def draw_scaled_pip(canvas, center_x, center_y, scale):
+        def pt(ox, oy, r):
+            return center_x + (ox - 512) * scale, center_y + (oy - 500) * scale, r * scale
+
+        cx, cy, r = pt(512, 555, 300); draw_circle(canvas, cx, cy, r, teal)
+        cx, cy, r = pt(512, 365, 220); draw_circle(canvas, cx, cy, r, teal)
+        cx, cy, r = pt(435, 345, 50); draw_circle(canvas, cx, cy, r, (255, 255, 255, 255))
+        cx, cy, r = pt(435, 345, 25); draw_circle(canvas, cx, cy, r, dark)
+        cx, cy, r = pt(589, 345, 50); draw_circle(canvas, cx, cy, r, (255, 255, 255, 255))
+        cx, cy, r = pt(589, 345, 25); draw_circle(canvas, cx, cy, r, dark)
+        cx, cy, r = pt(512, 420, 70); draw_circle(canvas, cx, cy, r, orange)
+        cx, cy, r = pt(512, 650, 150); draw_circle(canvas, cx, cy, r, yellow)
+        cx, cy, r = pt(405, 530, 90); draw_circle(canvas, cx, cy, r, coral)
+        cx, cy, r = pt(619, 530, 90); draw_circle(canvas, cx, cy, r, coral)
+        cx, cy, r = pt(458, 270, 28); draw_circle(canvas, cx, cy, r, (255, 255, 255, 210))
+
+    splash_canvas = create_blank_canvas(size, size)
+    draw_scaled_pip(splash_canvas, 512, 512, 1.3)
+    write_png(
+        os.path.join(ASSETS_DIR, "images", "ui", "splash_icon.png"),
+        size,
+        size,
+        splash_canvas,
+    )
+
+    a12_size = 1152
+    splash_a12_canvas = create_blank_canvas(a12_size, a12_size)
+    draw_scaled_pip(splash_a12_canvas, 576, 576, 1.05)
+    write_png(
+        os.path.join(ASSETS_DIR, "images", "ui", "splash_icon_android12.png"),
+        a12_size,
+        a12_size,
+        splash_a12_canvas,
     )
 
 

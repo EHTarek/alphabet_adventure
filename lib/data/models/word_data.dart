@@ -51,7 +51,7 @@ class WordData {
 
   /// Audio pronunciation asset path.
   String get audioPronunciation =>
-      pronunciationAudioAsset ?? 'assets/audio/words/$wordId.mp3';
+      pronunciationAudioAsset ?? 'assets/audio/words/$wordId.m4a';
 
   /// Phonics sound symbol.
   String get phoneticSpelling => '/${letter.toLowerCase()}/';

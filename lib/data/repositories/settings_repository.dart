@@ -14,13 +14,13 @@ class SettingsRepository extends ChangeNotifier {
 
   bool _showSubtitles = false;
   bool _reducedAnimations = false;
-  bool _parentalGateEnabled = true;
   bool _highContrastEnabled = false;
 
   bool get showSubtitles => _showSubtitles;
   bool get reducedAnimations => _reducedAnimations;
-  bool get parentalGateEnabled => _parentalGateEnabled;
   bool get highContrastEnabled => _highContrastEnabled;
+
+  bool _listeningToAudio = false;
 
   /// Load settings from storage.
   Future<void> init() async {
@@ -28,16 +28,54 @@ class SettingsRepository extends ChangeNotifier {
 
     _showSubtitles = settings['showSubtitles'] as bool? ?? false;
     _reducedAnimations = settings['reducedAnimations'] as bool? ?? false;
-    _parentalGateEnabled = settings['parentalGateEnabled'] as bool? ?? true;
     _highContrastEnabled = settings['highContrastEnabled'] as bool? ?? false;
 
     // Restore audio settings
     _audioService.fromSettingsMap(settings);
 
+    if (!_listeningToAudio) {
+      _audioService.addListener(_saveSettings);
+      _listeningToAudio = true;
+    }
+
     notifyListeners();
   }
 
   Future<void> initialize() => init();
+
+  @override
+  void dispose() {
+    if (_listeningToAudio) {
+      _audioService.removeListener(_saveSettings);
+      _listeningToAudio = false;
+    }
+    super.dispose();
+  }
+
+  /// Toggle mute.
+  void toggleMute() {
+    _audioService.toggleMute();
+  }
+
+  /// Set muted state.
+  void setMuted(bool muted) {
+    _audioService.setMuted(muted);
+  }
+
+  /// Set voice volume (0.0–1.0).
+  void setVoiceVolume(double volume) {
+    _audioService.setVoiceVolume(volume);
+  }
+
+  /// Set sound effects volume (0.0–1.0).
+  void setSfxVolume(double volume) {
+    _audioService.setSfxVolume(volume);
+  }
+
+  /// Set background music volume (0.0–1.0).
+  void setMusicVolume(double volume) {
+    _audioService.setMusicVolume(volume);
+  }
 
   /// Toggle subtitles display.
   void toggleSubtitles() {
@@ -49,19 +87,6 @@ class SettingsRepository extends ChangeNotifier {
   /// Toggle reduced animations.
   void toggleReducedAnimations() {
     _reducedAnimations = !_reducedAnimations;
-    _saveSettings();
-    notifyListeners();
-  }
-
-  /// Toggle parental gate.
-  void toggleParentalGate() {
-    _parentalGateEnabled = !_parentalGateEnabled;
-    _saveSettings();
-    notifyListeners();
-  }
-
-  void setParentalGateEnabled(bool enabled) {
-    _parentalGateEnabled = enabled;
     _saveSettings();
     notifyListeners();
   }
@@ -79,11 +104,12 @@ class SettingsRepository extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> saveSettings() => _saveSettings();
+
   Future<void> _saveSettings() async {
     final settings = {
       'showSubtitles': _showSubtitles,
       'reducedAnimations': _reducedAnimations,
-      'parentalGateEnabled': _parentalGateEnabled,
       'highContrastEnabled': _highContrastEnabled,
       ..._audioService.toSettingsMap(),
     };

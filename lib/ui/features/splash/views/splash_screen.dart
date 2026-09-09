@@ -8,6 +8,7 @@ import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/mascot_widget.dart';
+import 'package:alphabet_adventure/ui/features/profile/view_models/profile_view_model.dart';
 
 /// Animated splash screen introducing Pip the Parrot and guiding into profile or world map.
 class SplashScreen extends StatefulWidget {
@@ -47,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final audio = context.read<AudioService>();
       audio.playCelebrationFanfare();
-      audio.playBackgroundMusic();
+      // audio.playBackgroundMusic();
     });
   }
 
@@ -57,12 +58,19 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  void _onStartAdventure() {
+  Future<void> _onStartAdventure() async {
     final progressRepo = context.read<ProgressRepository>();
-    if (progressRepo.activeProfile != null) {
+    if (progressRepo.activeProfile == null) {
+      // First launch: auto-create a default profile so the child can play
+      // immediately. Profiles can be managed anytime from the world map.
+      final profileVM = context.read<ProfileViewModel>();
+      await profileVM.createProfile(
+        name: 'Explorer',
+        avatarId: ProfileViewModel.avatarPresets.first.id,
+      );
+    }
+    if (mounted) {
       context.go('/world_map');
-    } else {
-      context.go('/profile');
     }
   }
 

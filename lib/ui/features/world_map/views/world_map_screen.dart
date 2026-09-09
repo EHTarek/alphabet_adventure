@@ -25,9 +25,6 @@ class WorldMapScreen extends StatelessWidget {
     final letters = viewModel.currentWorldLetters;
 
     return Scaffold(
-      backgroundColor: Color(
-        currentWorld.primaryColorHex,
-      ).withValues(alpha: 0.1),
       body: Stack(
         children: [
           // Background Gradient based on selected world

@@ -6,6 +6,8 @@ import 'package:alphabet_adventure/data/content/alphabet_content.dart';
 import 'package:alphabet_adventure/data/content/world_themes.dart';
 import 'package:alphabet_adventure/data/repositories/content_repository.dart';
 import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
+import 'package:alphabet_adventure/data/repositories/settings_repository.dart';
+import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/data/services/storage_service.dart';
 import 'package:alphabet_adventure/domain/engines/mastery_engine.dart';
 import 'package:alphabet_adventure/domain/engines/question_engine.dart';
@@ -245,6 +247,74 @@ void main() {
       );
 
       expect(find.text('Welcome Explorer!'), findsOneWidget);
+    });
+  });
+
+  group('Settings & Audio Persistence Verification', () {
+    test('SettingsRepository persists and restores audio configuration across restarts', () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+      final storage = StorageService(preferences);
+
+      final audio1 = AudioService();
+      final settingsRepo1 = SettingsRepository(
+        storageService: storage,
+        audioService: audio1,
+      );
+      await settingsRepo1.init();
+
+      // Defaults
+      expect(audio1.isMuted, isFalse);
+
+      // Change mute to true
+      settingsRepo1.setMuted(true);
+      expect(audio1.isMuted, isTrue);
+
+      // Verify SharedPreferences has the saved config
+      final savedSettings = storage.getSettings();
+      expect(savedSettings['isMuted'], isTrue);
+
+      // Simulate app restart 1
+      final audio2 = AudioService();
+      final settingsRepo2 = SettingsRepository(
+        storageService: storage,
+        audioService: audio2,
+      );
+      await settingsRepo2.init();
+
+      // Should still be muted
+      expect(audio2.isMuted, isTrue);
+
+      // Now unmute
+      settingsRepo2.setMuted(false);
+      expect(audio2.isMuted, isFalse);
+      expect(storage.getSettings()['isMuted'], isFalse);
+
+      // Simulate app restart 2
+      final audio3 = AudioService();
+      final settingsRepo3 = SettingsRepository(
+        storageService: storage,
+        audioService: audio3,
+      );
+      await settingsRepo3.init();
+
+      // Should be unmuted after restart
+      expect(audio3.isMuted, isFalse);
+
+      // Test volume persistence
+      settingsRepo3.setVoiceVolume(0.45);
+      settingsRepo3.setSfxVolume(0.65);
+
+      final audio4 = AudioService();
+      final settingsRepo4 = SettingsRepository(
+        storageService: storage,
+        audioService: audio4,
+      );
+      await settingsRepo4.init();
+
+      expect(audio4.voiceVolume, closeTo(0.45, 0.001));
+      expect(audio4.sfxVolume, closeTo(0.65, 0.001));
+      expect(audio4.isMuted, isFalse);
     });
   });
 }

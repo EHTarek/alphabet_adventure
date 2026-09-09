@@ -7,47 +7,13 @@ import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
 import 'package:alphabet_adventure/domain/models/mastery_level.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/app_fonts.dart';
-import 'package:alphabet_adventure/ui/features/parent/widgets/parental_gate_dialog.dart';
 
 /// Parent dashboard displaying letter mastery heatmap, learning stats, and privacy assurance (PRS Section 14).
-class ParentDashboardScreen extends StatefulWidget {
+class ParentDashboardScreen extends StatelessWidget {
   const ParentDashboardScreen({super.key});
 
   @override
-  State<ParentDashboardScreen> createState() => _ParentDashboardScreenState();
-}
-
-class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
-  bool _isUnlocked = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final passed = await ParentalGateDialog.verify(context);
-      if (passed) {
-        if (mounted) {
-          setState(() {
-            _isUnlocked = true;
-          });
-        }
-      } else {
-        if (mounted) {
-          context.pop();
-        }
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (!_isUnlocked) {
-      return const Scaffold(
-        backgroundColor: AppColors.bgSky,
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     final progressRepo = context.watch<ProgressRepository>();
     final contentRepo = context.watch<ContentRepository>();
     final profile = progressRepo.activeProfile;
