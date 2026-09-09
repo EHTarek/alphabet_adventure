@@ -12,10 +12,7 @@ import 'package:alphabet_adventure/ui/core/app_colors.dart';
 class InteractiveGameBackground extends StatefulWidget {
   final Widget child;
 
-  const InteractiveGameBackground({
-    super.key,
-    required this.child,
-  });
+  const InteractiveGameBackground({super.key, required this.child});
 
   @override
   State<InteractiveGameBackground> createState() =>
@@ -191,10 +188,7 @@ class _TapParticlePainter extends CustomPainter {
   final List<_TapParticleGroup> groups;
   final DateTime currentTime;
 
-  _TapParticlePainter({
-    required this.groups,
-    required this.currentTime,
-  });
+  _TapParticlePainter({required this.groups, required this.currentTime});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -260,10 +254,7 @@ class _AmbientGameElementsPainter extends CustomPainter {
   final double progress;
   final bool isDark;
 
-  _AmbientGameElementsPainter({
-    required this.progress,
-    required this.isDark,
-  });
+  _AmbientGameElementsPainter({required this.progress, required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -275,10 +266,20 @@ class _AmbientGameElementsPainter extends CustomPainter {
 
     // Drifting decorative clouds
     final cloudOffset1 = (progress * (size.width + 120)) - 60;
-    _drawCloud(canvas, Offset(cloudOffset1 % (size.width + 140) - 70, 70), 50, cloudPaint);
+    _drawCloud(
+      canvas,
+      Offset(cloudOffset1 % (size.width + 140) - 70, 70),
+      50,
+      cloudPaint,
+    );
 
     final cloudOffset2 = ((progress + 0.5) * (size.width + 160)) - 80;
-    _drawCloud(canvas, Offset(cloudOffset2 % (size.width + 160) - 80, size.height * 0.45), 40, cloudPaint);
+    _drawCloud(
+      canvas,
+      Offset(cloudOffset2 % (size.width + 160) - 80, size.height * 0.45),
+      40,
+      cloudPaint,
+    );
 
     // Floating subtle sparkle stars
     final starPaint = Paint()
@@ -295,29 +296,52 @@ class _AmbientGameElementsPainter extends CustomPainter {
 
     _drawTwinkleStar(
       canvas,
-      Offset(size.width * 0.12, size.height * 0.65 + cos(progress * 2 * pi) * 10),
+      Offset(
+        size.width * 0.12,
+        size.height * 0.65 + cos(progress * 2 * pi) * 10,
+      ),
       14 + cos(progress * 4 * pi) * 3,
       starPaint,
     );
 
     _drawTwinkleStar(
       canvas,
-      Offset(size.width * 0.9, size.height * 0.8 + sin(progress * 2 * pi + 1) * 8),
+      Offset(
+        size.width * 0.9,
+        size.height * 0.8 + sin(progress * 2 * pi + 1) * 8,
+      ),
       10 + sin(progress * 4 * pi + 1) * 2,
       starPaint,
     );
   }
 
-  void _drawCloud(Canvas canvas, Offset center, double baseRadius, Paint paint) {
+  void _drawCloud(
+    Canvas canvas,
+    Offset center,
+    double baseRadius,
+    Paint paint,
+  ) {
     canvas.drawCircle(center, baseRadius, paint);
-    canvas.drawCircle(Offset(center.dx - baseRadius * 0.6, center.dy + baseRadius * 0.2), baseRadius * 0.7, paint);
-    canvas.drawCircle(Offset(center.dx + baseRadius * 0.7, center.dy + baseRadius * 0.2), baseRadius * 0.8, paint);
+    canvas.drawCircle(
+      Offset(center.dx - baseRadius * 0.6, center.dy + baseRadius * 0.2),
+      baseRadius * 0.7,
+      paint,
+    );
+    canvas.drawCircle(
+      Offset(center.dx + baseRadius * 0.7, center.dy + baseRadius * 0.2),
+      baseRadius * 0.8,
+      paint,
+    );
   }
 
-  void _drawTwinkleStar(Canvas canvas, Offset center, double radius, Paint paint) {
+  void _drawTwinkleStar(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    Paint paint,
+  ) {
     final path = Path();
     final r = radius;
-    final small = radius * 0.25;
 
     path.moveTo(center.dx, center.dy - r);
     path.quadraticBezierTo(center.dx, center.dy, center.dx + r, center.dy);
