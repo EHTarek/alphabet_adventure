@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:alphabet_adventure/core/di/locator.dart';
+import 'package:alphabet_adventure/data/services/audio_service.dart';
+
 /// Interactive bouncy container that squishes slightly on tap and rebounds.
 class BounceAnimation extends StatefulWidget {
   final Widget child;
@@ -52,6 +55,9 @@ class _BounceAnimationState extends State<BounceAnimation>
 
   void _handleTapUp(TapUpDetails details) {
     _controller.reverse();
+    if (locator.isRegistered<AudioService>()) {
+      locator<AudioService>().playTap();
+    }
     widget.onTap?.call();
   }
 

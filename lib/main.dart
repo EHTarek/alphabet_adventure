@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,10 +11,10 @@ void main() async {
   // never requests it over the network. This keeps the app genuinely
   // offline-only, which the store listing claims and the Play Data safety
   // declaration depends on.
-  LicenseRegistry.addLicense(() async* {
-    final license = await rootBundle.loadString('assets/fonts/OFL.txt');
-    yield LicenseEntryWithLineBreaks(const ['Fredoka'], license);
-  });
+  // LicenseRegistry.addLicense(() async* {
+  //   final license = await rootBundle.loadString('assets/fonts/OFL.txt');
+  //   yield LicenseEntryWithLineBreaks(const ['Fredoka'], license);
+  // });
 
   // Keep the child experience in portrait orientation.
   await SystemChrome.setPreferredOrientations([

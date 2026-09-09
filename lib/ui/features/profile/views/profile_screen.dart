@@ -289,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       runSpacing: 12,
                       children: ProfileViewModel.avatarPresets.map((avatar) {
                         final isSelected = avatar.id == selectedAvatarId;
-                        return GestureDetector(
+                        return BounceAnimation(
                           onTap: () {
                             setDialogState(() {
                               selectedAvatarId = avatar.id;

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 
@@ -8,7 +9,12 @@ class AudioService extends ChangeNotifier {
   // Audio players
   final AudioPlayer _narrationPlayer = AudioPlayer();
   final AudioPlayer _sfxPlayer = AudioPlayer();
+  final AudioPlayer _tapPlayer = AudioPlayer();
   final AudioPlayer _musicPlayer = AudioPlayer();
+
+  StreamSubscription<PlayerState>? _narrationSub;
+  StreamSubscription<PlayerState>? _sfxSub;
+  StreamSubscription<PlayerState>? _tapSub;
 
   // Volume levels (0.0–1.0)
   double _voiceVolume = 1.0;
@@ -17,6 +23,8 @@ class AudioService extends ChangeNotifier {
   bool _isMuted = false;
 
   bool _isNarrating = false;
+  bool _isSfxPlaying = false;
+  bool _isTapPlaying = false;
 
   double get voiceVolume => _voiceVolume;
   double get sfxVolume => _sfxVolume;
@@ -24,10 +32,48 @@ class AudioService extends ChangeNotifier {
   bool get isMuted => _isMuted;
   bool get isNarrating => _isNarrating;
 
+  /// Whether voice narration is currently playing.
+  bool get isVoicePlaying =>
+      _isNarrating || _narrationPlayer.state == PlayerState.playing;
+
+  /// Whether a sound effect is currently playing.
+  bool get isSfxPlaying =>
+      _isSfxPlaying || _sfxPlayer.state == PlayerState.playing;
+
+  /// Whether a tap sound is currently playing.
+  bool get isTapPlaying =>
+      _isTapPlaying || _tapPlayer.state == PlayerState.playing;
+
+  /// Whether any voice or sound effect is currently playing.
+  bool get isPlayingVoiceOrSound => isVoicePlaying || isSfxPlaying;
+
+  /// Test helper to simulate player states without native platform audio events.
+  @visibleForTesting
+  void setPlayingStateForTesting({bool? isVoice, bool? isSfx, bool? isTap}) {
+    if (isVoice != null) _isNarrating = isVoice;
+    if (isSfx != null) _isSfxPlaying = isSfx;
+    if (isTap != null) _isTapPlaying = isTap;
+  }
+
   /// Initialize the audio service.
   Future<void> init() async {
     await _musicPlayer.setReleaseMode(ReleaseMode.loop);
     await _updateVolumes();
+
+    _narrationSub = _narrationPlayer.onPlayerStateChanged.listen((state) {
+      _isNarrating = state == PlayerState.playing;
+      if (state != PlayerState.playing) {
+        _musicPlayer.setVolume(_isMuted ? 0.0 : _musicVolume);
+      }
+    });
+
+    _sfxSub = _sfxPlayer.onPlayerStateChanged.listen((state) {
+      _isSfxPlaying = state == PlayerState.playing;
+    });
+
+    _tapSub = _tapPlayer.onPlayerStateChanged.listen((state) {
+      _isTapPlaying = state == PlayerState.playing;
+    });
   }
 
   Future<void> initialize() => init();
@@ -96,9 +142,23 @@ class AudioService extends ChangeNotifier {
 
   Future<void> playCelebrationFanfare() => playCelebration();
 
-  /// Play tap/click sound.
+  /// Play tap/click sound for any button tap.
+  /// Skips playing if another voice or sound is already playing.
   Future<void> playTap() async {
-    await _playSfx('assets/audio/sfx/tap.m4a');
+    if (_isMuted || isPlayingVoiceOrSound || isTapPlaying) return;
+    _isTapPlaying = true;
+    try {
+      await _tapPlayer.play(
+        AssetSource('audio/sfx/tap.m4a'),
+        volume: _sfxVolume,
+      );
+      _tapPlayer.onPlayerComplete.first.then((_) {
+        _isTapPlaying = false;
+      });
+    } catch (e) {
+      debugPrint('Tap audio not available: $e');
+      _isTapPlaying = false;
+    }
   }
 
   /// Start background music for a world theme.
@@ -178,6 +238,17 @@ class AudioService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Stop all voices and sounds.
+  Future<void> stopAll() async {
+    await _narrationPlayer.stop();
+    await _sfxPlayer.stop();
+    await _tapPlayer.stop();
+    _isNarrating = false;
+    _isSfxPlaying = false;
+    _isTapPlaying = false;
+    await _musicPlayer.setVolume(_isMuted ? 0.0 : _musicVolume);
+  }
+
   // --- Private helpers ---
 
   Future<void> _playNarration(String assetPath) async {
@@ -205,13 +276,18 @@ class AudioService extends ChangeNotifier {
 
   Future<void> _playSfx(String assetPath) async {
     if (_isMuted) return;
+    _isSfxPlaying = true;
     try {
       await _sfxPlayer.play(
         AssetSource(assetPath.replaceFirst('assets/', '')),
         volume: _sfxVolume,
       );
+      _sfxPlayer.onPlayerComplete.first.then((_) {
+        _isSfxPlaying = false;
+      });
     } catch (e) {
       debugPrint('SFX audio not available: $e');
+      _isSfxPlaying = false;
     }
   }
 
@@ -219,13 +295,18 @@ class AudioService extends ChangeNotifier {
     final effectiveMute = _isMuted ? 0.0 : 1.0;
     await _narrationPlayer.setVolume(_voiceVolume * effectiveMute);
     await _sfxPlayer.setVolume(_sfxVolume * effectiveMute);
+    await _tapPlayer.setVolume(_sfxVolume * effectiveMute);
     await _musicPlayer.setVolume(_musicVolume * effectiveMute);
   }
 
   @override
   void dispose() {
+    _narrationSub?.cancel();
+    _sfxSub?.cancel();
+    _tapSub?.cancel();
     _narrationPlayer.dispose();
     _sfxPlayer.dispose();
+    _tapPlayer.dispose();
     _musicPlayer.dispose();
     super.dispose();
   }

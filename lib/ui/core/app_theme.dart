@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/app_fonts.dart';
+import 'package:alphabet_adventure/ui/core/sound_splash_factory.dart';
 
 /// App theme configuring child-friendly typography, oversized touch targets,
 /// and rounded vibrant components (PRS Section 16 & 23).
@@ -11,6 +12,7 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      splashFactory: const SoundSplashFactory(),
       brightness: Brightness.light,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.bgSky,
@@ -162,6 +164,7 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      splashFactory: const SoundSplashFactory(),
       brightness: Brightness.dark,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.bgDark,

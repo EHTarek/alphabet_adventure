@@ -20,6 +20,8 @@ import 'package:alphabet_adventure/ui/core/widgets/star_counter.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'package:alphabet_adventure/core/di/locator.dart';
+import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/app_theme.dart';
 import 'package:alphabet_adventure/ui/features/profile/view_models/profile_view_model.dart';
@@ -36,6 +38,11 @@ void main() {
       .setMockMethodCallHandler(
     const MethodChannel('xyz.luan/audioplayers'),
     (MethodCall methodCall) async => null,
+  );
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(
+    const MethodChannel('plugins.flutter.io/path_provider'),
+    (MethodCall methodCall) async => '.',
   );
   group('Educational Content Verification', () {
     test('All 26 letters A–Z are defined with vocabulary and phonics', () {
@@ -386,4 +393,107 @@ void main() {
       expect(lightTheme.colorScheme.onSurface, equals(AppColors.textDark));
     });
   });
+
+  group('Button Tap Sound Verification', () {
+    testWidgets('BounceAnimation triggers playTap on tap', (WidgetTester tester) async {
+      final testAudio = TestAudioService();
+      if (locator.isRegistered<AudioService>()) {
+        locator.unregister<AudioService>();
+      }
+      locator.registerSingleton<AudioService>(testAudio);
+
+      bool tapped = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: BounceAnimation(
+              onTap: () => tapped = true,
+              child: const Text('Tap Me'),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Tap Me'));
+      await tester.pumpAndSettle();
+
+      expect(tapped, isTrue);
+      expect(testAudio.tapCount, equals(1));
+    });
+
+    testWidgets('ElevatedButton with SoundSplashFactory triggers playTap on tap', (WidgetTester tester) async {
+      final testAudio = TestAudioService();
+      if (locator.isRegistered<AudioService>()) {
+        locator.unregister<AudioService>();
+      }
+      locator.registerSingleton<AudioService>(testAudio);
+
+      bool pressed = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: Scaffold(
+            body: ElevatedButton(
+              onPressed: () => pressed = true,
+              child: const Text('Button'),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Button'));
+      await tester.pumpAndSettle();
+
+      expect(pressed, isTrue);
+      expect(testAudio.tapCount, equals(1));
+    });
+
+    test('AudioService skips tap sound when another voice or sound is playing', () async {
+      final audio = AudioService();
+      expect(audio.isPlayingVoiceOrSound, isFalse);
+
+      // When narration/voice is active
+      audio.setPlayingStateForTesting(isVoice: true);
+      expect(audio.isVoicePlaying, isTrue);
+      expect(audio.isPlayingVoiceOrSound, isTrue);
+
+      // Attempting to play tap should be skipped
+      await audio.playTap();
+      expect(audio.isTapPlaying, isFalse);
+
+      // When voice stops
+      audio.setPlayingStateForTesting(isVoice: false);
+      expect(audio.isPlayingVoiceOrSound, isFalse);
+
+      // When sound effect is active
+      audio.setPlayingStateForTesting(isSfx: true);
+      expect(audio.isSfxPlaying, isTrue);
+      expect(audio.isPlayingVoiceOrSound, isTrue);
+
+      // Attempting to play tap should be skipped
+      await audio.playTap();
+      expect(audio.isTapPlaying, isFalse);
+
+      // When stopAll is called
+      await audio.stopAll();
+      expect(audio.isPlayingVoiceOrSound, isFalse);
+      expect(audio.isTapPlaying, isFalse);
+
+      // When muted, tap should also skip
+      audio.setMuted(true);
+      await audio.playTap();
+      expect(audio.isTapPlaying, isFalse);
+    });
+  });
 }
+
+class TestAudioService extends AudioService {
+  int tapCount = 0;
+
+  @override
+  Future<void> playTap() async {
+    tapCount++;
+    return super.playTap();
+  }
+}
+
