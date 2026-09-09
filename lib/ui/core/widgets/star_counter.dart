@@ -21,7 +21,7 @@ class StarCounter extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(color: AppColors.accentYellowDark, width: 2.5),
           boxShadow: [
@@ -43,10 +43,10 @@ class StarCounter extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               '$count',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
           ],

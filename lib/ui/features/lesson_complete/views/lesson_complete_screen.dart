@@ -52,7 +52,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
     final achievements = controller.earnedAchievements;
 
     return Scaffold(
-      backgroundColor: AppColors.bgSky,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: CelebrationAnimation(
         isPlaying: true,
         child: SafeArea(
@@ -77,7 +77,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                   textAlign: TextAlign.center,
                   style: AppFonts.fredoka(
                     fontSize: 18,
-                    color: AppColors.textDark,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -119,7 +119,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).cardTheme.color,
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
                         color: masteryResult.leveledUp
@@ -157,7 +157,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                               style: AppFonts.fredoka(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.textDark,
+                                color: Theme.of(context).textTheme.bodyLarge?.color,
                               ),
                             ),
                           ],
@@ -201,7 +201,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                               style: AppFonts.fredoka(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.textDark,
+                                color: Theme.of(context).textTheme.bodyLarge?.color,
                               ),
                             ),
                           ],
@@ -245,7 +245,7 @@ class _LessonCompleteScreenState extends State<LessonCompleteScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).cardTheme.color,
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(color: AppColors.primary, width: 3),
                           ),

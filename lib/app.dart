@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'package:alphabet_adventure/core/di/locator.dart';
 import 'package:alphabet_adventure/data/repositories/content_repository.dart';
 import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
 import 'package:alphabet_adventure/data/repositories/settings_repository.dart';
@@ -14,6 +15,7 @@ import 'package:alphabet_adventure/domain/engines/reward_engine.dart';
 import 'package:alphabet_adventure/ui/core/app_theme.dart';
 import 'package:alphabet_adventure/ui/features/game/views/game_screen.dart';
 import 'package:alphabet_adventure/ui/features/lesson_complete/views/lesson_complete_screen.dart';
+import 'package:alphabet_adventure/ui/features/library/views/library_screen.dart';
 import 'package:alphabet_adventure/ui/features/parent/views/parent_dashboard_screen.dart';
 import 'package:alphabet_adventure/ui/features/profile/view_models/profile_view_model.dart';
 import 'package:alphabet_adventure/ui/features/profile/views/profile_screen.dart';
@@ -24,20 +26,7 @@ import 'package:alphabet_adventure/ui/features/world_map/views/world_map_screen.
 
 /// Top-level application widget configuring providers, declarative routing, and themes.
 class AlphabetAdventureApp extends StatefulWidget {
-  final AudioService audioService;
-  final AnalyticsService analyticsService;
-  final ContentRepository contentRepository;
-  final ProgressRepository progressRepository;
-  final SettingsRepository settingsRepository;
-
-  const AlphabetAdventureApp({
-    super.key,
-    required this.audioService,
-    required this.analyticsService,
-    required this.contentRepository,
-    required this.progressRepository,
-    required this.settingsRepository,
-  });
+  const AlphabetAdventureApp({super.key});
 
   @override
   State<AlphabetAdventureApp> createState() => _AlphabetAdventureAppState();
@@ -80,53 +69,47 @@ class _AlphabetAdventureAppState extends State<AlphabetAdventureApp> {
           path: '/settings',
           builder: (context, state) => const SettingsScreen(),
         ),
+        GoRoute(
+          path: '/library',
+          builder: (context, state) => const LibraryScreen(),
+        ),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final questionEngine = QuestionEngine();
-    const masteryEngine = MasteryEngine();
-    const rewardEngine = RewardEngine();
-
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: widget.audioService),
-        ChangeNotifierProvider.value(value: widget.progressRepository),
-        ChangeNotifierProvider.value(value: widget.settingsRepository),
-        Provider.value(value: widget.analyticsService),
-        Provider.value(value: widget.contentRepository),
-        Provider.value(value: questionEngine),
-        Provider.value(value: masteryEngine),
-        Provider.value(value: rewardEngine),
+        ChangeNotifierProvider.value(value: locator<AudioService>()),
+        ChangeNotifierProvider.value(value: locator<ProgressRepository>()),
+        ChangeNotifierProvider.value(value: locator<SettingsRepository>()),
+        Provider.value(value: locator<AnalyticsService>()),
+        Provider.value(value: locator<ContentRepository>()),
+        Provider.value(value: locator<QuestionEngine>()),
+        Provider.value(value: locator<MasteryEngine>()),
+        Provider.value(value: locator<RewardEngine>()),
         ChangeNotifierProvider(
-          create: (_) => ProfileViewModel(
-            progressRepository: widget.progressRepository,
-          ),
+          create: (_) => locator<ProfileViewModel>(),
         ),
         ChangeNotifierProvider(
-          create: (_) => WorldMapViewModel(
-            contentRepository: widget.contentRepository,
-            progressRepository: widget.progressRepository,
-          ),
+          create: (_) => locator<WorldMapViewModel>(),
         ),
         ChangeNotifierProvider(
-          create: (_) => LessonController(
-            questionEngine: questionEngine,
-            masteryEngine: masteryEngine,
-            rewardEngine: rewardEngine,
-            progressRepository: widget.progressRepository,
-            audioService: widget.audioService,
-            analyticsService: widget.analyticsService,
-          ),
+          create: (_) => locator<LessonController>(),
         ),
       ],
-      child: MaterialApp.router(
-        title: 'Alphabet Adventure 3D',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        routerConfig: _router,
+      child: Consumer<SettingsRepository>(
+        builder: (context, settings, child) {
+          return MaterialApp.router(
+            title: 'Alphabet Adventure 3D',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: settings.themeMode,
+            routerConfig: _router,
+          );
+        },
       ),
     );
   }

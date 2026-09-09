@@ -39,7 +39,7 @@ class WorldMapScreen extends StatelessWidget {
                     Color(
                       currentWorld.secondaryColorHex,
                     ).withValues(alpha: 0.15),
-                    AppColors.bgSky,
+                    Theme.of(context).scaffoldBackgroundColor,
                   ],
                 ),
               ),
@@ -86,7 +86,7 @@ class WorldMapScreen extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.bgCream.withValues(alpha: 0.96),
+        color: Theme.of(context).cardTheme.color?.withValues(alpha: 0.96),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: themeAccent.withValues(alpha: 0.65),
@@ -108,7 +108,7 @@ class WorldMapScreen extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color,
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.secondaryDark, width: 2.5),
                 boxShadow: [
@@ -138,7 +138,7 @@ class WorldMapScreen extends StatelessWidget {
                   style: AppFonts.fredoka(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
                 Text(
@@ -163,12 +163,21 @@ class WorldMapScreen extends StatelessWidget {
           // Star Counter
           StarCounter(count: viewModel.totalStars),
           const SizedBox(width: 8),
+          // Library button
+          IconButton(
+            icon: Icon(
+              Icons.library_books_rounded,
+              size: 28,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+            ),
+            onPressed: () => context.push('/library'),
+          ),
           // Settings button
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.settings_rounded,
               size: 30,
-              color: AppColors.textDark,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
             ),
             onPressed: () => context.push('/settings'),
           ),
@@ -222,7 +231,7 @@ class WorldMapScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? Color(world.primaryColorHex)
-                      : Colors.white,
+                      : Theme.of(context).cardTheme.color,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
@@ -259,7 +268,7 @@ class WorldMapScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: isSelected
                             ? Colors.white
-                            : (isUnlocked ? AppColors.textDark : Colors.grey),
+                            : (isUnlocked ? Theme.of(context).textTheme.bodyLarge?.color : Colors.grey),
                       ),
                     ),
                   ],
@@ -360,7 +369,7 @@ class WorldMapScreen extends StatelessWidget {
               width: 130,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color,
                 borderRadius: BorderRadius.circular(28),
                 border: Border.all(color: nodeColor, width: 3.5),
                 boxShadow: [
@@ -409,7 +418,7 @@ class WorldMapScreen extends StatelessWidget {
                     style: AppFonts.fredoka(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textDark,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                   if (!isUnlocked)
@@ -481,7 +490,7 @@ class WorldMapScreen extends StatelessWidget {
               style: AppFonts.fredoka(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
           ],
@@ -492,7 +501,7 @@ class WorldMapScreen extends StatelessWidget {
           '${world.requiredStarsToUnlock} stars.',
           style: AppFonts.fredoka(
             fontSize: 17,
-            color: AppColors.textDark,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
             height: 1.35,
           ),
         ),

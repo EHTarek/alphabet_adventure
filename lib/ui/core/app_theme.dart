@@ -125,4 +125,124 @@ class AppTheme {
       ),
     );
   }
+
+  static ThemeData get darkTheme {
+    final baseTextTheme = AppFonts.fredokaTextTheme();
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      primaryColor: AppColors.primary,
+      scaffoldBackgroundColor: AppColors.bgDark,
+      colorScheme: const ColorScheme.dark(
+        primary: AppColors.primary,
+        secondary: AppColors.secondary,
+        surface: AppColors.bgCardDark,
+        error: AppColors.tryAgain,
+      ),
+      textTheme: baseTextTheme.copyWith(
+        displayLarge: baseTextTheme.displayLarge?.copyWith(
+          fontSize: 48,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textLight,
+          letterSpacing: 1.2,
+        ),
+        displayMedium: baseTextTheme.displayMedium?.copyWith(
+          fontSize: 36,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textLight,
+        ),
+        displaySmall: baseTextTheme.displaySmall?.copyWith(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textLight,
+        ),
+        headlineLarge: baseTextTheme.headlineLarge?.copyWith(
+          fontSize: 24,
+          fontWeight: FontWeight.w700,
+          color: AppColors.textLight,
+        ),
+        headlineMedium: baseTextTheme.headlineMedium?.copyWith(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textLight,
+        ),
+        titleLarge: baseTextTheme.titleLarge?.copyWith(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textLight,
+        ),
+        bodyLarge: baseTextTheme.bodyLarge?.copyWith(
+          fontSize: 18,
+          color: AppColors.textLight,
+          height: 1.4,
+        ),
+        bodyMedium: baseTextTheme.bodyMedium?.copyWith(
+          fontSize: 16,
+          color: AppColors.textLight,
+          height: 1.4,
+        ),
+        labelLarge: baseTextTheme.labelLarge?.copyWith(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.5,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.textLight,
+          elevation: 6,
+          shadowColor: AppColors.primaryDark.withValues(alpha: 0.5),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+          minimumSize: const Size(64, 60),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          textStyle: AppFonts.fredoka(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.primaryLight,
+          side: const BorderSide(color: AppColors.primaryLight, width: 3),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          minimumSize: const Size(56, 56),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          textStyle: AppFonts.fredoka(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: AppColors.bgCardDark,
+        elevation: 6,
+        shadowColor: Colors.black.withValues(alpha: 0.3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        margin: const EdgeInsets.all(8),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.bgCardDark,
+        elevation: 12,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(28),
+        ),
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: AppColors.textLight, size: 28),
+      ),
+    );
+  }
 }

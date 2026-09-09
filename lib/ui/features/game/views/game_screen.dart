@@ -56,17 +56,19 @@ class GameScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bgSky,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
           // Background Gradient
           Positioned.fill(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Color(0xFFE8F7FF), Color(0xFFFFFDF5)],
+                  colors: Theme.of(context).brightness == Brightness.light
+                      ? const [Color(0xFFE8F7FF), Color(0xFFFFFDF5)]
+                      : [Theme.of(context).scaffoldBackgroundColor, const Color(0xFF1E272C)],
                 ),
               ),
             ),
@@ -86,9 +88,9 @@ class GameScreen extends StatelessWidget {
           ),
           // Encouraging Feedback Overlay
           if (controller.feedbackStatus == AnswerFeedbackStatus.correct)
-            _buildSuccessOverlay(controller.feedbackMessage),
+            _buildSuccessOverlay(context, controller.feedbackMessage),
           if (controller.feedbackStatus == AnswerFeedbackStatus.tryAgain)
-            _buildTryAgainOverlay(controller.feedbackMessage),
+            _buildTryAgainOverlay(context, controller.feedbackMessage),
         ],
       ),
     );
@@ -113,7 +115,7 @@ class GameScreen extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color,
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.primary, width: 2.5),
                 boxShadow: [
@@ -233,7 +235,7 @@ class GameScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildSuccessOverlay(String? message) {
+  Widget _buildSuccessOverlay(BuildContext context, String? message) {
     return Positioned.fill(
       child: CelebrationAnimation(
         isPlaying: true,
@@ -243,7 +245,7 @@ class GameScreen extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color,
                 borderRadius: BorderRadius.circular(32),
                 border: Border.all(color: AppColors.success, width: 4),
                 boxShadow: [
@@ -279,7 +281,7 @@ class GameScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTryAgainOverlay(String? message) {
+  Widget _buildTryAgainOverlay(BuildContext context, String? message) {
     return Positioned.fill(
       child: Container(
         color: Colors.black.withValues(alpha: 0.1),
@@ -287,7 +289,7 @@ class GameScreen extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardTheme.color,
               borderRadius: BorderRadius.circular(28),
               border: Border.all(color: AppColors.tryAgain, width: 3.5),
             ),

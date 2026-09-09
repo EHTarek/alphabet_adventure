@@ -38,6 +38,7 @@ class AppColors {
   static const Color bgSky = Color(0xFFE8F7FF);
   static const Color bgCream = Color(0xFFFFFDF5);
   static const Color bgCard = Color(0xFFFFFFFF);
+  static const Color bgCardDark = Color(0xFF37474F);
   static const Color bgDark = Color(0xFF263238);
 
   // --- Feedback ---

@@ -69,7 +69,7 @@ class LetterIntroView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardTheme.color,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: AppColors.accentYellowDark, width: 2.5),
             ),
@@ -86,7 +86,7 @@ class LetterIntroView extends StatelessWidget {
                   style: AppFonts.fredoka(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
               ],
@@ -98,11 +98,11 @@ class LetterIntroView extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               'Words starting with "${letter.uppercase}":',
-              style: AppFonts.fredoka(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
-              ),
+                style: AppFonts.fredoka(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
             ),
           ),
           const SizedBox(height: 10),

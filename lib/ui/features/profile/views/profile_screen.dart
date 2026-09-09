@@ -24,14 +24,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profiles = viewModel.profiles;
 
     return Scaffold(
-      backgroundColor: AppColors.bgSky,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Who is Playing?',
           style: AppFonts.fredoka(
             fontSize: 28,
             fontWeight: FontWeight.bold,
-            color: AppColors.textDark,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
         actions: [
@@ -105,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
             color: Color(avatar.colorHex),
@@ -129,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               decoration: BoxDecoration(
                 color: Color(avatar.colorHex).withValues(alpha: 0.2),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2.5),
+                border: Border.all(color: Theme.of(context).cardTheme.color ?? Colors.white, width: 2.5),
               ),
               child: Center(
                 child: Icon(
@@ -147,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: AppFonts.fredoka(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
             const SizedBox(height: 6),
@@ -184,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       onTap: () => _showCreateProfileDialog(context, viewModel),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
             color: AppColors.secondaryDark.withValues(alpha: 0.5),
@@ -242,7 +242,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(28),
               ),
@@ -252,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: AppFonts.fredoka(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textDark,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
               content: SingleChildScrollView(
@@ -269,7 +269,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         filled: true,
-                        fillColor: AppColors.bgSky,
+                        fillColor: Theme.of(context).scaffoldBackgroundColor,
                       ),
                       style: AppFonts.fredoka(fontSize: 18),
                       onChanged: (val) => name = val,
@@ -280,7 +280,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: AppFonts.fredoka(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textDark,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                     ),
                     const SizedBox(height: 12),

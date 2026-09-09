@@ -44,7 +44,7 @@ class AnimatedLetter extends StatelessWidget {
             ],
           ),
           border: Border.all(
-            color: isSelected ? AppColors.accentYellow : Colors.white,
+            color: isSelected ? AppColors.accentYellow : (Theme.of(context).cardTheme.color ?? Colors.white),
             width: isSelected ? 4 : 3,
           ),
           boxShadow: [

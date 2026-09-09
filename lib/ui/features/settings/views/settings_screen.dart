@@ -19,11 +19,15 @@ class SettingsScreen extends StatelessWidget {
     final progressRepo = context.read<ProgressRepository>();
 
     return Scaffold(
-      backgroundColor: AppColors.bgSky,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Settings',
-          style: AppFonts.fredoka(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textDark),
+          style: AppFonts.fredoka(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).textTheme.titleLarge?.color,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -32,16 +36,19 @@ class SettingsScreen extends StatelessWidget {
           children: [
             // Audio Controls Group
             _buildSectionCard(
+              context: context,
               title: 'Audio Settings',
               icon: Icons.volume_up_rounded,
               children: [
                 _buildSlider(
+                  context: context,
                   label: 'Voice Narration',
                   value: audioService.voiceVolume,
                   onChanged: (val) => settingsRepo.setVoiceVolume(val),
                 ),
                 const SizedBox(height: 12),
                 _buildSlider(
+                  context: context,
                   label: 'Sound Effects (SFX)',
                   value: audioService.sfxVolume,
                   onChanged: (val) => settingsRepo.setSfxVolume(val),
@@ -56,7 +63,11 @@ class SettingsScreen extends StatelessWidget {
                 SwitchListTile(
                   title: Text(
                     'Mute All Sounds',
-                    style: AppFonts.fredoka(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textDark),
+                    style: AppFonts.fredoka(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                   value: audioService.isMuted,
                   activeThumbColor: AppColors.primary,
@@ -67,17 +78,25 @@ class SettingsScreen extends StatelessWidget {
             const SizedBox(height: 20),
             // Accessibility Preferences Group
             _buildSectionCard(
+              context: context,
               title: 'Accessibility & Display',
               icon: Icons.accessibility_new_rounded,
               children: [
                 SwitchListTile(
                   title: Text(
                     'Show Subtitles',
-                    style: AppFonts.fredoka(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textDark),
+                    style: AppFonts.fredoka(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                   subtitle: Text(
                     'Show spoken learning prompts on screen',
-                    style: AppFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
+                    style: AppFonts.fredoka(
+                      fontSize: 13,
+                      color: AppColors.textMuted,
+                    ),
                   ),
                   value: settingsRepo.showSubtitles,
                   activeThumbColor: AppColors.primary,
@@ -87,11 +106,18 @@ class SettingsScreen extends StatelessWidget {
                 SwitchListTile(
                   title: Text(
                     'Reduced Motion',
-                    style: AppFonts.fredoka(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textDark),
+                    style: AppFonts.fredoka(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                   subtitle: Text(
                     'Use simpler animations and camera movement',
-                    style: AppFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
+                    style: AppFonts.fredoka(
+                      fontSize: 13,
+                      color: AppColors.textMuted,
+                    ),
                   ),
                   value: settingsRepo.reducedAnimations,
                   activeThumbColor: AppColors.primary,
@@ -101,27 +127,100 @@ class SettingsScreen extends StatelessWidget {
                 SwitchListTile(
                   title: Text(
                     'High Contrast Mode',
-                    style: AppFonts.fredoka(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textDark),
+                    style: AppFonts.fredoka(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                   subtitle: Text(
                     'Increases visual clarity and outlines',
-                    style: AppFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
+                    style: AppFonts.fredoka(
+                      fontSize: 13,
+                      color: AppColors.textMuted,
+                    ),
                   ),
                   value: settingsRepo.highContrastEnabled,
                   activeThumbColor: AppColors.primary,
                   onChanged: (val) => settingsRepo.setHighContrastEnabled(val),
+                ),
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'App Theme',
+                        style: AppFonts.fredoka(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                      Text(
+                        'Choose light or dark mode',
+                        style: AppFonts.fredoka(
+                          fontSize: 13,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: SegmentedButton<ThemeMode>(
+                          style: SegmentedButton.styleFrom(
+                            selectedForegroundColor: Theme.of(
+                              context,
+                            ).cardTheme.color,
+                            selectedBackgroundColor: AppColors.primary,
+                          ),
+                          segments: const [
+                            ButtonSegment(
+                              value: ThemeMode.system,
+                              icon: Icon(Icons.brightness_auto),
+                            ),
+                            ButtonSegment(
+                              value: ThemeMode.light,
+                              icon: Icon(Icons.light_mode),
+                            ),
+                            ButtonSegment(
+                              value: ThemeMode.dark,
+                              icon: Icon(Icons.dark_mode),
+                            ),
+                          ],
+                          selected: {settingsRepo.themeMode},
+                          onSelectionChanged: (Set<ThemeMode> newSelection) {
+                            settingsRepo.setThemeMode(newSelection.first);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
             // Parent Dashboard Link
             ListTile(
-              tileColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              leading: const Icon(Icons.analytics_rounded, color: AppColors.secondaryDark),
+              tileColor: Theme.of(context).cardTheme.color,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              leading: const Icon(
+                Icons.analytics_rounded,
+                color: AppColors.secondaryDark,
+              ),
               title: Text(
                 'Open Parent Dashboard',
-                style: AppFonts.fredoka(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark),
+                style: AppFonts.fredoka(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
               ),
               trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 18),
               onTap: () => context.push('/parent'),
@@ -129,12 +228,21 @@ class SettingsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             // Reset Progress (Destructive action with confirmation)
             ListTile(
-              tileColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              leading: const Icon(Icons.refresh_rounded, color: AppColors.primary),
+              tileColor: Theme.of(context).cardTheme.color,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              leading: const Icon(
+                Icons.refresh_rounded,
+                color: AppColors.primary,
+              ),
               title: Text(
                 'Reset Current Profile Progress',
-                style: AppFonts.fredoka(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.primary),
+                style: AppFonts.fredoka(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
               ),
               onTap: () => _confirmReset(context, progressRepo),
             ),
@@ -145,9 +253,14 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionCard({required String title, required IconData icon, required List<Widget> children}) {
+  Widget _buildSectionCard({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+  }) {
     return Material(
-      color: Colors.white,
+      color: Theme.of(context).cardTheme.color,
       borderRadius: BorderRadius.circular(24),
       elevation: 1.5,
       shadowColor: Colors.black.withValues(alpha: 0.05),
@@ -163,7 +276,11 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   title,
-                  style: AppFonts.fredoka(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textDark),
+                  style: AppFonts.fredoka(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.titleLarge?.color,
+                  ),
                 ),
               ],
             ),
@@ -175,7 +292,12 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSlider({required String label, required double value, required ValueChanged<double> onChanged}) {
+  Widget _buildSlider({
+    required BuildContext context,
+    required String label,
+    required double value,
+    required ValueChanged<double> onChanged,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -184,12 +306,24 @@ class SettingsScreen extends StatelessWidget {
           children: [
             Text(
               label,
-              style: AppFonts.fredoka(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textDark),
+              style: AppFonts.fredoka(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
+              ),
             ),
-            Text('${(value * 100).round()}%', style: AppFonts.fredoka(fontSize: 14, color: AppColors.textMuted)),
+            Text(
+              '${(value * 100).round()}%',
+              style: AppFonts.fredoka(fontSize: 14, color: AppColors.textMuted),
+            ),
           ],
         ),
-        Slider(value: value, activeColor: AppColors.primary, inactiveColor: AppColors.bgSky, onChanged: onChanged),
+        Slider(
+          value: value,
+          activeColor: AppColors.primary,
+          inactiveColor: AppColors.primary.withValues(alpha: 0.2),
+          onChanged: onChanged,
+        ),
       ],
     );
   }
@@ -199,7 +333,10 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Text('Reset Learning Progress?', style: AppFonts.fredoka(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Reset Learning Progress?',
+          style: AppFonts.fredoka(fontWeight: FontWeight.bold),
+        ),
         content: Text(
           'This will clear stars and mastery records for the current profile.',
           style: AppFonts.fredoka(fontSize: 16),
@@ -215,9 +352,11 @@ class SettingsScreen extends StatelessWidget {
               Navigator.pop(dialogContext);
               await progressRepo.resetAllProgress();
               if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('Progress reset!', style: AppFonts.fredoka())));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Progress reset!', style: AppFonts.fredoka()),
+                  ),
+                );
               }
             },
             child: Text('Reset', style: AppFonts.fredoka(fontSize: 16)),

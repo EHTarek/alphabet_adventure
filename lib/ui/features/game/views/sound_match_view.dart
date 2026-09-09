@@ -34,7 +34,7 @@ class SoundMatchView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardTheme.color,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: AppColors.secondaryDark, width: 2.5),
             ),
@@ -46,7 +46,7 @@ class SoundMatchView extends StatelessWidget {
                     style: AppFonts.fredoka(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                 ),

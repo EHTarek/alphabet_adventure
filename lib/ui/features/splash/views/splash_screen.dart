@@ -150,7 +150,7 @@ class _SplashScreenState extends State<SplashScreen>
                             style: AppFonts.fredoka(
                               fontSize: 22,
                               fontWeight: FontWeight.w900,
-                              color: AppColors.textDark,
+                              color: Theme.of(context).textTheme.bodyLarge?.color,
                             ),
                           ),
                         ),

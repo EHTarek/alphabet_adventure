@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/data/services/storage_service.dart';
-import 'package:flutter/foundation.dart';
 
 /// Repository for app settings and preferences (PRS Section 21 & 22).
 class SettingsRepository extends ChangeNotifier {
@@ -15,10 +16,12 @@ class SettingsRepository extends ChangeNotifier {
   bool _showSubtitles = false;
   bool _reducedAnimations = false;
   bool _highContrastEnabled = false;
+  ThemeMode _themeMode = ThemeMode.system;
 
   bool get showSubtitles => _showSubtitles;
   bool get reducedAnimations => _reducedAnimations;
   bool get highContrastEnabled => _highContrastEnabled;
+  ThemeMode get themeMode => _themeMode;
 
   bool _listeningToAudio = false;
 
@@ -29,6 +32,11 @@ class SettingsRepository extends ChangeNotifier {
     _showSubtitles = settings['showSubtitles'] as bool? ?? false;
     _reducedAnimations = settings['reducedAnimations'] as bool? ?? false;
     _highContrastEnabled = settings['highContrastEnabled'] as bool? ?? false;
+
+    final themeStr = settings['themeMode'] as String?;
+    if (themeStr == 'light') _themeMode = ThemeMode.light;
+    else if (themeStr == 'dark') _themeMode = ThemeMode.dark;
+    else _themeMode = ThemeMode.system;
 
     // Restore audio settings
     _audioService.fromSettingsMap(settings);
@@ -104,6 +112,12 @@ class SettingsRepository extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setThemeMode(ThemeMode mode) {
+    _themeMode = mode;
+    _saveSettings();
+    notifyListeners();
+  }
+
   Future<void> saveSettings() => _saveSettings();
 
   Future<void> _saveSettings() async {
@@ -111,6 +125,7 @@ class SettingsRepository extends ChangeNotifier {
       'showSubtitles': _showSubtitles,
       'reducedAnimations': _reducedAnimations,
       'highContrastEnabled': _highContrastEnabled,
+      'themeMode': _themeMode.name,
       ..._audioService.toSettingsMap(),
     };
     await _storage.saveSettings(settings);

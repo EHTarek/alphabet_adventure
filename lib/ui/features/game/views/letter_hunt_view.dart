@@ -35,7 +35,7 @@ class LetterHuntView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardTheme.color,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: AppColors.secondaryDark, width: 2.5),
               boxShadow: [
@@ -58,7 +58,7 @@ class LetterHuntView extends StatelessWidget {
                     style: AppFonts.fredoka(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                 ),
@@ -91,7 +91,7 @@ class LetterHuntView extends StatelessWidget {
                 style: AppFonts.fredoka(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textDark,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
             ),

@@ -27,7 +27,7 @@ class WordMatchView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardTheme.color,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: AppColors.accentPurple, width: 2.5),
             ),
@@ -45,7 +45,7 @@ class WordMatchView extends StatelessWidget {
                     style: AppFonts.fredoka(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                 ),
@@ -70,7 +70,7 @@ class WordMatchView extends StatelessWidget {
               style: AppFonts.fredoka(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textDark,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
           ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/repositories/content_repository.dart';
@@ -21,14 +20,14 @@ class ParentDashboardScreen extends StatelessWidget {
     final reviewLetters = progressRepo.getLettersNeedingReview(contentRepo);
 
     return Scaffold(
-      backgroundColor: AppColors.bgSky,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Parent Dashboard',
           style: AppFonts.fredoka(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: AppColors.textDark,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
       ),
@@ -42,7 +41,7 @@ class ParentDashboardScreen extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color,
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
@@ -58,7 +57,9 @@ class ParentDashboardScreen extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 28,
-                        backgroundColor: AppColors.secondary.withValues(alpha: 0.2),
+                        backgroundColor: AppColors.secondary.withValues(
+                          alpha: 0.2,
+                        ),
                         child: const Icon(
                           Icons.face_rounded,
                           size: 38,
@@ -75,7 +76,7 @@ class ParentDashboardScreen extends StatelessWidget {
                               style: AppFonts.fredoka(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.textDark,
+                                color: Theme.of(context).textTheme.bodyLarge?.color,
                               ),
                             ),
                             Text(
@@ -122,7 +123,7 @@ class ParentDashboardScreen extends StatelessWidget {
               style: AppFonts.fredoka(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
             const SizedBox(height: 12),
@@ -130,7 +131,7 @@ class ParentDashboardScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color,
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Wrap(
@@ -196,7 +197,7 @@ class ParentDashboardScreen extends StatelessWidget {
                 style: AppFonts.fredoka(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textDark,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
               const SizedBox(height: 8),
@@ -205,7 +206,10 @@ class ParentDashboardScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.accentYellow.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppColors.accentYellowDark, width: 2),
+                  border: Border.all(
+                    color: AppColors.accentYellowDark,
+                    width: 2,
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -222,7 +226,7 @@ class ParentDashboardScreen extends StatelessWidget {
                         'benefit from a quick practice session today!',
                         style: AppFonts.fredoka(
                           fontSize: 16,
-                          color: AppColors.textDark,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                       ),
                     ),
@@ -235,13 +239,17 @@ class ParentDashboardScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: AppColors.secondary, width: 1.5),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.shield_rounded, color: AppColors.secondaryDark, size: 36),
+                  const Icon(
+                    Icons.shield_rounded,
+                    color: AppColors.secondaryDark,
+                    size: 36,
+                  ),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
@@ -252,7 +260,7 @@ class ParentDashboardScreen extends StatelessWidget {
                           style: AppFonts.fredoka(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textDark,
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -294,10 +302,7 @@ class ParentDashboardScreen extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: AppFonts.fredoka(
-            fontSize: 14,
-            color: AppColors.textMuted,
-          ),
+          style: AppFonts.fredoka(fontSize: 14, color: AppColors.textMuted),
         ),
       ],
     );
@@ -318,10 +323,7 @@ class ParentDashboardScreen extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           label,
-          style: AppFonts.fredoka(
-            fontSize: 13,
-            color: AppColors.textMuted,
-          ),
+          style: AppFonts.fredoka(fontSize: 13, color: AppColors.textMuted),
         ),
       ],
     );

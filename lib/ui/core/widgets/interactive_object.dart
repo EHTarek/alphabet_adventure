@@ -28,8 +28,8 @@ class InteractiveObject extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color borderColor = Colors.white;
-    Color bgColor = Colors.white;
+    Color borderColor = Theme.of(context).cardTheme.color ?? Colors.white;
+    Color bgColor = Theme.of(context).cardTheme.color ?? Colors.white;
 
     if (isCorrect) {
       borderColor = AppColors.success;
@@ -72,7 +72,7 @@ class InteractiveObject extends StatelessWidget {
             if (showLabel) ...[
               const SizedBox(height: 6),
               // Word label with initial letter highlighted
-              _buildHighlightedWord(word),
+              _buildHighlightedWord(context, word),
             ],
           ],
         ),
@@ -80,7 +80,7 @@ class InteractiveObject extends StatelessWidget {
     );
   }
 
-  Widget _buildHighlightedWord(WordData word) {
+  Widget _buildHighlightedWord(BuildContext context, WordData word) {
     final firstChar = word.word.isNotEmpty ? word.word[0] : '';
     final rest = word.word.length > 1 ? word.word.substring(1) : '';
 
@@ -101,7 +101,7 @@ class InteractiveObject extends StatelessWidget {
             style: AppFonts.fredoka(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: AppColors.textDark,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
             ),
           ),
         ],

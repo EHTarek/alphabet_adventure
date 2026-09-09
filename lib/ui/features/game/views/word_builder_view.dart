@@ -86,7 +86,7 @@ class _WordBuilderViewState extends State<WordBuilderView> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardTheme.color,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: AppColors.secondaryDark, width: 2.5),
             ),
@@ -103,7 +103,7 @@ class _WordBuilderViewState extends State<WordBuilderView> {
                     style: AppFonts.fredoka(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                 ),
@@ -144,7 +144,7 @@ class _WordBuilderViewState extends State<WordBuilderView> {
                   width: 54,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: isFilled ? AppColors.accentGreen : Colors.white,
+                    color: isFilled ? AppColors.accentGreen : Theme.of(context).cardTheme.color,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: isFilled
@@ -166,7 +166,7 @@ class _WordBuilderViewState extends State<WordBuilderView> {
                       style: AppFonts.fredoka(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: isFilled ? Colors.white : AppColors.textMuted,
+                        color: isFilled ? Colors.white : (Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.5) ?? AppColors.textMuted),
                       ),
                     ),
                   ),
