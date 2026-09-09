@@ -18,6 +18,7 @@ class AppTheme {
         primary: AppColors.primary,
         secondary: AppColors.secondary,
         surface: AppColors.bgCard,
+        onSurface: AppColors.textDark,
         error: AppColors.tryAgain,
       ),
       textTheme: baseTextTheme.copyWith(
@@ -47,8 +48,23 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           color: AppColors.textDark,
         ),
+        headlineSmall: baseTextTheme.headlineSmall?.copyWith(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textDark,
+        ),
         titleLarge: baseTextTheme.titleLarge?.copyWith(
           fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textDark,
+        ),
+        titleMedium: baseTextTheme.titleMedium?.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textDark,
+        ),
+        titleSmall: baseTextTheme.titleSmall?.copyWith(
+          fontSize: 14,
           fontWeight: FontWeight.w600,
           color: AppColors.textDark,
         ),
@@ -59,6 +75,11 @@ class AppTheme {
         ),
         bodyMedium: baseTextTheme.bodyMedium?.copyWith(
           fontSize: 16,
+          color: AppColors.textDark,
+          height: 1.4,
+        ),
+        bodySmall: baseTextTheme.bodySmall?.copyWith(
+          fontSize: 14,
           color: AppColors.textDark,
           height: 1.4,
         ),
@@ -116,6 +137,16 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28),
         ),
+        titleTextStyle: AppFonts.fredoka(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textDark,
+        ),
+        contentTextStyle: AppFonts.fredoka(
+          fontSize: 16,
+          color: AppColors.textDark,
+          height: 1.4,
+        ),
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
@@ -127,7 +158,7 @@ class AppTheme {
   }
 
   static ThemeData get darkTheme {
-    final baseTextTheme = AppFonts.fredokaTextTheme();
+    final baseTextTheme = AppFonts.fredokaTextTheme(ThemeData.dark().textTheme);
 
     return ThemeData(
       useMaterial3: true,
@@ -138,6 +169,7 @@ class AppTheme {
         primary: AppColors.primary,
         secondary: AppColors.secondary,
         surface: AppColors.bgCardDark,
+        onSurface: AppColors.textLight,
         error: AppColors.tryAgain,
       ),
       textTheme: baseTextTheme.copyWith(
@@ -167,8 +199,23 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           color: AppColors.textLight,
         ),
+        headlineSmall: baseTextTheme.headlineSmall?.copyWith(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textLight,
+        ),
         titleLarge: baseTextTheme.titleLarge?.copyWith(
           fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textLight,
+        ),
+        titleMedium: baseTextTheme.titleMedium?.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textLight,
+        ),
+        titleSmall: baseTextTheme.titleSmall?.copyWith(
+          fontSize: 14,
           fontWeight: FontWeight.w600,
           color: AppColors.textLight,
         ),
@@ -179,6 +226,11 @@ class AppTheme {
         ),
         bodyMedium: baseTextTheme.bodyMedium?.copyWith(
           fontSize: 16,
+          color: AppColors.textLight,
+          height: 1.4,
+        ),
+        bodySmall: baseTextTheme.bodySmall?.copyWith(
+          fontSize: 14,
           color: AppColors.textLight,
           height: 1.4,
         ),
@@ -235,6 +287,16 @@ class AppTheme {
         elevation: 12,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28),
+        ),
+        titleTextStyle: AppFonts.fredoka(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textLight,
+        ),
+        contentTextStyle: AppFonts.fredoka(
+          fontSize: 16,
+          color: AppColors.textLight,
+          height: 1.4,
         ),
       ),
       appBarTheme: const AppBarTheme(

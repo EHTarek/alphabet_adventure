@@ -17,7 +17,26 @@ import 'package:alphabet_adventure/ui/core/widgets/animated_letter.dart';
 import 'package:alphabet_adventure/ui/core/widgets/mascot_widget.dart';
 import 'package:alphabet_adventure/ui/core/widgets/star_counter.dart';
 
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/app_theme.dart';
+import 'package:alphabet_adventure/ui/features/profile/view_models/profile_view_model.dart';
+import 'package:alphabet_adventure/ui/features/splash/views/splash_screen.dart';
+
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(
+    const MethodChannel('xyz.luan/audioplayers.global'),
+    (MethodCall methodCall) async => null,
+  );
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(
+    const MethodChannel('xyz.luan/audioplayers'),
+    (MethodCall methodCall) async => null,
+  );
   group('Educational Content Verification', () {
     test('All 26 letters A–Z are defined with vocabulary and phonics', () {
       expect(AlphabetContent.letters.length, equals(26));
@@ -315,6 +334,56 @@ void main() {
       expect(audio4.voiceVolume, closeTo(0.45, 0.001));
       expect(audio4.sfxVolume, closeTo(0.65, 0.001));
       expect(audio4.isMuted, isFalse);
+    });
+  });
+
+  group('Main Menu Choice Option Grid', () {
+    testWidgets('Renders Game, A to Z, a to z, and Words options', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+      final storage = StorageService(preferences);
+      final progress = ProgressRepository(storageService: storage);
+      await progress.init();
+      final audio = AudioService();
+      final profileVM = ProfileViewModel(progressRepository: progress);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<ProgressRepository>.value(value: progress),
+            ChangeNotifierProvider<AudioService>.value(value: audio),
+            ChangeNotifierProvider<ProfileViewModel>.value(value: profileVM),
+          ],
+          child: const MaterialApp(
+            home: SplashScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+
+      expect(find.text('Game'), findsOneWidget);
+      expect(find.text('A to Z'), findsOneWidget);
+      expect(find.text('a to z'), findsOneWidget);
+      expect(find.text('Words'), findsOneWidget);
+    });
+  });
+
+  group('Theme Verification', () {
+    test('Dialog title and content styles are visible in dark mode', () {
+      final darkTheme = AppTheme.darkTheme;
+      expect(darkTheme.dialogTheme.titleTextStyle?.color, equals(AppColors.textLight));
+      expect(darkTheme.dialogTheme.contentTextStyle?.color, equals(AppColors.textLight));
+      expect(darkTheme.textTheme.headlineSmall?.color, equals(AppColors.textLight));
+      expect(darkTheme.colorScheme.onSurface, equals(AppColors.textLight));
+    });
+
+    test('Dialog title and content styles are visible in light mode', () {
+      final lightTheme = AppTheme.lightTheme;
+      expect(lightTheme.dialogTheme.titleTextStyle?.color, equals(AppColors.textDark));
+      expect(lightTheme.dialogTheme.contentTextStyle?.color, equals(AppColors.textDark));
+      expect(lightTheme.textTheme.headlineSmall?.color, equals(AppColors.textDark));
+      expect(lightTheme.colorScheme.onSurface, equals(AppColors.textDark));
     });
   });
 }

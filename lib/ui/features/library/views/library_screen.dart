@@ -12,7 +12,9 @@ import 'package:alphabet_adventure/ui/core/widgets/animated_letter.dart';
 import 'package:alphabet_adventure/ui/core/widgets/interactive_object.dart';
 
 class LibraryScreen extends StatelessWidget {
-  const LibraryScreen({super.key});
+  const LibraryScreen({super.key, this.initialIndex = 0});
+
+  final int initialIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class LibraryScreen extends StatelessWidget {
 
     return DefaultTabController(
       length: 3,
+      initialIndex: initialIndex.clamp(0, 2),
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(

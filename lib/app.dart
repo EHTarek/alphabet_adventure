@@ -71,7 +71,11 @@ class _AlphabetAdventureAppState extends State<AlphabetAdventureApp> {
         ),
         GoRoute(
           path: '/library',
-          builder: (context, state) => const LibraryScreen(),
+          builder: (context, state) {
+            final tabParam = state.uri.queryParameters['tab'];
+            final initialIndex = int.tryParse(tabParam ?? '') ?? 0;
+            return LibraryScreen(initialIndex: initialIndex);
+          },
         ),
       ],
     );

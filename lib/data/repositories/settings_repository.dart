@@ -34,9 +34,13 @@ class SettingsRepository extends ChangeNotifier {
     _highContrastEnabled = settings['highContrastEnabled'] as bool? ?? false;
 
     final themeStr = settings['themeMode'] as String?;
-    if (themeStr == 'light') _themeMode = ThemeMode.light;
-    else if (themeStr == 'dark') _themeMode = ThemeMode.dark;
-    else _themeMode = ThemeMode.system;
+    if (themeStr == 'light') {
+      _themeMode = ThemeMode.light;
+    } else if (themeStr == 'dark') {
+      _themeMode = ThemeMode.dark;
+    } else {
+      _themeMode = ThemeMode.system;
+    }
 
     // Restore audio settings
     _audioService.fromSettingsMap(settings);

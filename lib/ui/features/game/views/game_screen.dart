@@ -33,10 +33,7 @@ class GameScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'No lesson selected',
-                style: AppFonts.fredoka(fontSize: 20),
-              ),
+              Text('No lesson selected', style: AppFonts.fredoka(fontSize: 20)),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => context.go('/world_map'),
@@ -68,7 +65,10 @@ class GameScreen extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: Theme.of(context).brightness == Brightness.light
                       ? const [Color(0xFFE8F7FF), Color(0xFFFFFDF5)]
-                      : [Theme.of(context).scaffoldBackgroundColor, const Color(0xFF1E272C)],
+                      : [
+                          Theme.of(context).scaffoldBackgroundColor,
+                          const Color(0xFF1E272C),
+                        ],
                 ),
               ),
             ),
@@ -80,9 +80,7 @@ class GameScreen extends StatelessWidget {
                 _buildTopHUD(context, controller, progressRepo.totalStars),
                 const SizedBox(height: 8),
                 // Main Interactive Game View based on phase
-                Expanded(
-                  child: _buildPhaseView(controller),
-                ),
+                Expanded(child: _buildPhaseView(controller)),
               ],
             ),
           ),
@@ -171,7 +169,9 @@ class GameScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isPassed
                       ? AppColors.accentGreen
-                      : (isCurrent ? AppColors.accentYellowDark : Colors.grey.shade300),
+                      : (isCurrent
+                            ? AppColors.accentYellowDark
+                            : Colors.grey.shade300),
                   borderRadius: BorderRadius.circular(6),
                 ),
               );

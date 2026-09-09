@@ -162,7 +162,15 @@ class WorldMapScreen extends StatelessWidget {
           ),
           // Star Counter
           StarCounter(count: viewModel.totalStars),
-          const SizedBox(width: 8),
+          // Home button to return to mode choice menu
+          IconButton(
+            icon: Icon(
+              Icons.home_rounded,
+              size: 28,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+            ),
+            onPressed: () => context.go('/'),
+          ),
           // Library button
           IconButton(
             icon: Icon(
