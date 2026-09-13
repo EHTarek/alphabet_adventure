@@ -70,8 +70,10 @@ class _ModelStageState extends State<_ModelStage> {
   vm.Aabb3? _bounds;
   bool _failed = false;
 
-  /// Extra yaw from the child's drags, on top of the idle spin.
-  double _dragYaw = 0;
+  /// Extra yaw from the child's drags, on top of the idle spin. Starts at
+  /// half a turn so the camera opens on the +Z side, which is the front of a
+  /// glTF model.
+  double _dragYaw = math.pi;
 
   @override
   void initState() {

@@ -47,8 +47,8 @@ class AlphabetContent {
   static const List<WordData> words = [
     // A
     WordData(wordId: 'apple', displayName: 'Apple', letter: 'A', word: 'APPLE', category: 'food', emoji: '🍎', modelAsset: 'assets/models/apple.glb'),
-    WordData(wordId: 'ant', displayName: 'Ant', letter: 'A', word: 'ANT', category: 'animal', emoji: '🐜'),
-    WordData(wordId: 'airplane', displayName: 'Airplane', letter: 'A', word: 'AIRPLANE', category: 'vehicle', emoji: '✈️'),
+    WordData(wordId: 'ant', displayName: 'Ant', letter: 'A', word: 'ANT', category: 'animal', emoji: '🐜', modelAsset: 'assets/models/ant.glb'),
+    WordData(wordId: 'airplane', displayName: 'Airplane', letter: 'A', word: 'AIRPLANE', category: 'vehicle', emoji: '✈️', modelAsset: 'assets/models/airplane.glb'),
     // B
     WordData(wordId: 'ball', displayName: 'Ball', letter: 'B', word: 'BALL', category: 'toy', emoji: '⚽', modelAsset: 'assets/models/ball.glb'),
     WordData(wordId: 'bear', displayName: 'Bear', letter: 'B', word: 'BEAR', category: 'animal', emoji: '🐻', modelAsset: 'assets/models/bear.glb'),
@@ -60,95 +60,95 @@ class AlphabetContent {
     // D
     WordData(wordId: 'dog', displayName: 'Dog', letter: 'D', word: 'DOG', category: 'animal', emoji: '🐕', modelAsset: 'assets/models/dog.glb'),
     WordData(wordId: 'duck', displayName: 'Duck', letter: 'D', word: 'DUCK', category: 'animal', emoji: '🦆', modelAsset: 'assets/models/duck.glb'),
-    WordData(wordId: 'drum', displayName: 'Drum', letter: 'D', word: 'DRUM', category: 'music', emoji: '🥁'),
+    WordData(wordId: 'drum', displayName: 'Drum', letter: 'D', word: 'DRUM', category: 'music', emoji: '🥁', modelAsset: 'assets/models/drum.glb'),
     // E
     WordData(wordId: 'egg', displayName: 'Egg', letter: 'E', word: 'EGG', category: 'food', emoji: '🥚', modelAsset: 'assets/models/egg.glb'),
     WordData(wordId: 'elephant', displayName: 'Elephant', letter: 'E', word: 'ELEPHANT', category: 'animal', emoji: '🐘', modelAsset: 'assets/models/elephant.glb'),
     WordData(wordId: 'engine', displayName: 'Engine', letter: 'E', word: 'ENGINE', category: 'vehicle', emoji: '🚂', modelAsset: 'assets/models/engine.glb'),
     // F
     WordData(wordId: 'fish', displayName: 'Fish', letter: 'F', word: 'FISH', category: 'animal', emoji: '🐟', modelAsset: 'assets/models/fish.glb'),
-    WordData(wordId: 'frog', displayName: 'Frog', letter: 'F', word: 'FROG', category: 'animal', emoji: '🐸'),
+    WordData(wordId: 'frog', displayName: 'Frog', letter: 'F', word: 'FROG', category: 'animal', emoji: '🐸', modelAsset: 'assets/models/frog.glb'),
     WordData(wordId: 'flower', displayName: 'Flower', letter: 'F', word: 'FLOWER', category: 'nature', emoji: '🌸', modelAsset: 'assets/models/flower.glb'),
     // G
-    WordData(wordId: 'goat', displayName: 'Goat', letter: 'G', word: 'GOAT', category: 'animal', emoji: '🐐'),
+    WordData(wordId: 'goat', displayName: 'Goat', letter: 'G', word: 'GOAT', category: 'animal', emoji: '🐐', modelAsset: 'assets/models/goat.glb'),
     WordData(wordId: 'grape', displayName: 'Grape', letter: 'G', word: 'GRAPE', category: 'food', emoji: '🍇', modelAsset: 'assets/models/grape.glb'),
-    WordData(wordId: 'guitar', displayName: 'Guitar', letter: 'G', word: 'GUITAR', category: 'music', emoji: '🎸'),
+    WordData(wordId: 'guitar', displayName: 'Guitar', letter: 'G', word: 'GUITAR', category: 'music', emoji: '🎸', modelAsset: 'assets/models/guitar.glb'),
     // H
-    WordData(wordId: 'hat', displayName: 'Hat', letter: 'H', word: 'HAT', category: 'clothing', emoji: '🎩'),
+    WordData(wordId: 'hat', displayName: 'Hat', letter: 'H', word: 'HAT', category: 'clothing', emoji: '🎩', modelAsset: 'assets/models/hat.glb'),
     WordData(wordId: 'horse', displayName: 'Horse', letter: 'H', word: 'HORSE', category: 'animal', emoji: '🐴', modelAsset: 'assets/models/horse.glb'),
     WordData(wordId: 'house', displayName: 'House', letter: 'H', word: 'HOUSE', category: 'building', emoji: '🏠', modelAsset: 'assets/models/house.glb'),
     // I
-    WordData(wordId: 'ice', displayName: 'Ice', letter: 'I', word: 'ICE', category: 'nature', emoji: '🧊'),
-    WordData(wordId: 'igloo', displayName: 'Igloo', letter: 'I', word: 'IGLOO', category: 'building', emoji: '🏠'),
+    WordData(wordId: 'ice', displayName: 'Ice', letter: 'I', word: 'ICE', category: 'nature', emoji: '🧊', modelAsset: 'assets/models/ice.glb'),
+    WordData(wordId: 'igloo', displayName: 'Igloo', letter: 'I', word: 'IGLOO', category: 'building', emoji: '🏠', modelAsset: 'assets/models/igloo.glb'),
     WordData(wordId: 'insect', displayName: 'Insect', letter: 'I', word: 'INSECT', category: 'animal', emoji: '🐛', modelAsset: 'assets/models/insect.glb'),
     // J
     WordData(wordId: 'jar', displayName: 'Jar', letter: 'J', word: 'JAR', category: 'object', emoji: '🏺', modelAsset: 'assets/models/jar.glb'),
-    WordData(wordId: 'jellyfish', displayName: 'Jellyfish', letter: 'J', word: 'JELLYFISH', category: 'animal', emoji: '🪼'),
+    WordData(wordId: 'jellyfish', displayName: 'Jellyfish', letter: 'J', word: 'JELLYFISH', category: 'animal', emoji: '🪼', modelAsset: 'assets/models/jellyfish.glb'),
     WordData(wordId: 'juice', displayName: 'Juice', letter: 'J', word: 'JUICE', category: 'food', emoji: '🧃', modelAsset: 'assets/models/juice.glb'),
     // K
-    WordData(wordId: 'kite', displayName: 'Kite', letter: 'K', word: 'KITE', category: 'toy', emoji: '🪁'),
-    WordData(wordId: 'king', displayName: 'King', letter: 'K', word: 'KING', category: 'people', emoji: '🤴'),
-    WordData(wordId: 'kangaroo', displayName: 'Kangaroo', letter: 'K', word: 'KANGAROO', category: 'animal', emoji: '🦘'),
+    WordData(wordId: 'kite', displayName: 'Kite', letter: 'K', word: 'KITE', category: 'toy', emoji: '🪁', modelAsset: 'assets/models/kite.glb'),
+    WordData(wordId: 'king', displayName: 'King', letter: 'K', word: 'KING', category: 'people', emoji: '🤴', modelAsset: 'assets/models/king.glb'),
+    WordData(wordId: 'kangaroo', displayName: 'Kangaroo', letter: 'K', word: 'KANGAROO', category: 'animal', emoji: '🦘', modelAsset: 'assets/models/kangaroo.glb'),
     // L
     WordData(wordId: 'lamp', displayName: 'Lamp', letter: 'L', word: 'LAMP', category: 'object', emoji: '💡', modelAsset: 'assets/models/lamp.glb'),
     WordData(wordId: 'lion', displayName: 'Lion', letter: 'L', word: 'LION', category: 'animal', emoji: '🦁', modelAsset: 'assets/models/lion.glb'),
-    WordData(wordId: 'leaf', displayName: 'Leaf', letter: 'L', word: 'LEAF', category: 'nature', emoji: '🍃'),
+    WordData(wordId: 'leaf', displayName: 'Leaf', letter: 'L', word: 'LEAF', category: 'nature', emoji: '🍃', modelAsset: 'assets/models/leaf.glb'),
     // M
-    WordData(wordId: 'moon', displayName: 'Moon', letter: 'M', word: 'MOON', category: 'space', emoji: '🌙'),
+    WordData(wordId: 'moon', displayName: 'Moon', letter: 'M', word: 'MOON', category: 'space', emoji: '🌙', modelAsset: 'assets/models/moon.glb'),
     WordData(wordId: 'monkey', displayName: 'Monkey', letter: 'M', word: 'MONKEY', category: 'animal', emoji: '🐵', modelAsset: 'assets/models/monkey.glb'),
-    WordData(wordId: 'mango', displayName: 'Mango', letter: 'M', word: 'MANGO', category: 'food', emoji: '🥭'),
+    WordData(wordId: 'mango', displayName: 'Mango', letter: 'M', word: 'MANGO', category: 'food', emoji: '🥭', modelAsset: 'assets/models/mango.glb'),
     // N
-    WordData(wordId: 'nest', displayName: 'Nest', letter: 'N', word: 'NEST', category: 'nature', emoji: '🪹'),
-    WordData(wordId: 'nurse', displayName: 'Nurse', letter: 'N', word: 'NURSE', category: 'people', emoji: '👩‍⚕️'),
-    WordData(wordId: 'nut', displayName: 'Nut', letter: 'N', word: 'NUT', category: 'food', emoji: '🥜'),
+    WordData(wordId: 'nest', displayName: 'Nest', letter: 'N', word: 'NEST', category: 'nature', emoji: '🪹', modelAsset: 'assets/models/nest.glb'),
+    WordData(wordId: 'nurse', displayName: 'Nurse', letter: 'N', word: 'NURSE', category: 'people', emoji: '👩‍⚕️', modelAsset: 'assets/models/nurse.glb'),
+    WordData(wordId: 'nut', displayName: 'Nut', letter: 'N', word: 'NUT', category: 'food', emoji: '🥜', modelAsset: 'assets/models/nut.glb'),
     // O
-    WordData(wordId: 'octopus', displayName: 'Octopus', letter: 'O', word: 'OCTOPUS', category: 'animal', emoji: '🐙'),
+    WordData(wordId: 'octopus', displayName: 'Octopus', letter: 'O', word: 'OCTOPUS', category: 'animal', emoji: '🐙', modelAsset: 'assets/models/octopus.glb'),
     WordData(wordId: 'orange', displayName: 'Orange', letter: 'O', word: 'ORANGE', category: 'food', emoji: '🍊', modelAsset: 'assets/models/orange.glb'),
-    WordData(wordId: 'owl', displayName: 'Owl', letter: 'O', word: 'OWL', category: 'animal', emoji: '🦉'),
+    WordData(wordId: 'owl', displayName: 'Owl', letter: 'O', word: 'OWL', category: 'animal', emoji: '🦉', modelAsset: 'assets/models/owl.glb'),
     // P
     WordData(wordId: 'pig', displayName: 'Pig', letter: 'P', word: 'PIG', category: 'animal', emoji: '🐷', modelAsset: 'assets/models/pig.glb'),
-    WordData(wordId: 'pencil', displayName: 'Pencil', letter: 'P', word: 'PENCIL', category: 'object', emoji: '✏️'),
+    WordData(wordId: 'pencil', displayName: 'Pencil', letter: 'P', word: 'PENCIL', category: 'object', emoji: '✏️', modelAsset: 'assets/models/pencil.glb'),
     WordData(wordId: 'pizza', displayName: 'Pizza', letter: 'P', word: 'PIZZA', category: 'food', emoji: '🍕', modelAsset: 'assets/models/pizza.glb'),
     // Q
-    WordData(wordId: 'queen', displayName: 'Queen', letter: 'Q', word: 'QUEEN', category: 'people', emoji: '👸'),
+    WordData(wordId: 'queen', displayName: 'Queen', letter: 'Q', word: 'QUEEN', category: 'people', emoji: '👸', modelAsset: 'assets/models/queen.glb'),
     WordData(wordId: 'quilt', displayName: 'Quilt', letter: 'Q', word: 'QUILT', category: 'object', emoji: '🛏️', modelAsset: 'assets/models/quilt.glb'),
-    WordData(wordId: 'question', displayName: 'Question', letter: 'Q', word: 'QUESTION', category: 'concept', emoji: '❓'),
+    WordData(wordId: 'question', displayName: 'Question', letter: 'Q', word: 'QUESTION', category: 'concept', emoji: '❓', modelAsset: 'assets/models/question.glb'),
     // R
     WordData(wordId: 'rabbit', displayName: 'Rabbit', letter: 'R', word: 'RABBIT', category: 'animal', emoji: '🐰', modelAsset: 'assets/models/rabbit.glb'),
     WordData(wordId: 'rocket', displayName: 'Rocket', letter: 'R', word: 'ROCKET', category: 'space', emoji: '🚀', modelAsset: 'assets/models/rocket.glb'),
-    WordData(wordId: 'rain', displayName: 'Rain', letter: 'R', word: 'RAIN', category: 'nature', emoji: '🌧️'),
+    WordData(wordId: 'rain', displayName: 'Rain', letter: 'R', word: 'RAIN', category: 'nature', emoji: '🌧️', modelAsset: 'assets/models/rain.glb'),
     // S
-    WordData(wordId: 'sun', displayName: 'Sun', letter: 'S', word: 'SUN', category: 'space', emoji: '☀️'),
+    WordData(wordId: 'sun', displayName: 'Sun', letter: 'S', word: 'SUN', category: 'space', emoji: '☀️', modelAsset: 'assets/models/sun.glb'),
     WordData(wordId: 'star', displayName: 'Star', letter: 'S', word: 'STAR', category: 'space', emoji: '⭐', modelAsset: 'assets/models/star.glb'),
-    WordData(wordId: 'snake', displayName: 'Snake', letter: 'S', word: 'SNAKE', category: 'animal', emoji: '🐍'),
+    WordData(wordId: 'snake', displayName: 'Snake', letter: 'S', word: 'SNAKE', category: 'animal', emoji: '🐍', modelAsset: 'assets/models/snake.glb'),
     // T
     WordData(wordId: 'tree', displayName: 'Tree', letter: 'T', word: 'TREE', category: 'nature', emoji: '🌳', modelAsset: 'assets/models/tree.glb'),
     WordData(wordId: 'tiger', displayName: 'Tiger', letter: 'T', word: 'TIGER', category: 'animal', emoji: '🐯', modelAsset: 'assets/models/tiger.glb'),
     WordData(wordId: 'train', displayName: 'Train', letter: 'T', word: 'TRAIN', category: 'vehicle', emoji: '🚂', modelAsset: 'assets/models/train.glb'),
     // U
-    WordData(wordId: 'umbrella', displayName: 'Umbrella', letter: 'U', word: 'UMBRELLA', category: 'object', emoji: '☂️'),
-    WordData(wordId: 'unicorn', displayName: 'Unicorn', letter: 'U', word: 'UNICORN', category: 'animal', emoji: '🦄'),
-    WordData(wordId: 'up', displayName: 'Up', letter: 'U', word: 'UP', category: 'concept', emoji: '⬆️'),
+    WordData(wordId: 'umbrella', displayName: 'Umbrella', letter: 'U', word: 'UMBRELLA', category: 'object', emoji: '☂️', modelAsset: 'assets/models/umbrella.glb'),
+    WordData(wordId: 'unicorn', displayName: 'Unicorn', letter: 'U', word: 'UNICORN', category: 'animal', emoji: '🦄', modelAsset: 'assets/models/unicorn.glb'),
+    WordData(wordId: 'up', displayName: 'Up', letter: 'U', word: 'UP', category: 'concept', emoji: '⬆️', modelAsset: 'assets/models/up.glb'),
     // V
     WordData(wordId: 'van', displayName: 'Van', letter: 'V', word: 'VAN', category: 'vehicle', emoji: '🚐', modelAsset: 'assets/models/van.glb'),
-    WordData(wordId: 'violin', displayName: 'Violin', letter: 'V', word: 'VIOLIN', category: 'music', emoji: '🎻'),
-    WordData(wordId: 'volcano', displayName: 'Volcano', letter: 'V', word: 'VOLCANO', category: 'nature', emoji: '🌋'),
+    WordData(wordId: 'violin', displayName: 'Violin', letter: 'V', word: 'VIOLIN', category: 'music', emoji: '🎻', modelAsset: 'assets/models/violin.glb'),
+    WordData(wordId: 'volcano', displayName: 'Volcano', letter: 'V', word: 'VOLCANO', category: 'nature', emoji: '🌋', modelAsset: 'assets/models/volcano.glb'),
     // W
     WordData(wordId: 'whale', displayName: 'Whale', letter: 'W', word: 'WHALE', category: 'animal', emoji: '🐋', modelAsset: 'assets/models/whale.glb'),
-    WordData(wordId: 'water', displayName: 'Water', letter: 'W', word: 'WATER', category: 'nature', emoji: '💧'),
+    WordData(wordId: 'water', displayName: 'Water', letter: 'W', word: 'WATER', category: 'nature', emoji: '💧', modelAsset: 'assets/models/water.glb'),
     WordData(wordId: 'wagon', displayName: 'Wagon', letter: 'W', word: 'WAGON', category: 'vehicle', emoji: '🛒', modelAsset: 'assets/models/wagon.glb'),
     // X
-    WordData(wordId: 'xylophone', displayName: 'Xylophone', letter: 'X', word: 'XYLOPHONE', category: 'music', emoji: '🎵'),
+    WordData(wordId: 'xylophone', displayName: 'Xylophone', letter: 'X', word: 'XYLOPHONE', category: 'music', emoji: '🎵', modelAsset: 'assets/models/xylophone.glb'),
     WordData(wordId: 'fox', displayName: 'Fox', letter: 'X', word: 'FOX', category: 'animal', emoji: '🦊', difficulty: 2, modelAsset: 'assets/models/fox.glb'),
     WordData(wordId: 'box', displayName: 'Box', letter: 'X', word: 'BOX', category: 'object', emoji: '📦', difficulty: 2, modelAsset: 'assets/models/box.glb'),
     // Y
-    WordData(wordId: 'yak', displayName: 'Yak', letter: 'Y', word: 'YAK', category: 'animal', emoji: '🐂'),
-    WordData(wordId: 'yarn', displayName: 'Yarn', letter: 'Y', word: 'YARN', category: 'object', emoji: '🧶'),
-    WordData(wordId: 'yogurt', displayName: 'Yogurt', letter: 'Y', word: 'YOGURT', category: 'food', emoji: '🥛'),
+    WordData(wordId: 'yak', displayName: 'Yak', letter: 'Y', word: 'YAK', category: 'animal', emoji: '🐂', modelAsset: 'assets/models/yak.glb'),
+    WordData(wordId: 'yarn', displayName: 'Yarn', letter: 'Y', word: 'YARN', category: 'object', emoji: '🧶', modelAsset: 'assets/models/yarn.glb'),
+    WordData(wordId: 'yogurt', displayName: 'Yogurt', letter: 'Y', word: 'YOGURT', category: 'food', emoji: '🥛', modelAsset: 'assets/models/yogurt.glb'),
     // Z
     WordData(wordId: 'zebra', displayName: 'Zebra', letter: 'Z', word: 'ZEBRA', category: 'animal', emoji: '🦓', modelAsset: 'assets/models/zebra.glb'),
-    WordData(wordId: 'zipper', displayName: 'Zipper', letter: 'Z', word: 'ZIPPER', category: 'object', emoji: '🔗'),
-    WordData(wordId: 'zoo', displayName: 'Zoo', letter: 'Z', word: 'ZOO', category: 'place', emoji: '🦁'),
+    WordData(wordId: 'zipper', displayName: 'Zipper', letter: 'Z', word: 'ZIPPER', category: 'object', emoji: '🔗', modelAsset: 'assets/models/zipper.glb'),
+    WordData(wordId: 'zoo', displayName: 'Zoo', letter: 'Z', word: 'ZOO', category: 'place', emoji: '🦁', modelAsset: 'assets/models/zoo.glb'),
   ];
 
   /// Get a letter definition by its letter string.

@@ -7,6 +7,13 @@ and each was reduced for mobile (textures re-encoded and resized, external
 textures embedded, unsupported material extensions stripped, a few meshes
 simplified). The toy rocket was assembled from Kenney's Space Kit parts.
 
+Original models made for this app (no third-party content)
+  Built from geometric primitives by the project's own generator script:
+  airplane, ant, drum, frog, goat, guitar, hat, ice, igloo, jellyfish, kite,
+  king, kangaroo, leaf, moon, mango, nest, nurse, nut, octopus, owl, pencil,
+  queen, question, rain, sun, snake, umbrella, unicorn, up, violin, volcano,
+  water, xylophone, yak, yarn, yogurt, zipper, zoo.
+
 Kenney (https://kenney.nl) - CC0 1.0
   Food Kit:            apple, banana, egg, grape, orange, pizza, jar (honey),
                        juice (carton)

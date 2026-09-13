@@ -108,7 +108,8 @@ void main() {
       final withModels = AlphabetContent.words
           .where((w) => w.modelAsset != null)
           .toList();
-      expect(withModels.length, greaterThanOrEqualTo(39));
+      // Every word ships with a 3D object.
+      expect(withModels.length, AlphabetContent.words.length);
       for (final word in withModels) {
         expect(word.modelAsset, 'assets/models/${word.wordId}.glb');
         expect(
@@ -147,13 +148,53 @@ void main() {
     });
   });
 
+  group('WordMediaView', () {
+    testWidgets('shows the floating emoji for a word with no assets', (
+      tester,
+    ) async {
+      const word = WordData(
+        wordId: 'kazoo',
+        displayName: 'Kazoo',
+        letter: 'K',
+        word: 'KAZOO',
+        category: 'music',
+        emoji: '🎺',
+      );
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 200,
+              height: 200,
+              child: WordMediaView(word: word),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(find.text('🎺'), findsOneWidget);
+      expect(find.byKey(const Key('model-stage')), findsNothing);
+      await tester.pump(const Duration(milliseconds: 50));
+    });
+  });
+
   group('LetterExampleOverlay', () {
     test('puts words with a real example before emoji-only words', () {
-      final letterF = AlphabetContent.getLetterData('F')!;
-      final ordered = LetterExampleOverlay.orderedExamples(letterF);
-
-      expect(ordered.map((w) => w.wordId), ['fish', 'flower', 'frog']);
-      expect(ordered.length, letterF.vocabularyWords.length);
+      WordData word(String id, {String? model}) => WordData(
+        wordId: id,
+        displayName: id,
+        letter: 'X',
+        word: id.toUpperCase(),
+        category: 'test',
+        modelAsset: model,
+      );
+      final ordered = LetterExampleOverlay.orderedExamples([
+        word('a'),
+        word('b', model: 'assets/models/b.glb'),
+        word('c'),
+        word('d', model: 'assets/models/d.glb'),
+      ]);
+      expect(ordered.map((w) => w.wordId), ['b', 'd', 'a', 'c']);
     });
 
     testWidgets(
@@ -197,13 +238,12 @@ void main() {
       expect(find.text('D is for Duck'), findsOneWidget);
       expect(find.text('3D:duck'), findsOneWidget);
 
-      // The last D word has no model yet, so it shows its emoji.
       await tester.tap(find.bySemanticsLabel('Next word'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
       expect(find.text('D is for Drum'), findsOneWidget);
-      expect(find.text('🥁'), findsOneWidget);
-      expect(find.text('Tap to hear it!'), findsOneWidget);
+      expect(find.text('3D:drum'), findsOneWidget);
+      expect(find.text('Drag to spin it!'), findsOneWidget);
       expect(audio.spokenWords, ['duck', 'drum']);
 
       // Replay speaks the current word again.
@@ -259,10 +299,9 @@ void main() {
       );
       await tester.pump();
 
-      // Opens straight on "drum", not on the letter's first 3D example.
+      // Opens straight on "drum", not on the letter's first example.
       expect(find.text('D is for Drum'), findsOneWidget);
-      expect(find.text('🥁'), findsOneWidget);
-      expect(find.byKey(const Key('model-stage')), findsNothing);
+      expect(find.text('3D:drum'), findsOneWidget);
 
       expect(audio.spokenWords, isEmpty);
       await tester.pump(const Duration(milliseconds: 350));

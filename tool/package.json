@@ -1,0 +1,11 @@
+{
+  "name": "alphabet-adventure-model-tools",
+  "private": true,
+  "type": "module",
+  "description": "Generates the app's original low-poly 3D objects: npm install && node models.mjs ../assets/models",
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.0",
+    "@gltf-transform/functions": "^4.5.0",
+    "earcut": "^3.0.0"
+  }
+}

@@ -94,10 +94,9 @@ class LetterExampleOverlay extends StatefulWidget {
     this.speakDelay = const Duration(milliseconds: 900),
   });
 
-  /// The letter's words with bundled 3D objects and pictures first, so the
-  /// richest example is the one that opens. Order within each group is kept.
-  static List<WordData> orderedExamples(LetterData letter) {
-    final words = letter.vocabularyWords;
+  /// [words] with bundled 3D objects and pictures first, so the richest
+  /// example is the one that opens. Order within each group is kept.
+  static List<WordData> orderedExamples(Iterable<WordData> words) {
     return [
       ...words.where((w) => w.hasRealExample),
       ...words.where((w) => !w.hasRealExample),
@@ -110,7 +109,7 @@ class LetterExampleOverlay extends StatefulWidget {
 
 class _LetterExampleOverlayState extends State<LetterExampleOverlay> {
   late final List<WordData> _words = LetterExampleOverlay.orderedExamples(
-    widget.letter,
+    widget.letter.vocabularyWords,
   );
   late final PageController _pageController;
   Timer? _introTimer;

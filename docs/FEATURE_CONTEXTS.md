@@ -236,14 +236,14 @@ real object via `WordMediaView`:
 | `imageAsset` (`assets/images/words/*.gif` or `.png`) | The animated GIF / picture, played by Flutter's `Image`. |
 | neither | The word's emoji, gently floating, with a "Tap to hear it!" hint. |
 
-Words with a bundled object are shown first. 39 of the 78 words ship with a CC0 (or CC BY / SCEA)
-model, ~6 MB in total: apple, ball, banana, bear, box, car, cat, cup, dog, duck, egg, elephant,
-engine, fish, flower, fox, grape, horse, house, insect, jar, juice, lamp, lion, monkey, orange, pig,
-pizza, quilt, rabbit, rocket, star, tiger, train, tree, van, wagon, whale, zebra. Sources are Kenney
-kits, Quaternius packs, Poly Haven and the Khronos glTF samples; credits live in
+Words with a bundled object are shown first; today every one of the 78 words has one (~8 MB in total).
+39 come from CC0 / CC BY / SCEA sources (Kenney kits, Quaternius packs, Poly Haven, the Khronos glTF
+samples); the other 39 are the app's own artwork, built from geometric primitives by
+[`tool/models.mjs`](../tool/models.mjs) (`cd tool && npm install && node models.mjs ../assets/models`)
+so they carry no third-party licence at all. Credits for the sourced ones live in
 [`assets/models/LICENSES.txt`](../assets/models/LICENSES.txt) and appear on the licence page.
 
-To add one, drop a self-contained `.glb` in `assets/models/<wordId>.glb` (embedded textures; no Draco,
+To replace or add one, drop a self-contained `.glb` in `assets/models/<wordId>.glb` (embedded textures; no Draco,
 KTX2 or `KHR_texture_transform`, which the 0.16 runtime importer does not read), note its licence in
 `LICENSES.txt`, and set `modelAsset` in
 [`alphabet_content.dart`](../lib/data/content/alphabet_content.dart). A test fails if a `.glb` and a
