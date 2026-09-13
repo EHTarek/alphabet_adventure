@@ -1,3 +1,15 @@
+/// How a word's "real example" is shown in the letter example overlay.
+enum WordMediaKind {
+  /// An interactive 3D object, from [WordData.modelAsset] (a `.glb` file).
+  model,
+
+  /// An animated GIF or still picture, from [WordData.imageAsset].
+  image,
+
+  /// The word's emoji, used until a model or picture is bundled for it.
+  emoji,
+}
+
 /// Represents a vocabulary word with its educational metadata and asset links.
 ///
 /// Each word maps to a letter and contains references to visual/audio assets.
@@ -31,10 +43,12 @@ class WordData {
   /// Content category (e.g., 'food', 'animal', 'vehicle').
   final String category;
 
-  /// Asset path for 2D image representation.
+  /// Asset path for an animated GIF or still picture of the real object
+  /// (e.g. `assets/images/words/apple.gif`). Flutter plays GIFs natively.
   final String? imageAsset;
 
-  /// Asset path for 3D model (glTF/GLB) — used when flutter_scene is active.
+  /// Asset path for a 3D model of the real object (`.glb`, e.g.
+  /// `assets/models/duck.glb`), rendered with `flutter_scene`.
   final String? modelAsset;
 
   /// Asset path for word pronunciation audio.
@@ -48,6 +62,19 @@ class WordData {
 
   /// The individual letters that make up this word.
   List<String> get letters => word.split('');
+
+  /// Which asset the example overlay should show for this word.
+  ///
+  /// A 3D model wins over a picture, and the emoji is the fallback, so a word
+  /// gets a richer example the moment an asset is added for it.
+  WordMediaKind get mediaKind {
+    if (modelAsset != null && modelAsset!.isNotEmpty) return WordMediaKind.model;
+    if (imageAsset != null && imageAsset!.isNotEmpty) return WordMediaKind.image;
+    return WordMediaKind.emoji;
+  }
+
+  /// Whether a bundled 3D model or picture exists, rather than only the emoji.
+  bool get hasRealExample => mediaKind != WordMediaKind.emoji;
 
   /// Audio pronunciation asset path.
   String get audioPronunciation =>

@@ -16,6 +16,14 @@ void main() async {
   //   yield LicenseEntryWithLineBreaks(const ['Fredoka'], license);
   // });
 
+  // The 3D objects in the letter example overlay are third-party models
+  // (CC0 / CC BY 4.0 / SCEA); surface their credits on the licence page. The
+  // file is only read when that page is opened.
+  // LicenseRegistry.addLicense(() async* {
+  //   final credits = await rootBundle.loadString('assets/models/LICENSES.txt');
+  //   yield LicenseEntryWithLineBreaks(const ['3D models'], credits);
+  // });
+
   // Keep the child experience in portrait orientation.
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

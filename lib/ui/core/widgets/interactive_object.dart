@@ -4,6 +4,7 @@ import 'package:alphabet_adventure/data/models/word_data.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/app_fonts.dart';
+import 'package:alphabet_adventure/ui/core/widgets/highlighted_word_label.dart';
 
 /// Interactive 3D styled learning object card displaying a vocabulary word, icon, and highlighted initial letter.
 class InteractiveObject extends StatelessWidget {
@@ -73,7 +74,7 @@ class InteractiveObject extends StatelessWidget {
             if (showLabel) ...[
               const SizedBox(height: 6),
               // Word label with initial letter highlighted
-              _buildHighlightedWord(context, word),
+              HighlightedWordLabel(word: word.word),
             ],
           ],
         ),
@@ -81,34 +82,6 @@ class InteractiveObject extends StatelessWidget {
     );
   }
 
-  Widget _buildHighlightedWord(BuildContext context, WordData word) {
-    final firstChar = word.word.isNotEmpty ? word.word[0] : '';
-    final rest = word.word.length > 1 ? word.word.substring(1) : '';
-
-    return RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: firstChar.toUpperCase(),
-            style: AppFonts.fredoka(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
-            ),
-          ),
-          TextSpan(
-            text: rest.toLowerCase(),
-            style: AppFonts.fredoka(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).textTheme.bodyLarge?.color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
   /// Renders the word's own emoji artwork.
   ///
   /// Every vocabulary entry in [AlphabetContent] carries a distinct emoji, so each

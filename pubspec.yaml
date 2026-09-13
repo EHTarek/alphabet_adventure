@@ -31,6 +31,11 @@ dependencies:
   uuid: ^4.5.1
   get_it: ^9.2.1
 
+  # 3D object viewer: pure Impeller / Flutter GPU, no WebView and no network.
+  # Newer versions need Flutter master; 0.20 is the last for stable 3.44.
+  flutter_scene: 0.16.0
+  vector_math: ^2.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -55,6 +60,11 @@ flutter:
     - assets/audio/music/
     - assets/images/avatars/
     - assets/images/ui/
+    # Optional animated GIF / picture per vocabulary word (see WordData.imageAsset).
+    - assets/images/words/
+    # Bundled 3D objects (.glb) shown in the letter example overlay, plus their
+    # credits, which are surfaced through LicenseRegistry.
+    - assets/models/
 
   fonts:
     - family: Fredoka

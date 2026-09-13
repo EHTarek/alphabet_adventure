@@ -221,6 +221,41 @@ The child should meet one letter in a calm, memorable sequence before being aske
 - The child is not required to read the prompt to continue.
 - The introduction does not start a challenge until required assets are ready.
 
+### Letter example overlay
+
+Tapping a letter — in the introduction or on the Library A-Z / a-z grids — plays its sound and opens
+`LetterExampleOverlay` ([`letter_example_overlay.dart`](../lib/ui/core/widgets/letter_example_overlay.dart))
+over the current screen. Tapping a word card (Library Words tab, introduction vocabulary row) opens the
+same overlay directly on that word via `showWordExampleOverlay`; the overlay says the word itself, so the
+tap does not. It pages through the letter's vocabulary words, saying each one, and shows the word as a
+real object via `WordMediaView`:
+
+| `WordData` field | What the child sees |
+|---|---|
+| `modelAsset` (`assets/models/*.glb`) | A spinnable, auto-orbiting 3D object rendered by `flutter_scene` on Flutter GPU / Impeller — no WebView, no network. One animation clip plays (the `idle` clip where the model has one, else its first), so the Cube Pets breathe and the fox looks around. |
+| `imageAsset` (`assets/images/words/*.gif` or `.png`) | The animated GIF / picture, played by Flutter's `Image`. |
+| neither | The word's emoji, gently floating, with a "Tap to hear it!" hint. |
+
+Words with a bundled object are shown first. 39 of the 78 words ship with a CC0 (or CC BY / SCEA)
+model, ~6 MB in total: apple, ball, banana, bear, box, car, cat, cup, dog, duck, egg, elephant,
+engine, fish, flower, fox, grape, horse, house, insect, jar, juice, lamp, lion, monkey, orange, pig,
+pizza, quilt, rabbit, rocket, star, tiger, train, tree, van, wagon, whale, zebra. Sources are Kenney
+kits, Quaternius packs, Poly Haven and the Khronos glTF samples; credits live in
+[`assets/models/LICENSES.txt`](../assets/models/LICENSES.txt) and appear on the licence page.
+
+To add one, drop a self-contained `.glb` in `assets/models/<wordId>.glb` (embedded textures; no Draco,
+KTX2 or `KHR_texture_transform`, which the 0.16 runtime importer does not read), note its licence in
+`LICENSES.txt`, and set `modelAsset` in
+[`alphabet_content.dart`](../lib/data/content/alphabet_content.dart). A test fails if a `.glb` and a
+word do not match one-to-one.
+
+`flutter_scene` is pinned to 0.16.0: later releases need Flutter GPU APIs that only exist on the
+master channel (0.21+ requires stable 3.47). Flutter GPU is switched on per platform with
+`EnableFlutterGPU` in the Android manifest and `FLTEnableFlutterGPU` in the iOS `Info.plist`; the
+package's build hook compiles its shader bundle during `flutter build` (native assets are enabled in
+`flutter config`). Skinned models get no runtime bounds from this version, so the stage falls back to
+the rest-pose bounds stored in the GLB's `POSITION` accessors.
+
 ---
 
 ## 7. F-05: Object Hunt

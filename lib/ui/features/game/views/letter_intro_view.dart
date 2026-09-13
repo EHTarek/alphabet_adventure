@@ -9,6 +9,7 @@ import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/animated_letter.dart';
 import 'package:alphabet_adventure/ui/core/widgets/audio_replay_button.dart';
 import 'package:alphabet_adventure/ui/core/widgets/interactive_object.dart';
+import 'package:alphabet_adventure/ui/core/widgets/letter_example_overlay.dart';
 import 'package:alphabet_adventure/ui/core/widgets/mascot_widget.dart';
 
 /// Phase 1 view: Interactive Letter Introduction (PRS Section 11 & 13).
@@ -50,6 +51,7 @@ class LetterIntroView extends StatelessWidget {
                 showSparkle: true,
                 onTap: () {
                   audio.playLetterName(letter.char);
+                  showLetterExampleOverlay(context, letter);
                 },
               ),
               const SizedBox(width: 16),
@@ -60,6 +62,7 @@ class LetterIntroView extends StatelessWidget {
                 shadowColor: AppColors.secondary,
                 onTap: () {
                   audio.playPhonicsSound(letter.char);
+                  showLetterExampleOverlay(context, letter, lowercase: true);
                 },
               ),
             ],
@@ -116,9 +119,8 @@ class LetterIntroView extends StatelessWidget {
                   child: InteractiveObject(
                     word: word,
                     size: 96,
-                    onTap: () {
-                      audio.playWord(word.word);
-                    },
+                    // The overlay says the word once it has popped in.
+                    onTap: () => showWordExampleOverlay(context, word),
                   ),
                 ),
               );

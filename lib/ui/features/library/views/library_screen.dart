@@ -8,6 +8,7 @@ import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/widgets/animated_letter.dart';
 import 'package:alphabet_adventure/ui/core/widgets/interactive_object.dart';
+import 'package:alphabet_adventure/ui/core/widgets/letter_example_overlay.dart';
 import 'package:alphabet_adventure/ui/core/widgets/mascot_widget.dart';
 import 'package:alphabet_adventure/ui/features/library/widgets/game_tab_bar.dart';
 import 'package:alphabet_adventure/ui/features/library/widgets/interactive_game_background.dart';
@@ -154,6 +155,8 @@ class _LibraryScreenState extends State<LibraryScreen>
             } else {
               audioService.playPhonicsSound(letter.char);
             }
+            // Then show a real object that starts with the letter.
+            showLetterExampleOverlay(context, letter, lowercase: !isUppercase);
           },
         );
       },
@@ -181,9 +184,8 @@ class _LibraryScreenState extends State<LibraryScreen>
         return InteractiveObject(
           word: word,
           size: 140,
-          onTap: () {
-            audioService.playWordPronunciation(word.wordId);
-          },
+          // The overlay says the word once it has popped in.
+          onTap: () => showWordExampleOverlay(context, word),
         );
       },
     );
