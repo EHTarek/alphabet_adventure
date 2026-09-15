@@ -27,6 +27,7 @@ class LibraryScreen extends StatefulWidget {
 class _LibraryScreenState extends State<LibraryScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  /// Shows the "Tap any letter!" hint until the first letter tap.
   bool _showMascotBubble = true;
 
   @override
@@ -150,6 +151,8 @@ class _LibraryScreenState extends State<LibraryScreen>
           primaryColor: colorPair.$1,
           shadowColor: colorPair.$2,
           onTap: () {
+            // The child has found the letters, so drop the "Tap any letter!" hint.
+            if (_showMascotBubble) setState(() => _showMascotBubble = false);
             if (isUppercase) {
               audioService.playLetterName(letter.char);
             } else {
