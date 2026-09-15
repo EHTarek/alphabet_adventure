@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -193,8 +194,16 @@ class _ModelStageState extends State<_ModelStage> {
   /// model by hand.
   static const _autoSpin = 0.6;
 
-  /// Camera elevation above the object's equator, radians.
-  static const _pitch = 0.35;
+  /// Camera elevation the stage opens at, above the object's equator, in
+  /// radians.
+  static const _initialPitch = 0.35;
+
+  /// How far the child can tilt the model to see its top or underside.
+  /// Short of straight above or below, where the camera's "up" would flip.
+  static const _maxPitch = 1.3;
+
+  /// Radians of rotation per logical pixel dragged.
+  static const _dragSensitivity = 0.012;
 
   final Scene _scene = Scene();
   vm.Aabb3? _bounds;
@@ -208,6 +217,9 @@ class _ModelStageState extends State<_ModelStage> {
   /// Whether the model is still turning on its own. The first drag switches
   /// it off for good, so the model stays where the child leaves it.
   bool _autoSpinning = true;
+
+  /// Camera elevation, changed by vertical drags.
+  double _pitch = _initialPitch;
 
   /// The last time the camera was placed, to freeze the idle spin exactly
   /// where it is when the child takes over.
@@ -318,6 +330,23 @@ class _ModelStageState extends State<_ModelStage> {
     _autoSpinning = false;
   }
 
+  void _onDragStart(DragStartDetails details) => _stopAutoSpin();
+
+  /// Turns the model to follow the finger on both axes.
+  void _onDrag(DragUpdateDetails details) {
+    _stopAutoSpin();
+    // flutter_scene's view is left-handed (screen right is world -X from the
+    // front), so a growing yaw swings the camera right and the object turns
+    // left. Subtract so the object follows the finger.
+    _dragYaw -= details.delta.dx * _dragSensitivity;
+    // Dragging down raises the camera, so the object's top rolls towards the
+    // child, as if the finger pulled its front edge down.
+    _pitch = (_pitch + details.delta.dy * _dragSensitivity).clamp(
+      -_maxPitch,
+      _maxPitch,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_failed) return _EmojiStage(word: widget.word);
@@ -326,15 +355,27 @@ class _ModelStageState extends State<_ModelStage> {
       return _EmojiStage(word: widget.word, showLoading: true);
     }
 
-    return GestureDetector(
+    // The stage sits inside the overlay's word PageView (horizontal) and its
+    // SingleChildScrollView (vertical). A pan recognizer normally needs twice
+    // the touch slop before it accepts, so both of those would win the drag
+    // first. Giving this pan a smaller slop lets it claim drags that start on
+    // the model, in any direction, while swipes elsewhere still page and
+    // scroll.
+    final touchSlop =
+        MediaQuery.maybeGestureSettingsOf(context)?.touchSlop ?? kTouchSlop;
+    return RawGestureDetector(
       behavior: HitTestBehavior.opaque,
-      // flutter_scene's view is left-handed (screen right is world -X from
-      // the front), so a growing yaw swings the camera right and the object
-      // turns left. Subtract so the object follows the finger.
-      onHorizontalDragStart: (_) => _stopAutoSpin(),
-      onHorizontalDragUpdate: (details) {
-        _stopAutoSpin();
-        _dragYaw -= details.delta.dx * 0.012;
+      gestures: {
+        PanGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
+              () => PanGestureRecognizer(debugOwner: this),
+              (recognizer) => recognizer
+                ..gestureSettings = DeviceGestureSettings(
+                  touchSlop: touchSlop / 3,
+                )
+                ..onStart = _onDragStart
+                ..onUpdate = _onDrag,
+            ),
       },
       child: SizedBox.expand(
         child: _SceneCanvas(scene: _scene, cameraFor: _cameraFor),
