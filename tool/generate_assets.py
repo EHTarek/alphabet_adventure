@@ -332,37 +332,37 @@ def generate_all_audio():
     for char_code in range(ord('a'), ord('z') + 1):
         letter = chr(char_code).upper()
         target = os.path.join(ASSETS_DIR, "audio", "letters", f"{letter.lower()}.m4a")
-        generate_voice_file(f"Letter {letter}", target)
+        generate_voice_file(f"{letter}", target)
         
     # 2. Phonics A–Z
     print("  - Phonics A–Z sounds...")
     phonics_texts = {
-        'a': "Ah. Ah says Apple",
-        'b': "Buh. Buh says Ball",
-        'c': "Kuh. Kuh says Cat",
-        'd': "Duh. Duh says Dog",
-        'e': "Eh. Eh says Egg",
-        'f': "Fff. Fff says Fish",
-        'g': "Guh. Guh says Goat",
-        'h': "Huh. Huh says Hat",
-        'i': "Ih. Ih says Igloo",
-        'j': "Juh. Juh says Jar",
-        'k': "Kuh. Kuh says Kite",
-        'l': "Lll. Lll says Lion",
-        'm': "Mmm. Mmm says Moon",
-        'n': "Nnn. Nnn says Nest",
-        'o': "Aw. Aw says Octopus",
-        'p': "Puh. Puh says Pig",
-        'q': "Kwuh. Kwuh says Queen",
-        'r': "Rrr. Rrr says Rabbit",
-        's': "Sss. Sss says Sun",
-        't': "Tuh. Tuh says Tree",
-        'u': "Uh. Uh says Umbrella",
-        'v': "Vvv. Vvv says Violin",
-        'w': "Wuh. Wuh says Whale",
-        'x': "Ks. Ks says Xylophone",
-        'y': "Yuh. Yuh says Yak",
-        'z': "Zzz. Zzz says Zebra",
+        'a': "Ah. Ah for Apple",
+        'b': "Buh. Buh for Ball",
+        'c': "Kuh. Kuh for Cat",
+        'd': "Duh. Duh for Dog",
+        'e': "Eh. Eh for Egg",
+        'f': "Fff. Fff for Fish",
+        'g': "Guh. Guh for Goat",
+        'h': "Huh. Huh for Hat",
+        'i': "Ih. Ih for Igloo",
+        'j': "Juh. Juh for Jar",
+        'k': "Kuh. Kuh for Kite",
+        'l': "Lll. Lll for Lion",
+        'm': "Mmm. Mmm for Moon",
+        'n': "Nnn. Nnn for Nest",
+        'o': "Aw. Aw for Octopus",
+        'p': "Puh. Puh for Pig",
+        'q': "Kwuh. Kwuh for Queen",
+        'r': "Rrr. Rrr for Rabbit",
+        's': "Sss. Sss for Sun",
+        't': "Tuh. Tuh for Tree",
+        'u': "Uh. Uh for Umbrella",
+        'v': "Vvv. Vvv for Violin",
+        'w': "Wuh. Wuh for Whale",
+        'x': "Ks. Ks for Xylophone",
+        'y': "Yuh. Yuh for Yak",
+        'z': "Zzz. Zzz for Zebra",
     }
     for letter, ptext in phonics_texts.items():
         target = os.path.join(ASSETS_DIR, "audio", "phonics", f"{letter}.m4a")
