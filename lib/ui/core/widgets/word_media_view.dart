@@ -178,7 +178,10 @@ class _ModelStageState extends State<_ModelStage> {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onHorizontalDragUpdate: (details) => _dragYaw += details.delta.dx * 0.012,
+      // flutter_scene's view is left-handed (screen right is world -X from
+      // the front), so a growing yaw swings the camera right and the object
+      // turns left. Subtract so the object follows the finger.
+      onHorizontalDragUpdate: (details) => _dragYaw -= details.delta.dx * 0.012,
       child: SizedBox.expand(
         child: _SceneCanvas(scene: _scene, cameraFor: _cameraFor),
       ),
