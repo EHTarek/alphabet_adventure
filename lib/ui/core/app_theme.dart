@@ -2,11 +2,28 @@ import 'package:flutter/material.dart';
 
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/app_fonts.dart';
+import 'package:alphabet_adventure/ui/core/scene_fade_page_transitions_builder.dart';
 import 'package:alphabet_adventure/ui/core/sound_splash_factory.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood_palette.dart';
 
 /// App theme configuring child-friendly typography, oversized touch targets,
 /// and rounded vibrant components (PRS Section 16 & 23).
 class AppTheme {
+  /// Pages are transparent: the app-wide blossom parallax scene (hosted in
+  /// `MaterialApp.builder`) is the background of every screen, so every
+  /// platform uses a transition that keeps it visible.
+  static const PageTransitionsTheme _scenePageTransitions =
+      PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: SceneFadePageTransitionsBuilder(),
+          TargetPlatform.iOS: SceneFadePageTransitionsBuilder(),
+          TargetPlatform.macOS: SceneFadePageTransitionsBuilder(),
+          TargetPlatform.windows: SceneFadePageTransitionsBuilder(),
+          TargetPlatform.linux: SceneFadePageTransitionsBuilder(),
+          TargetPlatform.fuchsia: SceneFadePageTransitionsBuilder(),
+        },
+      );
+
   static ThemeData get lightTheme {
     final baseTextTheme = AppFonts.fredokaTextTheme();
 
@@ -15,7 +32,8 @@ class AppTheme {
       splashFactory: const SoundSplashFactory(),
       brightness: Brightness.light,
       primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: AppColors.bgSky,
+      scaffoldBackgroundColor: Colors.transparent,
+      pageTransitionsTheme: _scenePageTransitions,
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         secondary: AppColors.secondary,
@@ -150,6 +168,38 @@ class AppTheme {
           height: 1.4,
         ),
       ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: WoodColors.darkWood.bottom,
+        contentTextStyle: AppFonts.fredoka(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: WoodColors.darkWood.ink,
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: WoodColors.darkWood.rim, width: 3),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: const WidgetStatePropertyAll(Colors.white),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? WoodColors.candyGreen.bottom
+              : WoodColors.cellDark,
+        ),
+        trackOutlineColor: WidgetStatePropertyAll(WoodColors.cellLine),
+      ),
+      sliderTheme: SliderThemeData(
+        activeTrackColor: WoodColors.candyGreen.bottom,
+        inactiveTrackColor: WoodColors.cellDark,
+        thumbColor: WoodColors.candyGold.bottom,
+        overlayColor: WoodColors.candyGold.bottom.withValues(alpha: 0.2),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: WoodColors.candyGreen.bottom,
+        linearTrackColor: WoodColors.cellDark,
+      ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -167,7 +217,8 @@ class AppTheme {
       splashFactory: const SoundSplashFactory(),
       brightness: Brightness.dark,
       primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: AppColors.bgDark,
+      scaffoldBackgroundColor: Colors.transparent,
+      pageTransitionsTheme: _scenePageTransitions,
       colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,
         secondary: AppColors.secondary,
@@ -301,6 +352,38 @@ class AppTheme {
           color: AppColors.textLight,
           height: 1.4,
         ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: WoodColors.darkWood.bottom,
+        contentTextStyle: AppFonts.fredoka(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: WoodColors.darkWood.ink,
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: WoodColors.darkWood.rim, width: 3),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: const WidgetStatePropertyAll(Colors.white),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? WoodColors.candyGreen.bottom
+              : WoodColors.cellDark,
+        ),
+        trackOutlineColor: WidgetStatePropertyAll(WoodColors.cellLine),
+      ),
+      sliderTheme: SliderThemeData(
+        activeTrackColor: WoodColors.candyGreen.bottom,
+        inactiveTrackColor: WoodColors.cellDark,
+        thumbColor: WoodColors.candyGold.bottom,
+        overlayColor: WoodColors.candyGold.bottom.withValues(alpha: 0.2),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: WoodColors.candyGreen.bottom,
+        linearTrackColor: WoodColors.cellDark,
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,

@@ -5,11 +5,11 @@ import 'package:alphabet_adventure/data/models/letter_data.dart';
 import 'package:alphabet_adventure/data/models/word_data.dart';
 import 'package:alphabet_adventure/data/repositories/content_repository.dart';
 import 'package:alphabet_adventure/data/services/audio_service.dart';
-import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/widgets/animated_letter.dart';
 import 'package:alphabet_adventure/ui/core/widgets/interactive_object.dart';
 import 'package:alphabet_adventure/ui/core/widgets/letter_example_overlay.dart';
 import 'package:alphabet_adventure/ui/core/widgets/mascot_widget.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 import 'package:alphabet_adventure/ui/features/library/widgets/game_tab_bar.dart';
 import 'package:alphabet_adventure/ui/features/library/widgets/interactive_game_background.dart';
 import 'package:alphabet_adventure/ui/features/library/widgets/library_game_app_bar.dart';
@@ -26,7 +26,15 @@ class LibraryScreen extends StatefulWidget {
 
 class _LibraryScreenState extends State<LibraryScreen>
     with SingleTickerProviderStateMixin {
+  static const double _gridSidePadding = 16;
+  static const double _gridSpacing = 16;
+  static const double _letterMaxExtent = 120;
+
+  /// Leaves room under the last row for the mascot and its bubble.
+  static const double _gridBottomPadding = 140;
+
   late final TabController _tabController;
+
   /// Shows the "Tap any letter!" hint until the first letter tap.
   bool _showMascotBubble = true;
 
@@ -123,43 +131,65 @@ class _LibraryScreenState extends State<LibraryScreen>
     AudioService audioService, {
     required bool isUppercase,
   }) {
-    return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 92),
-      physics: const BouncingScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 120,
-        childAspectRatio: 1.0,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-      ),
-      itemCount: letters.length,
-      itemBuilder: (context, index) {
-        final letter = letters[index];
-        final char = isUppercase ? letter.uppercase : letter.lowercase;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Same column count a max-extent delegate of 120 would pick; knowing
+        // it lets neighbouring blocks, across and down, differ in colour.
+        final columns =
+            ((constraints.maxWidth - _gridSidePadding * 2) /
+                    (_letterMaxExtent + _gridSpacing))
+                .ceil()
+                .clamp(1, 12);
 
-        // Alternate joyful color palette with 3D bottom bevel colors
-        final colorPair = [
-          (AppColors.primary, AppColors.primaryDark),
-          (AppColors.secondary, AppColors.secondaryDark),
-          (AppColors.accentOrange, const Color(0xFFD66D00)),
-          (AppColors.accentGreen, AppColors.accentGreenDark),
-        ][index % 4];
+        return GridView.builder(
+          padding: const EdgeInsets.fromLTRB(
+            _gridSidePadding,
+            10,
+            _gridSidePadding,
+            _gridBottomPadding,
+          ),
+          physics: const BouncingScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            childAspectRatio: 1.0,
+            crossAxisSpacing: _gridSpacing,
+            mainAxisSpacing: _gridSpacing,
+          ),
+          itemCount: letters.length,
+          itemBuilder: (context, index) {
+            final letter = letters[index];
+            final char = isUppercase ? letter.uppercase : letter.lowercase;
 
-        return AnimatedLetter(
-          letter: char,
-          size: 100,
-          primaryColor: colorPair.$1,
-          shadowColor: colorPair.$2,
-          onTap: () {
-            // The child has found the letters, so drop the "Tap any letter!" hint.
-            if (_showMascotBubble) setState(() => _showMascotBubble = false);
-            if (isUppercase) {
-              audioService.playLetterName(letter.char);
-            } else {
-              audioService.playPhonicsSound(letter.char);
-            }
-            // Then show a real object that starts with the letter.
-            showLetterExampleOverlay(context, letter, lowercase: !isUppercase);
+            // A box of candy blocks: colours step one along each row and two
+            // down each column, so no two touching blocks share a colour.
+            final row = index ~/ columns;
+            final column = index % columns;
+            final cycle = WoodColors.blockCycle;
+            final colors = cycle[(row * 2 + column) % cycle.length];
+
+            return AnimatedLetter(
+              letter: char,
+              size: 100,
+              primaryColor: colors.bottom,
+              shadowColor: colors.rim,
+              onTap: () {
+                // The child has found the letters, so drop the "Tap any letter!" hint.
+                if (_showMascotBubble) {
+                  setState(() => _showMascotBubble = false);
+                }
+                if (isUppercase) {
+                  audioService.playLetterName(letter.char);
+                } else {
+                  audioService.playPhonicsSound(letter.char);
+                }
+                // Then show a real object that starts with the letter.
+                showLetterExampleOverlay(
+                  context,
+                  letter,
+                  lowercase: !isUppercase,
+                );
+              },
+            );
           },
         );
       },
@@ -172,13 +202,18 @@ class _LibraryScreenState extends State<LibraryScreen>
     AudioService audioService,
   ) {
     return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 92),
+      padding: const EdgeInsets.fromLTRB(
+        _gridSidePadding,
+        10,
+        _gridSidePadding,
+        _gridBottomPadding,
+      ),
       physics: const BouncingScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 160,
         childAspectRatio: 0.8,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
+        crossAxisSpacing: _gridSpacing,
+        mainAxisSpacing: _gridSpacing,
       ),
       itemCount: words.length,
       itemBuilder: (context, index) {

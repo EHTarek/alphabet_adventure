@@ -10,8 +10,8 @@ import 'package:flutter_scene/scene.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
 import 'package:alphabet_adventure/data/models/word_data.dart';
-import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/app_fonts.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 
 /// Shows a word's real example: a spinnable 3D object, an animated GIF /
 /// picture, or — until an asset is bundled for it — its emoji.
@@ -31,6 +31,10 @@ class WordMediaView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _ParchmentInset(child: _buildMedia());
+  }
+
+  Widget _buildMedia() {
     switch (word.mediaKind) {
       case WordMediaKind.model:
         final override = debugModelStageBuilder;
@@ -42,6 +46,131 @@ class WordMediaView extends StatelessWidget {
         return _EmojiStage(word: word);
     }
   }
+}
+
+/// A recessed parchment tile inside a wooden rim, framing the media.
+///
+/// The frame is painted once around a [RepaintBoundary], so a 3D stage that
+/// repaints every frame does not repaint (or blur) the frame with it.
+class _ParchmentInset extends StatelessWidget {
+  final Widget child;
+
+  const _ParchmentInset({required this.child});
+
+  static const double _rim = 5;
+  static const double _radius = 24;
+
+  @override
+  Widget build(BuildContext context) {
+    const innerRadius = BorderRadius.all(Radius.circular(_radius - _rim));
+    return CustomPaint(
+      painter: const _InsetFramePainter(radius: _radius, rim: _rim),
+      foregroundPainter: const _InsetShadowPainter(
+        radius: _radius - _rim,
+        inset: _rim,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(_rim),
+        child: ClipRRect(
+          borderRadius: innerRadius,
+          child: RepaintBoundary(child: SizedBox.expand(child: child)),
+        ),
+      ),
+    );
+  }
+}
+
+/// Wooden rim and parchment ground behind the media.
+class _InsetFramePainter extends CustomPainter {
+  final double radius;
+  final double rim;
+
+  const _InsetFramePainter({required this.radius, required this.rim});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final outer = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      Radius.circular(radius),
+    );
+    final wood = WoodColors.lightWood;
+    canvas.drawRRect(
+      outer,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [wood.rim, wood.bevel],
+        ).createShader(outer.outerRect),
+    );
+    // A pale sliver along the bottom of the rim catches the light, so the
+    // tile reads as sunk into the wood.
+    canvas.drawRRect(
+      outer.deflate(1),
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            wood.bevel.withValues(alpha: 0),
+            wood.highlight.withValues(alpha: 0.55),
+          ],
+        ).createShader(outer.outerRect),
+    );
+    final inner = outer.deflate(rim);
+    canvas.drawRRect(
+      inner,
+      Paint()
+        ..shader = const RadialGradient(
+          center: Alignment(0, -0.2),
+          radius: 0.9,
+          colors: [Color(0xFFFFFBF1), WoodColors.parchment, Color(0xFFF6E2BD)],
+          stops: [0, 0.6, 1],
+        ).createShader(inner.outerRect),
+    );
+  }
+
+  @override
+  bool shouldRepaint(_InsetFramePainter oldDelegate) =>
+      oldDelegate.radius != radius || oldDelegate.rim != rim;
+}
+
+/// Soft shade under the top edge of the recess, painted over the media.
+class _InsetShadowPainter extends CustomPainter {
+  final double radius;
+  final double inset;
+
+  const _InsetShadowPainter({required this.radius, required this.inset});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final inner = RRect.fromRectAndRadius(
+      (Offset.zero & size).deflate(inset),
+      Radius.circular(radius),
+    );
+    final band = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(inner.outerRect.inflate(12))
+      ..addRRect(inner.shift(const Offset(0, 4)));
+    canvas
+      ..save()
+      ..clipRRect(inner)
+      ..drawPath(
+        band,
+        Paint()
+          ..color = const Color(0x554A200A)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5),
+      )
+      ..restore();
+  }
+
+  @override
+  bool shouldRepaint(_InsetShadowPainter oldDelegate) =>
+      oldDelegate.radius != radius || oldDelegate.inset != inset;
 }
 
 /// Interactive 3D object rendered with flutter_scene (Impeller / Flutter GPU).
@@ -60,7 +189,8 @@ class _ModelStage extends StatefulWidget {
 }
 
 class _ModelStageState extends State<_ModelStage> {
-  /// Idle orbit speed, radians per second.
+  /// Idle orbit speed, radians per second, until the child first turns the
+  /// model by hand.
   static const _autoSpin = 0.6;
 
   /// Camera elevation above the object's equator, radians.
@@ -70,10 +200,18 @@ class _ModelStageState extends State<_ModelStage> {
   vm.Aabb3? _bounds;
   bool _failed = false;
 
-  /// Extra yaw from the child's drags, on top of the idle spin. Starts at
-  /// half a turn so the camera opens on the +Z side, which is the front of a
-  /// glTF model.
+  /// Yaw from the child's drags (plus, once they take over, the idle spin
+  /// so far). Starts at half a turn so the camera opens on the +Z side, which
+  /// is the front of a glTF model.
   double _dragYaw = math.pi;
+
+  /// Whether the model is still turning on its own. The first drag switches
+  /// it off for good, so the model stays where the child leaves it.
+  bool _autoSpinning = true;
+
+  /// The last time the camera was placed, to freeze the idle spin exactly
+  /// where it is when the child takes over.
+  Duration _lastElapsed = Duration.zero;
 
   @override
   void initState() {
@@ -147,7 +285,8 @@ class _ModelStageState extends State<_ModelStage> {
   /// back that its bounding sphere fits the vertical field of view.
   Camera _cameraFor(Duration elapsed) {
     final bounds = _bounds!;
-    final yaw = _dragYaw + elapsed.inMicroseconds / 1e6 * _autoSpin;
+    _lastElapsed = elapsed;
+    final yaw = _autoSpinning ? _dragYaw + _autoSpinAt(elapsed) : _dragYaw;
     final direction = vm.Vector3(
       math.sin(yaw) * math.cos(_pitch),
       math.sin(_pitch),
@@ -168,6 +307,17 @@ class _ModelStageState extends State<_ModelStage> {
     );
   }
 
+  static double _autoSpinAt(Duration elapsed) =>
+      elapsed.inMicroseconds / 1e6 * _autoSpin;
+
+  /// Hands rotation to the child: bakes in the idle spin so far, so the model
+  /// does not jump, and stops spinning on its own.
+  void _stopAutoSpin() {
+    if (!_autoSpinning) return;
+    _dragYaw += _autoSpinAt(_lastElapsed);
+    _autoSpinning = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_failed) return _EmojiStage(word: widget.word);
@@ -181,7 +331,11 @@ class _ModelStageState extends State<_ModelStage> {
       // flutter_scene's view is left-handed (screen right is world -X from
       // the front), so a growing yaw swings the camera right and the object
       // turns left. Subtract so the object follows the finger.
-      onHorizontalDragUpdate: (details) => _dragYaw -= details.delta.dx * 0.012,
+      onHorizontalDragStart: (_) => _stopAutoSpin(),
+      onHorizontalDragUpdate: (details) {
+        _stopAutoSpin();
+        _dragYaw -= details.delta.dx * 0.012;
+      },
       child: SizedBox.expand(
         child: _SceneCanvas(scene: _scene, cameraFor: _cameraFor),
       ),
@@ -303,7 +457,7 @@ class _EmojiStage extends StatelessWidget {
                   style: AppFonts.fredoka(
                     fontSize: fontSize,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.secondaryDark,
+                    color: WoodColors.ink,
                   ),
                 )
                 .animate()
@@ -334,7 +488,7 @@ class _EmojiStage extends StatelessWidget {
                   height: 22,
                   child: CircularProgressIndicator(
                     strokeWidth: 3,
-                    color: AppColors.secondaryDark,
+                    color: WoodColors.ink,
                   ),
                 ),
               ),

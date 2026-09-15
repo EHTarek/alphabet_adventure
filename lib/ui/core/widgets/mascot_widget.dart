@@ -4,15 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 
 /// Mascot expression/mood states.
-enum MascotMood {
-  idle,
-  happy,
-  cheering,
-  thinking,
-  speaking,
-}
+enum MascotMood { idle, happy, cheering, thinking, speaking }
 
 /// Animated Pip the Parrot mascot with custom speech bubble and interactive animations.
 class MascotWidget extends StatefulWidget {
@@ -56,15 +51,17 @@ class _MascotWidgetState extends State<MascotWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.showSpeechBubble && widget.speechBubbleText != null)
-          _buildSpeechBubble(widget.speechBubbleText!),
-        const SizedBox(height: 8),
-        BounceAnimation(
-          onTap: widget.onTap,
-          child: AnimatedBuilder(
+    // The bubble belongs to Pip, so tapping it counts as tapping Pip; this
+    // also keeps taps in the gap from falling through to what lies beneath.
+    return BounceAnimation(
+      onTap: widget.onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.showSpeechBubble && widget.speechBubbleText != null)
+            _buildSpeechBubble(widget.speechBubbleText!),
+          const SizedBox(height: 6),
+          AnimatedBuilder(
             animation: _floatController,
             builder: (context, child) {
               final floatOffset = sin(_floatController.value * pi) * 6.0;
@@ -73,40 +70,36 @@ class _MascotWidgetState extends State<MascotWidget>
               return Transform.translate(
                 offset: Offset(0, floatOffset),
                 child: Transform.rotate(
-                  angle: widget.mood == MascotMood.cheering ? tiltAngle * 3 : tiltAngle,
+                  angle: widget.mood == MascotMood.cheering
+                      ? tiltAngle * 3
+                      : tiltAngle,
                   child: _buildPipTheParrot(widget.size),
                 ),
               );
             },
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildSpeechBubble(String text) {
-    return Container(
+    return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 240),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.secondaryDark, width: 2.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+      child: CustomPaint(
+        painter: const _SpeechBubblePainter(),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            18,
+            9,
+            18,
+            8 + _SpeechBubblePainter.depth + _SpeechBubblePainter.tailHeight,
           ),
-        ],
-      ),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textDark,
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: WoodText.heading(fontSize: 17),
+          ),
         ),
       ),
     );
@@ -259,4 +252,75 @@ class _MascotWidgetState extends State<MascotWidget>
       ),
     );
   }
+}
+
+/// A parchment callout on a wooden rim, with a bevel underneath and a tail
+/// pointing down at the mascot.
+class _SpeechBubblePainter extends CustomPainter {
+  const _SpeechBubblePainter();
+
+  static const double depth = 4;
+  static const double tailHeight = 10;
+  static const double _tailWidth = 20;
+  static const double _radius = 18;
+  static const double _rimWidth = 3;
+
+  /// The bubble outline: a rounded body with the tail at its bottom centre.
+  Path _outline(Size size) {
+    final body = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, size.width, size.height - depth - tailHeight),
+      const Radius.circular(_radius),
+    );
+    final centre = size.width / 2;
+    final tail = Path()
+      ..moveTo(centre - _tailWidth / 2, body.bottom - 2)
+      ..lineTo(centre + _tailWidth / 2, body.bottom - 2)
+      ..lineTo(centre + 2, body.bottom + tailHeight)
+      ..quadraticBezierTo(
+        centre,
+        body.bottom + tailHeight + 2,
+        centre - 2,
+        body.bottom + tailHeight,
+      )
+      ..close();
+    return Path.combine(PathOperation.union, Path()..addRRect(body), tail);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final outline = _outline(size);
+    canvas
+      ..drawPath(
+        outline.shift(const Offset(0, depth + 2)),
+        Paint()
+          ..color = const Color(0x33000000)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+      )
+      // Bevel under the rim gives the bubble some thickness.
+      ..drawPath(
+        outline.shift(const Offset(0, depth)),
+        Paint()..color = WoodColors.lightWood.bevel,
+      )
+      ..drawPath(
+        outline,
+        Paint()
+          ..shader = const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFFFFAEE), WoodColors.parchment],
+          ).createShader(outline.getBounds()),
+      )
+      ..drawPath(
+        outline,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = _rimWidth
+          ..strokeJoin = StrokeJoin.round
+          ..color = WoodColors.lightWood.rim,
+      );
+  }
+
+  @override
+  bool shouldRepaint(_SpeechBubblePainter oldDelegate) => false;
 }

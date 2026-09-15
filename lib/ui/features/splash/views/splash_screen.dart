@@ -1,18 +1,20 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'package:alphabet_adventure/data/content/alphabet_content.dart';
 import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
 import 'package:alphabet_adventure/data/services/audio_service.dart';
-import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
-import 'package:alphabet_adventure/ui/core/app_colors.dart';
-import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/mascot_widget.dart';
 import 'package:alphabet_adventure/ui/core/widgets/star_counter.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 import 'package:alphabet_adventure/ui/features/profile/view_models/profile_view_model.dart';
 
-/// Animated splash & hub screen introducing Pip and offering a choice option grid
-/// to navigate to Game, A to Z, a to z, or Words.
+/// Animated home hub introducing Pip, in the wooden block-puzzle look: the
+/// candy-block logo, a progress callout and big wooden menu buttons leading
+/// to Game, A to Z, a to z and Words.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -22,6 +24,9 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
+  /// Widest the hub content grows on tablets and landscape windows.
+  static const double _maxContentWidth = 440;
+
   late AnimationController _entranceController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
@@ -78,31 +83,41 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
+  /// The callout above the play button: the child's progress once they have
+  /// started, otherwise a friendly prompt.
+  String _progressLabel(ProgressRepository progressRepo) {
+    final total = AlphabetContent.letters.length;
+    final started = progressRepo.activeProfile == null
+        ? 0
+        : progressRepo.lettersStarted;
+    if (started == 0) return 'What would you like to play today?';
+    if (started >= total) return 'All $total letters explored!';
+    return '$started of $total letters explored';
+  }
+
   @override
   Widget build(BuildContext context) {
     final progressRepo = context.watch<ProgressRepository>();
     final activeProfile = progressRepo.activeProfile;
 
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFE8F7FF), Color(0xFFFFF7D6), Color(0xFFFFE3E3)],
-          ),
-        ),
+      body: SizedBox.expand(
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
+              final logoWidth = (constraints.maxWidth - 48).clamp(260.0, 360.0);
+              final showMascot = constraints.maxHeight >= 760;
+              // Keep the menu phone-sized and centred on wide screens.
+              final sidePadding = math.max(
+                18.0,
+                (constraints.maxWidth - _maxContentWidth) / 2 + 18,
+              );
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: sidePadding),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -111,287 +126,139 @@ class _SplashScreenState extends State<SplashScreen>
                           padding: const EdgeInsets.only(top: 8, bottom: 4),
                           child: Row(
                             children: [
-                              // Profile chip
-                              BounceAnimation(
-                                onTap: () => context.push('/profile'),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.9),
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: AppColors.secondaryDark,
-                                      width: 2,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.08,
-                                        ),
-                                        blurRadius: 6,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const CircleAvatar(
-                                        radius: 14,
-                                        backgroundColor: AppColors.secondary,
-                                        child: Icon(
-                                          Icons.face_rounded,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        activeProfile?.name ?? 'Explorer',
-                                        style: AppFonts.fredoka(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.textDark,
-                                        ),
-                                      ),
-                                    ],
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: _ProfileChip(
+                                    name: activeProfile?.name ?? 'Explorer',
+                                    avatarId: activeProfile?.avatarId,
+                                    onPressed: () => context.push('/profile'),
                                   ),
                                 ),
                               ),
-                              const Spacer(),
-                              // Star Counter
+                              const SizedBox(width: 8),
                               StarCounter(count: progressRepo.totalStars),
                               const SizedBox(width: 8),
-                              // Settings Button
-                              BounceAnimation(
-                                onTap: () => context.push('/settings'),
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.9),
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: AppColors.primary,
-                                      width: 2,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.08,
-                                        ),
-                                        blurRadius: 6,
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.settings_rounded,
-                                    size: 22,
-                                    color: AppColors.textDark,
-                                  ),
-                                ),
+                              WoodIconButton(
+                                icon: Icons.settings_rounded,
+                                tooltip: 'Settings',
+                                size: 50,
+                                onPressed: () => context.push('/settings'),
                               ),
                             ],
                           ),
                         ),
 
-                        // Animated Logo & Title
-                        ScaleTransition(
-                          scale: _scaleAnimation,
+                        // Animated candy-block logo
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: ScaleTransition(
+                            scale: _scaleAnimation,
+                            child: WoodLogo(width: logoWidth),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Text(
-                                'ALPHABET',
-                                style: AppFonts.fredoka(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.w900,
-                                  color: AppColors.primary,
-                                  letterSpacing: 2.0,
-                                  shadows: [
-                                    Shadow(
-                                      color: AppColors.primaryDark.withValues(
-                                        alpha: 0.6,
-                                      ),
-                                      offset: const Offset(0, 3),
-                                      blurRadius: 0,
-                                    ),
-                                    const Shadow(
-                                      color: Colors.black12,
-                                      offset: Offset(0, 6),
-                                      blurRadius: 10,
-                                    ),
-                                  ],
+                              // Pip cheering above the menu, when the
+                              // screen is tall enough to keep the menu in view.
+                              if (showMascot) ...[
+                                Center(
+                                  child: MascotWidget(
+                                    mood: MascotMood.cheering,
+                                    showSpeechBubble: false,
+                                    size: 84,
+                                    onTap: () {
+                                      context
+                                          .read<AudioService>()
+                                          .playMascotEncouragement();
+                                    },
+                                  ),
                                 ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'ADVENTURE',
-                                    style: AppFonts.fredoka(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.w800,
-                                      color: AppColors.secondaryDark,
-                                      letterSpacing: 1.5,
-                                      shadows: [
-                                        Shadow(
-                                          color: AppColors.secondaryDark
-                                              .withValues(alpha: 0.4),
-                                          offset: const Offset(0, 2),
-                                          blurRadius: 0,
+                                const SizedBox(height: 10),
+                              ],
+
+                              // Wooden menu: Game, A to Z, a to z, Words
+                              FadeTransition(
+                                opacity: _fadeAnimation,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Center(
+                                      child: WoodPill(
+                                        label: _progressLabel(progressRepo),
+                                        tail: true,
+                                        fontSize: 15,
+                                        leading: const Icon(
+                                          Icons.auto_awesome_rounded,
+                                          size: 17,
+                                          color: Colors.white,
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.accentYellow,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: AppColors.accentYellowDark,
-                                        width: 2,
                                       ),
                                     ),
-                                    child: Text(
-                                      '3D',
-                                      style: AppFonts.fredoka(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w900,
-                                        color: Theme.of(
-                                          context,
-                                        ).textTheme.bodyLarge?.color,
+                                    _MenuButton(
+                                      title: 'Game',
+                                      subtitle: 'Play Adventure',
+                                      icon: const WoodBoardIcon(
+                                        size: 58,
+                                        pattern: [
+                                          '...*',
+                                          '.##.',
+                                          '##..',
+                                          '#...',
+                                        ],
                                       ),
+                                      onPressed: () =>
+                                          _navigateTo('/world_map'),
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(height: 12),
+                                    _MenuButton(
+                                      title: 'A to Z',
+                                      subtitle: 'Capital Letters',
+                                      icon: const _LetterTrayIcon(
+                                        letters: ['A', 'B', 'C', 'D'],
+                                      ),
+                                      onPressed: () =>
+                                          _navigateTo('/library?tab=0'),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _MenuButton(
+                                      title: 'a to z',
+                                      subtitle: 'Small Letters',
+                                      icon: const _LetterTrayIcon(
+                                        letters: ['a', 'b', 'c', 'd'],
+                                        colorOffset: 2,
+                                      ),
+                                      onPressed: () =>
+                                          _navigateTo('/library?tab=1'),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _MenuButton(
+                                      title: 'Words',
+                                      subtitle: 'Phonics & Objects',
+                                      icon: const WoodBoardIcon(
+                                        size: 58,
+                                        blockColors: WoodColors.candyOrange,
+                                        pattern: [
+                                          '#..#',
+                                          '####',
+                                          '.*..',
+                                          '###.',
+                                        ],
+                                      ),
+                                      onPressed: () =>
+                                          _navigateTo('/library?tab=2'),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-
-                        const SizedBox(height: 8),
-
-                        // Mascot with welcoming speech bubble
-                        MascotWidget(
-                          mood: MascotMood.cheering,
-                          speechBubbleText:
-                              'What would you like to play today?',
-                          size: 95,
-                          onTap: () {
-                            context
-                                .read<AudioService>()
-                                .playMascotEncouragement();
-                          },
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        // Choice Option Grid: Game, A to Z, a to z, Words
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: GridView.count(
-                            crossAxisCount: 2,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 16,
-                            childAspectRatio: 1.15,
-                            children: [
-                              _ChoiceOptionCard(
-                                title: 'Game',
-                                subtitle: 'Play Adventure',
-                                iconWidget: const Icon(
-                                  Icons.sports_esports_rounded,
-                                  size: 32,
-                                  color: Colors.white,
-                                ),
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFF06D6A0),
-                                    Color(0xFF04A77D),
-                                  ],
-                                ),
-                                shadowColor: AppColors.accentGreenDark,
-                                onTap: () => _navigateTo('/world_map'),
-                              ),
-                              _ChoiceOptionCard(
-                                title: 'A to Z',
-                                subtitle: 'Capital Letters',
-                                iconWidget: Text(
-                                  'ABC',
-                                  style: AppFonts.fredoka(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                    letterSpacing: 1.0,
-                                  ),
-                                ),
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFF118AB2),
-                                    Color(0xFF073B4C),
-                                  ],
-                                ),
-                                shadowColor: const Color(0xFF073B4C),
-                                onTap: () => _navigateTo('/library?tab=0'),
-                              ),
-                              _ChoiceOptionCard(
-                                title: 'a to z',
-                                subtitle: 'Small Letters',
-                                iconWidget: Text(
-                                  'abc',
-                                  style: AppFonts.fredoka(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                    letterSpacing: 1.0,
-                                  ),
-                                ),
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFFFFB703),
-                                    Color(0xFFFB8500),
-                                  ],
-                                ),
-                                shadowColor: const Color(0xFFFB8500),
-                                onTap: () => _navigateTo('/library?tab=1'),
-                              ),
-                              _ChoiceOptionCard(
-                                title: 'Words',
-                                subtitle: 'Phonics & Objects',
-                                iconWidget: const Icon(
-                                  Icons.auto_stories_rounded,
-                                  size: 32,
-                                  color: Colors.white,
-                                ),
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFF8338EC),
-                                    Color(0xFF5A189A),
-                                  ],
-                                ),
-                                shadowColor: const Color(0xFF5A189A),
-                                onTap: () => _navigateTo('/library?tab=2'),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -405,83 +272,160 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-/// A bouncy, child-friendly 3D card used in the choice option grid.
-class _ChoiceOptionCard extends StatelessWidget {
-  const _ChoiceOptionCard({
+/// The active explorer's name on a small wooden chip, with their avatar colour
+/// as a candy block.
+class _ProfileChip extends StatelessWidget {
+  const _ProfileChip({
+    required this.name,
+    required this.avatarId,
+    required this.onPressed,
+  });
+
+  final String name;
+  final String? avatarId;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final avatar = ProfileViewModel.avatarPresets.firstWhere(
+      (a) => a.id == avatarId,
+      orElse: () => ProfileViewModel.avatarPresets.first,
+    );
+    final base = Color(avatar.colorHex);
+    return WoodButton(
+      onPressed: onPressed,
+      height: 50,
+      radius: 16,
+      depth: 5,
+      padding: const EdgeInsets.fromLTRB(6, 3, 14, 3),
+      semanticLabel: 'Profile',
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CandyBlock(
+            size: 34,
+            colors: WoodToneColors.fromColor(
+              base,
+              Color.lerp(base, Colors.black, 0.35)!,
+            ),
+            child: const Icon(
+              Icons.face_rounded,
+              size: 22,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: WoodText.heading(fontSize: 17),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A big pale-wood menu button: a board icon on the left, a bold italic label
+/// and a small subtitle.
+class _MenuButton extends StatelessWidget {
+  const _MenuButton({
     required this.title,
     required this.subtitle,
-    required this.iconWidget,
-    required this.gradient,
-    required this.shadowColor,
-    required this.onTap,
+    required this.icon,
+    required this.onPressed,
   });
 
   final String title;
   final String subtitle;
-  final Widget iconWidget;
-  final LinearGradient gradient;
-  final Color shadowColor;
-  final VoidCallback onTap;
+  final Widget icon;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return BounceAnimation(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        decoration: BoxDecoration(
-          gradient: gradient,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white, width: 3.5),
-          boxShadow: [
-            BoxShadow(
-              color: shadowColor.withValues(alpha: 0.5),
-              offset: const Offset(0, 6),
-              blurRadius: 10,
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.22),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: iconWidget,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppFonts.fredoka(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-                letterSpacing: 0.5,
-                shadows: [
-                  const Shadow(
-                    color: Colors.black26,
-                    offset: Offset(0, 2),
-                    blurRadius: 3,
+    return WoodButton(
+      onPressed: onPressed,
+      // [_SplashScreenState._navigateTo] already plays the tap sound.
+      playTapSound: false,
+      height: 92,
+      radius: 22,
+      depth: 7,
+      padding: const EdgeInsets.fromLTRB(14, 8, 12, 8),
+      semanticLabel: title,
+      child: Row(
+        children: [
+          icon,
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(title, style: WoodText.button(fontSize: 30)),
+                ),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: WoodText.body(
+                    fontSize: 14,
+                    color: WoodColors.inkSoft,
+                    fontWeight: FontWeight.w600,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppFonts.fredoka(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.white.withValues(alpha: 0.92),
+          ),
+          const Icon(
+            Icons.play_arrow_rounded,
+            size: 30,
+            color: WoodColors.inkSoft,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A recessed board holding a 2 by 2 stack of candy letter blocks, the
+/// letter-set counterpart of [WoodBoardIcon].
+class _LetterTrayIcon extends StatelessWidget {
+  const _LetterTrayIcon({required this.letters, this.colorOffset = 0});
+
+  final List<String> letters;
+
+  /// Where in [WoodColors.blockCycle] the block colours start.
+  final int colorOffset;
+
+  static const double _size = 58;
+
+  @override
+  Widget build(BuildContext context) {
+    const block = 21.0;
+    return ExcludeSemantics(
+      child: SizedBox.square(
+        dimension: _size,
+        child: Stack(
+          children: [
+            const WoodBoardIcon(size: _size, pattern: ['..', '..']),
+            for (var i = 0; i < letters.length && i < 4; i++)
+              Positioned(
+                left: 5 + (i % 2) * (block + 3.5),
+                top: 3.5 + (i ~/ 2) * (block + 3.5),
+                child: CandyBlock(
+                  size: block,
+                  letter: letters[i],
+                  colors:
+                      WoodColors.blockCycle[(i + colorOffset) %
+                          WoodColors.blockCycle.length],
+                ),
               ),
-            ),
           ],
         ),
       ),

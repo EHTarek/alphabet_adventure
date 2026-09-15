@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/animations/celebration_animation.dart';
-import 'package:alphabet_adventure/ui/core/app_colors.dart';
-import 'package:alphabet_adventure/ui/core/app_fonts.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 
 /// Full-screen or modal celebration reward animation displaying 1 to 3 animated stars.
 class RewardAnimation extends StatefulWidget {
@@ -63,108 +61,182 @@ class _RewardAnimationState extends State<RewardAnimation>
     return CelebrationAnimation(
       isPlaying: true,
       child: Center(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24),
-          padding: const EdgeInsets.all(28),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(32),
-            border: Border.all(color: AppColors.accentYellowDark, width: 4),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                widget.title,
-                textAlign: TextAlign.center,
-                style: AppFonts.fredoka(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textDark,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                widget.subtitle,
-                textAlign: TextAlign.center,
-                style: AppFonts.fredoka(
-                  fontSize: 18,
-                  color: AppColors.textMuted,
-                ),
-              ),
-              const SizedBox(height: 24),
-              // 3 Stars Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(3, (index) {
-                  final isEarned = index < _revealedStars;
-                  return AnimatedScale(
-                    scale: isEarned ? 1.2 : 0.9,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.elasticOut,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Icon(
-                        Icons.star_rounded,
-                        size: 64,
-                        color: isEarned
-                            ? AppColors.accentYellow
-                            : Colors.grey.shade300,
-                        shadows: isEarned
-                            ? [
-                                Shadow(
-                                  color: AppColors.accentYellowDark
-                                      .withValues(alpha: 0.8),
-                                  blurRadius: 16,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: WoodPanel(
+                    radius: 30,
+                    depth: 8,
+                    padding: const EdgeInsets.fromLTRB(20, 46, 20, 20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          widget.subtitle,
+                          textAlign: TextAlign.center,
+                          style: WoodText.body(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        _StarTray(revealed: _revealedStars),
+                        const SizedBox(height: 22),
+                        WoodButton(
+                          onPressed: widget.onContinue,
+                          tone: WoodTone.green,
+                          height: 64,
+                          radius: 22,
+                          depth: 7,
+                          child: Text(
+                            'Keep Going!',
+                            style:
+                                WoodText.button(
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                ).copyWith(
+                                  shadows: const [
+                                    Shadow(
+                                      color: Color(0xFF145A2E),
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
-                              ]
-                            : null,
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                }),
-              ),
-              const SizedBox(height: 32),
-              // Continue Button
-              BounceAnimation(
-                onTap: widget.onContinue,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primary, AppColors.primaryDark],
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryDark.withValues(alpha: 0.4),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
                   ),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 28,
+                  right: 28,
                   child: Center(
-                    child: Text(
-                      'Keep Going!',
-                      style: AppFonts.fredoka(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    child: WoodPanel(
+                      tone: WoodTone.dark,
+                      radius: 20,
+                      depth: 6,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 4,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: WoodTitle(
+                          widget.title,
+                          fontSize: 34,
+                          maxLines: 1,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Three star slots recessed into a dark board; earned stars pop in gold.
+class _StarTray extends StatelessWidget {
+  final int revealed;
+
+  const _StarTray({required this.revealed});
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: WoodColors.cellDark,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: WoodColors.cellLine, width: 3),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(3, (index) {
+            final isEarned = index < revealed;
+            return Flexible(
+              child: AnimatedScale(
+                scale: isEarned ? 1.15 : 0.85,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.elasticOut,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: _GoldStar(earned: isEarned, lifted: index == 1),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+class _GoldStar extends StatelessWidget {
+  final bool earned;
+
+  /// The middle star sits a little higher, like a podium.
+  final bool lifted;
+
+  const _GoldStar({required this.earned, required this.lifted});
+
+  @override
+  Widget build(BuildContext context) {
+    const size = 64.0;
+    return Transform.translate(
+      offset: Offset(0, lifted ? -6 : 2),
+      child: SizedBox(
+        width: size + 12,
+        height: size + 12,
+        child: Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: [
+            // Outline and drop edge behind the fill.
+            Transform.translate(
+              offset: const Offset(0, 3),
+              child: Icon(
+                Icons.star_rounded,
+                size: size + 8,
+                color: earned ? WoodColors.goldOutline : WoodColors.cellLine,
+              ),
+            ),
+            Icon(
+              Icons.star_rounded,
+              size: size + 8,
+              color: earned ? WoodColors.goldOutline : WoodColors.cellLine,
+            ),
+            if (earned)
+              ShaderMask(
+                blendMode: BlendMode.srcIn,
+                shaderCallback: (bounds) => const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [WoodColors.goldTop, WoodColors.goldBottom],
+                ).createShader(bounds),
+                child: const Icon(Icons.star_rounded, size: size - 4),
+              )
+            else
+              Icon(
+                Icons.star_rounded,
+                size: size - 4,
+                color: const Color(0xFF8A5530).withValues(alpha: 0.6),
+              ),
+          ],
         ),
       ),
     );

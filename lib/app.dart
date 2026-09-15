@@ -13,6 +13,7 @@ import 'package:alphabet_adventure/domain/engines/mastery_engine.dart';
 import 'package:alphabet_adventure/domain/engines/question_engine.dart';
 import 'package:alphabet_adventure/domain/engines/reward_engine.dart';
 import 'package:alphabet_adventure/ui/core/app_theme.dart';
+import 'package:alphabet_adventure/ui/core/widgets/blossom_scene/blossom_parallax_scene.dart';
 import 'package:alphabet_adventure/ui/features/game/views/game_screen.dart';
 import 'package:alphabet_adventure/ui/features/lesson_complete/views/lesson_complete_screen.dart';
 import 'package:alphabet_adventure/ui/features/library/views/library_screen.dart';
@@ -112,6 +113,13 @@ class _AlphabetAdventureAppState extends State<AlphabetAdventureApp> {
             darkTheme: AppTheme.darkTheme,
             themeMode: settings.themeMode,
             routerConfig: _router,
+            // One live blossom scene behind every route. It sits above the
+            // Navigator, so it keeps animating smoothly across page
+            // transitions; pages and scaffolds are transparent (see AppTheme).
+            builder: (context, child) => BlossomParallaxScene(
+              dimmed: Theme.of(context).brightness == Brightness.dark,
+              child: child,
+            ),
           );
         },
       ),

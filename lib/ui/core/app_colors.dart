@@ -35,11 +35,13 @@ class AppColors {
   static const Color masterySuperStar = Color(0xFFFFD54F);
 
   // --- Backgrounds & Neutrals ---
-  static const Color bgSky = Color(0xFFE8F7FF);
-  static const Color bgCream = Color(0xFFFFFDF5);
-  static const Color bgCard = Color(0xFFFFFFFF);
-  static const Color bgCardDark = Color(0xFF37474F);
-  static const Color bgDark = Color(0xFF263238);
+  // Warm parchment and walnut tones, so cards read as part of the wooden
+  // world that the app-wide blossom scene paints behind every screen.
+  static const Color bgSky = Color(0xFFFFF8EA);
+  static const Color bgCream = Color(0xFFFFF3DC);
+  static const Color bgCard = Color(0xFFFFF3DC);
+  static const Color bgCardDark = Color(0xFF4A2C1B);
+  static const Color bgDark = Color(0xFF2E1B10);
 
   // --- Feedback ---
   static const Color success = Color(0xFF06D6A0);
@@ -47,8 +49,8 @@ class AppColors {
   static const Color info = Color(0xFF118AB2);
 
   // --- Text Colors ---
-  static const Color textDark = Color(0xFF2D3142);
-  static const Color textMuted = Color(0xFF757D8A);
+  static const Color textDark = Color(0xFF5C2C0C); // Walnut ink
+  static const Color textMuted = Color(0xFF8C6040);
   static const Color textLight = Color(0xFFFFFFFF);
 
   // --- World Theme Gradients ---

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
-import 'package:alphabet_adventure/ui/core/app_fonts.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 
-/// 3D tactile, bubbly animated letter widget with realistic bevel shadows and glowing outline.
+/// A glossy candy block carrying a letter, squishing when tapped.
+///
+/// Fits within a [size] by [size] square, bevel included.
 class AnimatedLetter extends StatelessWidget {
   final String letter;
   final double size;
@@ -27,83 +29,52 @@ class AnimatedLetter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final blockSize = size / 1.1;
     return BounceAnimation(
       playTapSound: false,
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: size,
         height: size,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(size * 0.28),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              primaryColor.withValues(alpha: 0.95),
-              primaryColor,
-              shadowColor,
-            ],
-          ),
-          border: Border.all(
-            color: isSelected ? AppColors.accentYellow : (Theme.of(context).cardTheme.color ?? Colors.white),
-            width: isSelected ? 4 : 3,
-          ),
-          boxShadow: [
-            // 3D bottom bevel shadow
-            BoxShadow(
-              color: shadowColor.withValues(alpha: 0.6),
-              offset: Offset(0, size * 0.08),
-              blurRadius: 0,
-            ),
-            // Soft ambient drop shadow
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.18),
-              offset: Offset(0, size * 0.12),
-              blurRadius: size * 0.12,
-            ),
-          ],
-        ),
         child: Stack(
           alignment: Alignment.center,
+          clipBehavior: Clip.none,
           children: [
-            // Top highlight for 3D gloss
-            Positioned(
-              top: size * 0.08,
-              left: size * 0.12,
-              right: size * 0.12,
-              child: Container(
-                height: size * 0.22,
+            if (isSelected)
+              // A golden glow marks the selected block.
+              Container(
+                width: blockSize * 1.04,
+                height: blockSize * 1.04,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.25),
-                  borderRadius: BorderRadius.circular(size * 0.2),
+                  borderRadius: BorderRadius.circular(blockSize * 0.3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: WoodColors.goldTop.withValues(alpha: 0.9),
+                      blurRadius: size * 0.12,
+                      spreadRadius: size * 0.04,
+                    ),
+                  ],
                 ),
               ),
+            CandyBlock(
+              colors: WoodToneColors.fromColor(primaryColor, shadowColor),
+              size: blockSize,
+              letter: letter,
             ),
-            // Letter text glyph
-            Text(
-              letter,
-              style: AppFonts.fredoka(
-                fontSize: size * 0.55,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                shadows: [
-                  Shadow(
-                    color: Colors.black.withValues(alpha: 0.25),
-                    offset: const Offset(0, 3),
-                    blurRadius: 4,
-                  ),
-                ],
-              ),
-            ),
-            // Sparkle icon if enabled
             if (showSparkle)
               Positioned(
-                top: size * 0.08,
-                right: size * 0.08,
-                child: const Icon(
+                top: 0,
+                right: 0,
+                child: Icon(
                   Icons.auto_awesome_rounded,
-                  color: AppColors.accentYellow,
-                  size: 24,
+                  color: WoodColors.goldTop,
+                  size: size * 0.22,
+                  shadows: const [
+                    Shadow(
+                      color: WoodColors.goldOutline,
+                      offset: Offset(0, 1.5),
+                    ),
+                  ],
                 ),
               ),
           ],

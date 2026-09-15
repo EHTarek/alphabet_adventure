@@ -3,144 +3,151 @@ import 'package:provider/provider.dart';
 
 import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
-import 'package:alphabet_adventure/ui/core/app_colors.dart';
-import 'package:alphabet_adventure/ui/core/app_fonts.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 
-class _TabItemData {
-  final String title;
-  final Color activeColor;
-  final Color shadowColor;
-
-  const _TabItemData({
-    required this.title,
-    required this.activeColor,
-    required this.shadowColor,
-  });
-}
-
-/// A tactile 3D segmented game tab bar designed for kids.
+/// A wooden segmented tab bar driven by a [TabController].
+///
+/// The tabs sit in a recessed dark-wood track; the selected tab is a raised
+/// pale-wood slab that slides along with the page swipe, like the tabs of a
+/// block-puzzle game.
 class GameTabBar extends StatelessWidget {
   final TabController controller;
 
   const GameTabBar({super.key, required this.controller});
 
-  static const List<_TabItemData> _tabs = [
-    _TabItemData(
-      title: 'A-Z',
-      activeColor: AppColors.primary,
-      shadowColor: AppColors.primaryDark,
-    ),
-    _TabItemData(
-      title: 'a-z',
-      activeColor: AppColors.secondary,
-      shadowColor: AppColors.secondaryDark,
-    ),
-    _TabItemData(
-      title: 'Words',
-      activeColor: AppColors.accentPurple,
-      shadowColor: Color(0xFF651FFF),
-    ),
-  ];
+  static const List<String> _tabs = ['A-Z', 'a-z', 'Words'];
+
+  static const double _height = 56;
+  static const double _inset = 4;
 
   @override
   Widget build(BuildContext context) {
     final audioService = context.read<AudioService>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return AnimatedBuilder(
-      animation: controller.animation ?? controller,
-      builder: (context, _) {
-        final currentIndex = controller.index;
+    return SizedBox(
+      height: _height,
+      child: CustomPaint(
+        painter: const _TrackPainter(),
+        child: Padding(
+          padding: const EdgeInsets.all(_inset),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final segmentWidth = constraints.maxWidth / _tabs.length;
+              return AnimatedBuilder(
+                animation: controller.animation ?? controller,
+                builder: (context, _) {
+                  // Follows the page swipe, so the slab glides between tabs.
+                  final position =
+                      (controller.animation?.value ??
+                              controller.index.toDouble())
+                          .clamp(0.0, _tabs.length - 1.0);
 
-        return Container(
-          // margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: isDark
-                ? const Color(0xFF232533)
-                : Colors.white.withValues(alpha: 0.85),
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.12)
-                  : Colors.black.withValues(alpha: 0.06),
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Row(
-            children: List.generate(_tabs.length, (index) {
-              final tab = _tabs[index];
-              final isSelected = currentIndex == index;
-
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3),
-                  child: BounceAnimation(
-                    onTap: () {
-                      if (controller.index != index) {
-                        audioService.playTap();
-                        controller.animateTo(index);
-                      }
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeInOut,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? tab.activeColor
-                            : (isDark
-                                  ? const Color(0xFF2B2D42)
-                                  : Colors.black.withValues(alpha: 0.03)),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: isSelected
-                              ? Colors.white.withValues(alpha: 0.8)
-                              : Colors.transparent,
-                          width: 2,
+                  return Stack(
+                    children: [
+                      // The raised pale-wood slab under the selected label.
+                      Positioned(
+                        left: position * segmentWidth,
+                        top: 0,
+                        bottom: 0,
+                        width: segmentWidth,
+                        child: const IgnorePointer(
+                          child: CustomPaint(
+                            painter: WoodSurfacePainter(
+                              colors: WoodColors.lightWood,
+                              radius: 16,
+                              depth: 5,
+                              rimWidth: 2.5,
+                            ),
+                          ),
                         ),
-                        boxShadow: isSelected
-                            ? [
-                                BoxShadow(
-                                  color: tab.shadowColor.withValues(alpha: 0.7),
-                                  offset: const Offset(0, 3.5),
-                                ),
-                                BoxShadow(
-                                  color: tab.activeColor.withValues(
-                                    alpha: 0.35,
+                      ),
+                      Row(
+                        children: List.generate(_tabs.length, (index) {
+                          // 1 on the selected tab, fading to 0 one tab away.
+                          final selection = (1 - (position - index).abs())
+                              .clamp(0.0, 1.0);
+
+                          return Expanded(
+                            child: BounceAnimation(
+                              onTap: () {
+                                if (controller.index != index) {
+                                  audioService.playTap();
+                                  controller.animateTo(index);
+                                }
+                              },
+                              child: Padding(
+                                // Keeps the label centred on the slab's face,
+                                // above its bevel.
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Center(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                      ),
+                                      child: Text(
+                                        _tabs[index],
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                        style: WoodText.button(
+                                          fontSize: 18 + 2 * selection,
+                                          color: Color.lerp(
+                                            WoodColors.darkWood.ink,
+                                            WoodColors.ink,
+                                            selection,
+                                          )!,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
                                 ),
-                              ]
-                            : null,
+                              ),
+                            ),
+                          );
+                        }),
                       ),
-                      child: Text(
-                        tab.title,
-                        textAlign: TextAlign.center,
-                        style: AppFonts.fredoka(
-                          fontSize: isSelected ? 18 : 16,
-                          fontWeight: FontWeight.bold,
-                          color: isSelected
-                              ? Colors.white
-                              : (isDark ? Colors.white : AppColors.textDark),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                    ],
+                  );
+                },
               );
-            }),
+            },
           ),
-        );
-      },
+        ),
+      ),
     );
   }
+}
+
+/// The recessed dark-wood groove the tabs sit in.
+class _TrackPainter extends CustomPainter {
+  const _TrackPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final track = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      const Radius.circular(20),
+    );
+    final inner = track.deflate(2);
+    canvas
+      ..drawRRect(track, Paint()..color = WoodColors.cellLine)
+      ..drawRRect(inner, Paint()..color = WoodColors.cellDark)
+      // An inner shadow along the top edge sells the groove's depth.
+      ..save()
+      ..clipRRect(inner)
+      ..drawRect(
+        Rect.fromLTWH(inner.left, inner.top, inner.width, 8),
+        Paint()
+          ..shader = const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0x66000000), Color(0x00000000)],
+          ).createShader(Rect.fromLTWH(inner.left, inner.top, inner.width, 8)),
+      )
+      ..restore();
+  }
+
+  @override
+  bool shouldRepaint(_TrackPainter oldDelegate) => false;
 }

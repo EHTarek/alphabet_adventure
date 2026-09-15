@@ -5,17 +5,16 @@ import 'package:provider/provider.dart';
 import 'package:alphabet_adventure/data/repositories/progress_repository.dart';
 import 'package:alphabet_adventure/domain/engines/lesson_controller.dart';
 import 'package:alphabet_adventure/domain/engines/question_engine.dart';
-import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
 import 'package:alphabet_adventure/ui/core/animations/celebration_animation.dart';
-import 'package:alphabet_adventure/ui/core/app_colors.dart';
-import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/star_counter.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 import 'package:alphabet_adventure/ui/features/game/views/letter_intro_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/object_hunt_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/review_challenge_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/sound_match_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/word_builder_view.dart';
 import 'package:alphabet_adventure/ui/features/game/views/word_match_view.dart';
+import 'package:alphabet_adventure/ui/features/game/widgets/game_wood_widgets.dart';
 
 /// Main game viewport shell hosting the 5 lesson phases with top HUD and feedback overlays.
 class GameScreen extends StatelessWidget {
@@ -30,16 +29,33 @@ class GameScreen extends StatelessWidget {
     if (lesson == null) {
       return Scaffold(
         body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('No lesson selected', style: AppFonts.fredoka(fontSize: 20)),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => context.go('/world_map'),
-                child: const Text('Back to Map'),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: WoodPanel(
+              radius: 28,
+              depth: 8,
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'No lesson selected',
+                    textAlign: TextAlign.center,
+                    style: WoodText.heading(fontSize: 22),
+                  ),
+                  const SizedBox(height: 18),
+                  WoodButton(
+                    tone: WoodTone.green,
+                    height: 60,
+                    onPressed: () => context.go('/world_map'),
+                    child: Text(
+                      'Back to Map',
+                      style: WoodText.button(color: Colors.white),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       );
@@ -53,32 +69,14 @@ class GameScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
-          // Background Gradient
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: Theme.of(context).brightness == Brightness.light
-                      ? const [Color(0xFFE8F7FF), Color(0xFFFFFDF5)]
-                      : [
-                          Theme.of(context).scaffoldBackgroundColor,
-                          const Color(0xFF1E272C),
-                        ],
-                ),
-              ),
-            ),
-          ),
           SafeArea(
             child: Column(
               children: [
-                // Top HUD: Exit button, Phase Progress Dots, Star Counter
+                // Top HUD: Exit button, Phase Progress, Star Counter
                 _buildTopHUD(context, controller, progressRepo.totalStars),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 // Main Interactive Game View based on phase
                 Expanded(child: _buildPhaseView(controller)),
               ],
@@ -103,84 +101,39 @@ class GameScreen extends StatelessWidget {
     final currentPhaseIndex = controller.currentPhase.index;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          // Back / Home Button
-          BounceAnimation(
-            onTap: () => _confirmExit(context),
-            child: Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardTheme.color,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primary, width: 2.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 6,
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.home_rounded,
-                color: AppColors.primary,
-                size: 28,
-              ),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+      child: WoodPanel(
+        tone: WoodTone.dark,
+        radius: 24,
+        depth: 6,
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+        child: Row(
+          children: [
+            // Back / Home Button
+            WoodIconButton(
+              icon: Icons.home_rounded,
+              size: 48,
+              iconSize: 30,
+              tooltip: 'Exit lesson',
+              onPressed: () => _confirmExit(context),
             ),
-          ),
-          const SizedBox(width: 12),
-          // Letter Badge
-          if (letter != null)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryDark.withValues(alpha: 0.3),
-                    blurRadius: 6,
-                  ),
-                ],
+            const SizedBox(width: 8),
+            // Letter Badge
+            if (letter != null) ...[
+              CandyBlock(
+                colors: WoodColors.candyGold,
+                size: 42,
+                letter: '${letter.uppercase}${letter.lowercase}',
               ),
-              child: Text(
-                '${letter.uppercase}${letter.lowercase}',
-                style: AppFonts.fredoka(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          const Spacer(),
-          // Phase Progress Step Dots (5 steps)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(LessonPhase.values.length, (index) {
-              final isPassed = index < currentPhaseIndex;
-              final isCurrent = index == currentPhaseIndex;
-
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                width: isCurrent ? 24 : 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: isPassed
-                      ? AppColors.accentGreen
-                      : (isCurrent
-                            ? AppColors.accentYellowDark
-                            : Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              );
-            }),
-          ),
-          const Spacer(),
-          // Star Counter
-          StarCounter(count: totalStars),
-        ],
+              const SizedBox(width: 10),
+            ],
+            // Phase Progress: one recessed cell per phase, filled with candy
+            Expanded(child: _PhaseProgress(currentIndex: currentPhaseIndex)),
+            const SizedBox(width: 10),
+            // Star Counter
+            StarCounter(count: totalStars),
+          ],
+        ),
       ),
     );
   }
@@ -200,7 +153,7 @@ class GameScreen extends StatelessWidget {
             controller: controller,
           );
         }
-        return const Center(child: CircularProgressIndicator());
+        return const _PhaseLoading();
 
       case LessonPhase.miniGame:
         if (controller.currentQuestion is WordBuilderQuestion) {
@@ -219,7 +172,7 @@ class GameScreen extends StatelessWidget {
             controller: controller,
           );
         }
-        return const Center(child: CircularProgressIndicator());
+        return const _PhaseLoading();
 
       case LessonPhase.review:
         if (controller.currentQuestion != null) {
@@ -228,7 +181,7 @@ class GameScreen extends StatelessWidget {
             controller: controller,
           );
         }
-        return const Center(child: CircularProgressIndicator());
+        return const _PhaseLoading();
 
       case LessonPhase.celebration:
         return const SizedBox.shrink();
@@ -240,38 +193,31 @@ class GameScreen extends StatelessWidget {
       child: CelebrationAnimation(
         isPlaying: true,
         child: Container(
-          color: Colors.black.withValues(alpha: 0.15),
+          color: Colors.black.withValues(alpha: 0.22),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardTheme.color,
-                borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: AppColors.success, width: 4),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.success.withValues(alpha: 0.4),
-                    blurRadius: 16,
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+            child: GamePopIn(
+              trigger: message ?? '',
+              from: 0.4,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.topCenter,
                 children: [
-                  const Icon(
-                    Icons.stars_rounded,
-                    size: 64,
-                    color: AppColors.accentYellowDark,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    message ?? 'Awesome!',
-                    style: AppFonts.fredoka(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.success,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 56),
+                    child: WoodPanel(
+                      tone: WoodTone.dark,
+                      radius: 28,
+                      depth: 8,
+                      padding: const EdgeInsets.fromLTRB(28, 44, 28, 20),
+                      child: WoodTitle(
+                        message ?? 'Awesome!',
+                        fontSize: 32,
+                        maxLines: 2,
+                      ),
                     ),
                   ),
+                  const _StarBurst(),
                 ],
               ),
             ),
@@ -285,20 +231,46 @@ class GameScreen extends StatelessWidget {
     return Positioned.fill(
       child: Container(
         color: Colors.black.withValues(alpha: 0.1),
-        child: Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardTheme.color,
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(color: AppColors.tryAgain, width: 3.5),
-            ),
-            child: Text(
-              message ?? 'Try again!',
-              style: AppFonts.fredoka(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppColors.tryAgain,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        // Sits low so the picked answer, now orange, stays in view.
+        child: SafeArea(
+          top: false,
+          minimum: const EdgeInsets.only(bottom: 28),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: GamePopIn(
+              trigger: message ?? '',
+              from: 0.6,
+              child: WoodPanel(
+                tone: WoodTone.orange,
+                radius: 28,
+                depth: 7,
+                padding: const EdgeInsets.fromLTRB(20, 14, 24, 14),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.replay_rounded, size: 34),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: Text(
+                        message ?? 'Try again!',
+                        textAlign: TextAlign.center,
+                        style:
+                            WoodText.heading(
+                              fontSize: 22,
+                              color: Colors.white,
+                            ).copyWith(
+                              shadows: const [
+                                Shadow(
+                                  color: Color(0xFF8A3F06),
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -310,32 +282,150 @@ class GameScreen extends StatelessWidget {
   void _confirmExit(BuildContext context) {
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Text(
-          'Go Back to Map?',
-          textAlign: TextAlign.center,
-          style: AppFonts.fredoka(fontWeight: FontWeight.bold),
-        ),
+      builder: (dialogContext) => WoodDialog(
+        title: 'Go Back to Map?',
+        onClose: () => Navigator.pop(dialogContext),
         content: Text(
           'Are you sure you want to pause your letter adventure?',
           textAlign: TextAlign.center,
-          style: AppFonts.fredoka(fontSize: 16),
+          style: WoodText.body(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: [
-          TextButton(
+          WoodButton(
+            height: 58,
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Keep Playing', style: AppFonts.fredoka(fontSize: 16)),
+            child: Text('Keep Playing', style: WoodText.button(fontSize: 20)),
           ),
-          ElevatedButton(
+          WoodButton(
+            tone: WoodTone.orange,
+            height: 58,
             onPressed: () {
               Navigator.pop(dialogContext);
               context.go('/world_map');
             },
-            child: Text('Back to Map', style: AppFonts.fredoka(fontSize: 16)),
+            child: Text(
+              'Back to Map',
+              style: WoodText.button(fontSize: 20, color: Colors.white),
+            ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// One recessed cell per lesson phase: done phases hold a green candy piece,
+/// the current one a golden piece, upcoming ones stay hollow.
+class _PhaseProgress extends StatelessWidget {
+  const _PhaseProgress({required this.currentIndex});
+
+  final int currentIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    final phases = LessonPhase.values.length;
+    return Semantics(
+      label: 'Step ${currentIndex + 1} of $phases',
+      excludeSemantics: true,
+      child: Container(
+        height: 30,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: WoodColors.cellLine,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: List.generate(phases, (index) {
+            final isPassed = index < currentIndex;
+            final isCurrent = index == currentIndex;
+            final tone = isPassed
+                ? WoodColors.candyGreen
+                : (isCurrent ? WoodColors.candyGold : null);
+            return Expanded(
+              flex: isCurrent ? 3 : 2,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                margin: EdgeInsets.only(left: index == 0 ? 0 : 3),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: tone?.rim ?? WoodColors.cellDark,
+                ),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 3),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: tone == null
+                          ? const [Color(0xFF4A2410), Color(0xFF63341A)]
+                          : [tone.highlight, tone.top, tone.bottom],
+                      stops: tone == null ? null : const [0, 0.25, 1],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+/// Three golden stars fanned over the success plaque.
+class _StarBurst extends StatelessWidget {
+  const _StarBurst();
+
+  @override
+  Widget build(BuildContext context) {
+    // A golden star inside a thick walnut outline, like the title lettering.
+    Widget star(double size) => SizedBox.square(
+      dimension: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Transform.translate(
+            offset: Offset(0, size * 0.06),
+            child: Icon(
+              Icons.star_rounded,
+              size: size,
+              color: WoodColors.goldOutline,
+            ),
+          ),
+          Icon(Icons.star_rounded, size: size, color: WoodColors.goldOutline),
+          ShaderMask(
+            blendMode: BlendMode.srcIn,
+            shaderCallback: (bounds) => const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [WoodColors.goldTop, WoodColors.goldBottom],
+            ).createShader(bounds),
+            child: Icon(Icons.star_rounded, size: size * 0.78),
+          ),
+        ],
+      ),
+    );
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Transform.rotate(angle: -0.25, child: star(70)),
+        Transform.translate(offset: const Offset(0, -14), child: star(100)),
+        Transform.rotate(angle: 0.25, child: star(70)),
+      ],
+    );
+  }
+}
+
+/// Shown while the next question loads.
+class _PhaseLoading extends StatelessWidget {
+  const _PhaseLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: CircularProgressIndicator(color: WoodColors.goldBottom),
     );
   }
 }

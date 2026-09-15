@@ -9,11 +9,11 @@ import 'package:alphabet_adventure/data/models/letter_data.dart';
 import 'package:alphabet_adventure/data/models/word_data.dart';
 import 'package:alphabet_adventure/data/services/audio_service.dart';
 import 'package:alphabet_adventure/ui/core/app_colors.dart';
-import 'package:alphabet_adventure/ui/core/app_fonts.dart';
 import 'package:alphabet_adventure/ui/core/widgets/animated_letter.dart';
 import 'package:alphabet_adventure/ui/core/widgets/audio_replay_button.dart';
 import 'package:alphabet_adventure/ui/core/widgets/highlighted_word_label.dart';
 import 'package:alphabet_adventure/ui/core/widgets/word_media_view.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 
 /// Pops the "real example" overlay for [letter] over the current screen.
 ///
@@ -157,8 +157,6 @@ class _LetterExampleOverlayState extends State<LetterExampleOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cardColor = theme.cardTheme.color ?? Colors.white;
     final glyph = widget.lowercase
         ? widget.letter.lowercase
         : widget.letter.uppercase;
@@ -171,43 +169,57 @@ class _LetterExampleOverlayState extends State<LetterExampleOverlay> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 420),
             child: Material(
-              color: Colors.transparent,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
-                decoration: BoxDecoration(
-                  color: cardColor,
-                  borderRadius: BorderRadius.circular(32),
-                  border: Border.all(color: AppColors.accentYellow, width: 4),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.25),
-                      blurRadius: 24,
-                      offset: const Offset(0, 12),
+              type: MaterialType.transparency,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Padding(
+                    // Room for the close button riding the top corner.
+                    padding: const EdgeInsets.fromLTRB(10, 12, 10, 0),
+                    child: WoodPanel(
+                      radius: 30,
+                      depth: 8,
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                      // Scrolls rather than overflows on very short screens.
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildHeader(context, glyph),
+                            const SizedBox(height: 12),
+                            _buildStage(screen),
+                            const SizedBox(height: 10),
+                            _buildHint(),
+                            const SizedBox(height: 10),
+                            if (_words.isNotEmpty)
+                              HighlightedWordLabel(
+                                word: _current.word,
+                                fontSize: 30,
+                              ),
+                            const SizedBox(height: 12),
+                            _buildControls(),
+                            if (_words.length > 1) ...[
+                              const SizedBox(height: 10),
+                              _buildDots(),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-                // Scrolls rather than overflows on very short screens.
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildHeader(context, glyph),
-                      const SizedBox(height: 12),
-                      _buildStage(screen),
-                      const SizedBox(height: 10),
-                      _buildHint(theme),
-                      const SizedBox(height: 4),
-                      if (_words.isNotEmpty)
-                        HighlightedWordLabel(word: _current.word, fontSize: 30),
-                      const SizedBox(height: 10),
-                      _buildControls(),
-                      if (_words.length > 1) ...[
-                        const SizedBox(height: 8),
-                        _buildDots(),
-                      ],
-                    ],
                   ),
-                ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: WoodIconButton(
+                      icon: Icons.close_rounded,
+                      tone: WoodTone.red,
+                      size: 48,
+                      iconSize: 30,
+                      tooltip: 'Close',
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -222,38 +234,32 @@ class _LetterExampleOverlayState extends State<LetterExampleOverlay> {
         ? 'The letter $glyph'
         : '$glyph is for ${_current.displayName}';
 
-    return Row(
-      children: [
-        AnimatedLetter(
-          letter: glyph,
-          size: 64,
-          primaryColor: AppColors.primary,
-          shadowColor: AppColors.primaryDark,
-          onTap: () => widget.lowercase
-              ? audio.playPhonicsSound(widget.letter.char)
-              : audio.playLetterName(widget.letter.char),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: AppFonts.fredoka(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).textTheme.bodyLarge?.color,
+    return WoodPanel(
+      tone: WoodTone.dark,
+      radius: 20,
+      depth: 5,
+      // The right side stays clear of the close button on the corner.
+      padding: const EdgeInsets.fromLTRB(6, 6, 34, 6),
+      child: Row(
+        children: [
+          AnimatedLetter(
+            letter: glyph,
+            size: 60,
+            primaryColor: AppColors.primary,
+            shadowColor: AppColors.primaryDark,
+            onTap: () => widget.lowercase
+                ? audio.playPhonicsSound(widget.letter.char)
+                : audio.playLetterName(widget.letter.char),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: WoodTitle(title, fontSize: 28, maxLines: 1),
             ),
           ),
-        ),
-        IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          tooltip: 'Close',
-          iconSize: 34,
-          color: AppColors.textMuted,
-          icon: const Icon(Icons.cancel_rounded),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -264,44 +270,36 @@ class _LetterExampleOverlayState extends State<LetterExampleOverlay> {
         // phone.
         final side = math.min(constraints.maxWidth, screen.height * 0.42);
 
-        return SizedBox(
+        // A dark recessed board; each word's framed tile slides across it.
+        return Container(
           height: side,
           width: double.infinity,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.secondary.withValues(alpha: 0.18),
-                  AppColors.secondary.withValues(alpha: 0.05),
-                ],
-              ),
-              border: Border.all(
-                color: AppColors.secondary.withValues(alpha: 0.4),
-                width: 2,
-              ),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(26),
-              child: _words.isEmpty
-                  ? const SizedBox.shrink()
-                  : PageView.builder(
-                      controller: _pageController,
-                      itemCount: _words.length,
-                      onPageChanged: _onPageChanged,
-                      itemBuilder: (context, index) =>
-                          WordMediaView(word: _words[index]),
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: WoodColors.cellDark,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: WoodColors.cellLine, width: 3),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(22),
+            child: _words.isEmpty
+                ? const SizedBox.shrink()
+                : PageView.builder(
+                    controller: _pageController,
+                    itemCount: _words.length,
+                    onPageChanged: _onPageChanged,
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: WordMediaView(word: _words[index]),
                     ),
-            ),
+                  ),
           ),
         );
       },
     );
   }
 
-  Widget _buildHint(ThemeData theme) {
+  Widget _buildHint() {
     if (_words.isEmpty) return const SizedBox.shrink();
 
     final (icon, text) = switch (_current.mediaKind) {
@@ -313,20 +311,10 @@ class _LetterExampleOverlayState extends State<LetterExampleOverlay> {
       WordMediaKind.emoji => (Icons.volume_up_rounded, 'Tap to hear it!'),
     };
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, size: 18, color: AppColors.textMuted),
-        const SizedBox(width: 6),
-        Text(
-          text,
-          style: AppFonts.fredoka(
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textMuted,
-          ),
-        ),
-      ],
+    return WoodPill(
+      label: text,
+      fontSize: 16,
+      leading: Icon(icon, size: 18, color: Colors.white),
     );
   }
 
@@ -343,15 +331,16 @@ class _LetterExampleOverlayState extends State<LetterExampleOverlay> {
           enabled: hasPrev,
           onTap: () => _goTo(_page - 1),
         ),
-        const SizedBox(width: 20),
+        const SizedBox(width: 22),
         AudioReplayButton(
-          size: 60,
+          size: 64,
+          backgroundColor: WoodColors.candyOrange.bottom,
           semanticLabel: 'Say the word again',
           onTap: () {
             if (_words.isNotEmpty) _speak(_current);
           },
         ),
-        const SizedBox(width: 20),
+        const SizedBox(width: 22),
         _ArrowButton(
           icon: Icons.chevron_right_rounded,
           label: 'Next word',
@@ -370,13 +359,23 @@ class _LetterExampleOverlayState extends State<LetterExampleOverlay> {
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: i == _page ? 22 : 10,
-            height: 10,
+            width: i == _page ? 26 : 12,
+            height: 12,
             decoration: BoxDecoration(
-              color: i == _page
-                  ? AppColors.primary
-                  : AppColors.textMuted.withValues(alpha: 0.35),
-              borderRadius: BorderRadius.circular(5),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: i == _page
+                    ? const [WoodColors.goldTop, WoodColors.goldBottom]
+                    : const [WoodColors.cellDark, WoodColors.cellDark],
+              ),
+              border: Border.all(
+                color: i == _page
+                    ? WoodColors.goldOutline
+                    : WoodColors.cellLine,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(6),
             ),
           ),
       ],
@@ -399,28 +398,19 @@ class _ArrowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      enabled: enabled,
-      label: label,
-      child: Material(
-        color: enabled
-            ? AppColors.accentYellow
-            : AppColors.textMuted.withValues(alpha: 0.15),
-        shape: const CircleBorder(),
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: enabled ? onTap : null,
-          child: SizedBox(
-            width: 52,
-            height: 52,
-            child: Icon(
-              icon,
-              size: 36,
-              color: enabled ? AppColors.textDark : AppColors.textMuted,
-            ),
-          ),
-        ),
+    return WoodButton(
+      onPressed: enabled ? onTap : null,
+      tone: WoodTone.green,
+      width: 56,
+      height: 56,
+      radius: 17,
+      depth: 6,
+      padding: EdgeInsets.zero,
+      semanticLabel: label,
+      child: Icon(
+        icon,
+        size: 40,
+        shadows: const [Shadow(color: Color(0xFF145A2E), offset: Offset(0, 2))],
       ),
     );
   }

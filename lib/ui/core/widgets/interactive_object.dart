@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:alphabet_adventure/data/models/word_data.dart';
 import 'package:alphabet_adventure/ui/core/animations/bounce_animation.dart';
-import 'package:alphabet_adventure/ui/core/app_colors.dart';
 import 'package:alphabet_adventure/ui/core/app_fonts.dart';
-import 'package:alphabet_adventure/ui/core/widgets/highlighted_word_label.dart';
+import 'package:alphabet_adventure/ui/core/wood/wood.dart';
 
-/// Interactive 3D styled learning object card displaying a vocabulary word, icon, and highlighted initial letter.
+/// A pale-wood learning tile showing a vocabulary word's picture on a
+/// parchment inset, with the word underneath and its initial letter picked
+/// out in candy colour.
+///
+/// Selected tiles turn gold, correct answers green and wrong answers red.
 class InteractiveObject extends StatelessWidget {
   final WordData word;
   final VoidCallback? onTap;
@@ -29,54 +32,112 @@ class InteractiveObject extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color borderColor = Theme.of(context).cardTheme.color ?? Colors.white;
-    Color bgColor = Theme.of(context).cardTheme.color ?? Colors.white;
-
+    final WoodToneColors colors;
     if (isCorrect) {
-      borderColor = AppColors.success;
-      bgColor = AppColors.success.withValues(alpha: 0.15);
+      colors = WoodColors.candyGreen;
     } else if (isIncorrect) {
-      borderColor = AppColors.tryAgain;
-      bgColor = AppColors.tryAgain.withValues(alpha: 0.15);
+      colors = WoodColors.candyRed;
     } else if (isSelected) {
-      borderColor = AppColors.primary;
-      bgColor = AppColors.primaryLight.withValues(alpha: 0.2);
+      colors = WoodColors.candyGold;
+    } else {
+      colors = WoodColors.lightWood;
     }
+    final initialColor = switch (colors) {
+      WoodColors.lightWood => WoodColors.candyOrange.rim,
+      WoodColors.candyGold => WoodColors.candyRed.rim,
+      _ => colors.ink,
+    };
 
     return BounceAnimation(
       playTapSound: false,
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: size,
         height: showLabel ? size * 1.25 : size,
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: borderColor, width: 3.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
+        // Grids may squeeze the tile below [size]; proportions follow the
+        // width it actually gets.
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth.isFinite
+                ? constraints.maxWidth
+                : size;
+            final depth = (width * 0.05).clamp(4.0, 8.0);
+            final gap = (width * 0.07).clamp(6.0, 12.0);
+
+            return CustomPaint(
+              painter: WoodSurfacePainter(
+                colors: colors,
+                radius: width * 0.17,
+                depth: depth,
+                rimWidth: 3,
+              ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(gap, gap, gap, depth + gap * 0.6),
+                child: Column(
+                  children: [
+                    // Object picture on a recessed parchment inset
+                    Expanded(
+                      child: _PictureInset(word: word, size: width),
+                    ),
+                    if (showLabel)
+                      // Word label with initial letter highlighted
+                      SizedBox(
+                        height: width * 0.22,
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: _WordLabel(
+                              word: word.word,
+                              fontSize: width * 0.15,
+                              color: colors.ink,
+                              initialColor: initialColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// The parchment window framing the word's artwork.
+class _PictureInset extends StatelessWidget {
+  const _PictureInset({required this.word, required this.size});
+
+  final WordData word;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(size * 0.11),
+        border: Border.all(color: WoodColors.parchmentEdge, width: 2.5),
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          // A darker top edge reads as the inset's shadowed lip.
+          stops: [0, 0.18, 1],
+          colors: [
+            Color(0xFFF1DDB6),
+            WoodColors.parchment,
+            WoodColors.parchment,
           ],
         ),
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Object Icon/Visual representation
-            Expanded(
-              child: Center(
-                child: _buildObjectVisual(word, size * 0.5),
-              ),
-            ),
-            if (showLabel) ...[
-              const SizedBox(height: 6),
-              // Word label with initial letter highlighted
-              HighlightedWordLabel(word: word.word),
-            ],
-          ],
+      ),
+      child: SizedBox.expand(
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: _buildObjectVisual(word, size * 0.5),
+          ),
         ),
       ),
     );
@@ -92,29 +153,63 @@ class InteractiveObject extends StatelessWidget {
   Widget _buildObjectVisual(WordData word, double iconSize) {
     final emoji = word.emoji;
 
-    return Container(
-      width: iconSize * 1.3,
-      height: iconSize * 1.3,
-      decoration: BoxDecoration(
-        color: AppColors.secondary.withValues(alpha: 0.15),
-        shape: BoxShape.circle,
+    if (emoji != null && emoji.isNotEmpty) {
+      return Text(
+        emoji,
+        style: TextStyle(fontSize: iconSize, height: 1.15),
+        textAlign: TextAlign.center,
+      );
+    }
+    return CandyBlock(
+      colors: WoodColors.candyOrange,
+      size: iconSize,
+      letter: word.word.isNotEmpty ? word.word[0].toUpperCase() : '?',
+    );
+  }
+}
+
+/// The word in the tile's ink, its first letter picked out, e.g. **A**nt.
+class _WordLabel extends StatelessWidget {
+  const _WordLabel({
+    required this.word,
+    required this.fontSize,
+    required this.color,
+    required this.initialColor,
+  });
+
+  final String word;
+  final double fontSize;
+  final Color color;
+  final Color initialColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final firstChar = word.isNotEmpty ? word[0] : '';
+    final rest = word.length > 1 ? word.substring(1) : '';
+
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: firstChar.toUpperCase(),
+            style: AppFonts.fredoka(
+              fontSize: fontSize * 1.15,
+              fontWeight: FontWeight.w700,
+              color: initialColor,
+            ),
+          ),
+          TextSpan(
+            text: rest.toLowerCase(),
+            style: AppFonts.fredoka(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+        ],
       ),
-      child: Center(
-        child: emoji != null && emoji.isNotEmpty
-            ? Text(
-                emoji,
-                style: TextStyle(fontSize: iconSize * 0.78),
-                textAlign: TextAlign.center,
-              )
-            : Text(
-                word.word.isNotEmpty ? word.word[0].toUpperCase() : '?',
-                style: AppFonts.fredoka(
-                  fontSize: iconSize * 0.7,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.secondaryDark,
-                ),
-              ),
-      ),
+      maxLines: 1,
+      textAlign: TextAlign.center,
     );
   }
 }
